@@ -1,8 +1,8 @@
-### WastelessApp
+# WastelessApp
 
 ## WasteLess - waste less, with us
 
-# Participants
+### Participants
 
 1. Nursultan Akhmetzhanov
 2. Nam Do Tri
