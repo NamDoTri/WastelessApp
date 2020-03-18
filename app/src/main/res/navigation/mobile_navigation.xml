@@ -28,5 +28,10 @@
         android:name="com.wasteless.ui.history.HistoryFragment"
         android:label="@string/title_history"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.wasteless.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>
