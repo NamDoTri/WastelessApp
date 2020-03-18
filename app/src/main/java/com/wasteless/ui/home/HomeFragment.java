@@ -20,16 +20,40 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        /*final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        final TextView budgetAmount = root.findViewById(R.id.budget_amount);
+        final TextView balanceAmount = root.findViewById(R.id.balance_amount);
+        final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
+        final TextView incomeAmount = root.findViewById(R.id.income_amount);
+
+        homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                budgetAmount.setText(s);
             }
-        });*/
+        });
+
+        homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
+            @Override
+            public void onChanged(@Nullable String s){
+                balanceAmount.setText(s);
+            }
+        });
+
+        homeViewModel.getExpensesAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
+           @Override
+           public void onChanged(@Nullable String s){
+               expensesAmount.setText(s);
+           }
+        });
+
+        homeViewModel.getIncomesAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
+            @Override
+            public void onChanged(String s){
+                incomeAmount.setText(s);
+            }
+        });
         return root;
     }
 }
