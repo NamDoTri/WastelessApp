@@ -22,7 +22,7 @@
         android:title="@string/title_history" />
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_history_black_24dp"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="Settings" />
 
 </menu>
