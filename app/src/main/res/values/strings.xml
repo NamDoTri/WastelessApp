@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_history">History</string>
     <string name="button_back">&lt;</string>
     <string name="button_next">&gt;</string>
 </resources>
