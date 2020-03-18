@@ -75,9 +75,51 @@
                             android:layout_height="wrap_content"
                             android:text="-15€"
                             android:textSize="25sp"
+                            android:textColor="@android:color/holo_red_light"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.95"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/history_tag3"/>
+
+                        <TextView
+                            android:id="@+id/history_tag3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tag3"
+                            android:background="@android:color/holo_orange_light"
+                            android:textColor="@android:color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.95"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/history_tag2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tag2"
+                            android:background="@android:color/holo_orange_dark"
+                            android:textColor="@android:color/white"
+                            app:layout_constraintEnd_toStartOf="@+id/history_tag3"
+                            app:layout_constraintHorizontal_bias="0.95"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/history_tag1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tag1"
+                            android:background="@android:color/holo_red_light"
+                            android:textColor="@android:color/white"
+                            app:layout_constraintEnd_toStartOf="@+id/history_tag2"
+                            app:layout_constraintHorizontal_bias="0.95"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                        </TextView>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
