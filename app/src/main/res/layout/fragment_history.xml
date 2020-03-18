@@ -42,7 +42,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1">
 
                         <TextView
@@ -74,52 +74,52 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="-15€"
-                            android:textSize="25sp"
                             android:textColor="@android:color/holo_red_light"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toTopOf="@+id/history_tag3"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.95"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/history_tag3"/>
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/history_tag3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tag3"
+                            android:layout_marginBottom="10dp"
                             android:background="@android:color/holo_orange_light"
+                            android:text="Tag3"
                             android:textColor="@android:color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.95"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-                        </TextView>
+                            app:layout_constraintStart_toStartOf="parent"/>
 
                         <TextView
                             android:id="@+id/history_tag2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tag2"
+                            android:layout_marginBottom="10dp"
                             android:background="@android:color/holo_orange_dark"
+                            android:text="Tag2"
                             android:textColor="@android:color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/history_tag3"
                             app:layout_constraintHorizontal_bias="0.95"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-                        </TextView>
+                            app:layout_constraintStart_toStartOf="parent"/>
 
                         <TextView
                             android:id="@+id/history_tag1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tag1"
+                            android:layout_marginBottom="10dp"
                             android:background="@android:color/holo_red_light"
+                            android:text="Tag1"
                             android:textColor="@android:color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/history_tag2"
                             app:layout_constraintHorizontal_bias="0.95"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-                        </TextView>
+                            app:layout_constraintStart_toStartOf="parent"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
