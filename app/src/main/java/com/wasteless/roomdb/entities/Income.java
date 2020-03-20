@@ -1,11 +1,17 @@
 package com.wasteless.roomdb.entities;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 import androidx.annotation.NonNull;
 
-@Entity(tableName = "incomes")
+@Entity(tableName = "incomes",
+        foreignKeys = @ForeignKey(entity = Wallet.class,
+                parentColumns = "wallets.walletId",
+                childColumns = "incomes.wallet",
+                onDelete = ForeignKey.CASCADE))
+
 public class Income {
     @PrimaryKey(autoGenerate = true)
     public Long incomeId;
@@ -22,8 +28,8 @@ public class Income {
     @ColumnInfo(name = "description")
     public String description;
 
-    //TODO: foreign key - wallet
-    // @NonNull
+    @ColumnInfo(name = "wallet")
+    public Long wallet;
 
     //TODO: array of tags
 

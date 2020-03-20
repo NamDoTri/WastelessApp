@@ -7,7 +7,7 @@ import androidx.room.ColumnInfo;
 @Entity(tableName = "wallets")
 public class Wallet {
     @PrimaryKey(autoGenerate = true)
-    public int walletId;
+    public Long walletId;
 
     @ColumnInfo(name="balance", defaultValue = "0")
     public double balance;
