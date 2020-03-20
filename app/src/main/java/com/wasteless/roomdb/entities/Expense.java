@@ -13,8 +13,8 @@ public class Expense {
     @PrimaryKey(autoGenerate = true)
     public Long index;
 
-    @Embedded()
-    Transaction transaction;
+    @Embedded
+    public Transaction transaction;
 
     //TODO: validator before inserting
     @ColumnInfo(name = "category")

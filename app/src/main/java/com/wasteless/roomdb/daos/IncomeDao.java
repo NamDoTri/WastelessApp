@@ -15,7 +15,7 @@ public interface IncomeDao {
     @Query("select * from incomes")
     List<Income> getAll();
 
-    @Query("select * from incomes where incomeId in (:incomeId)")
+    @Query("select * from incomes where transactionId in (:incomeId)")
     Income getIncomeById(int incomeId);
 
     @Query("select * from incomes where date like :date")
