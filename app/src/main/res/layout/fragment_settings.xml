@@ -41,7 +41,7 @@
         <TextView
             android:layout_gravity="center"
             android:paddingLeft="30dp"
-            android:textColor="#2a9bfb"
+            android:textColor="#9cc881"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="25dp"
@@ -66,7 +66,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
-                android:textColor="#2a9bfb"
+                android:textColor="#9cc881"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
-                android:textColor="#2a9bfb"
+                android:textColor="#9cc881"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
-                android:textColor="#2a9bfb"
+                android:textColor="#9cc881"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
-                android:textColor="#2a9bfb"
+                android:textColor="#9cc881"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
@@ -166,7 +166,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
-                android:textColor="#2a9bfb"
+                android:textColor="#9cc881"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
