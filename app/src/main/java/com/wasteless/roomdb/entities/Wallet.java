@@ -1,14 +1,14 @@
-package com.wasteless.roomdb.models;
+package com.wasteless.roomdb.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
-@Entity
+@Entity(tableName = "wallets")
 public class Wallet {
     @PrimaryKey(autoGenerate = true)
-    private int walletId;
+    public Long walletId;
 
     @ColumnInfo(name="balance", defaultValue = "0")
-    private double balance;
+    public double balance;
 }
