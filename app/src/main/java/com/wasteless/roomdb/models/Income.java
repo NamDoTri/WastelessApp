@@ -22,14 +22,14 @@ public class Income {
     @ColumnInfo(name = "description")
     private String description;
 
-    //foreign key - wallet
+    //TODO: foreign key - wallet
     // @NonNull
 
-    //array of tags
+    //TODO: array of tags
 
     @ColumnInfo(name = "source")
     private String source;
 
-    //enum of Type
+    //TODO: enum of Type
     // @NonNull
 }
