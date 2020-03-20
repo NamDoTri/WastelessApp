@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
-@Entity
+@Entity(tableName = "bankaccounts")
 public class BankAccount {
     @PrimaryKey(autoGenerate = true)
     public int walletId;

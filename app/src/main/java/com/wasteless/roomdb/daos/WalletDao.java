@@ -12,14 +12,14 @@ import java.util.List;
 
 @Dao
 public interface WalletDao {
-    @Query("select * from wallet")
+    @Query("select * from wallets")
     List<Wallet> getAll();
 
-    @Query("select * from wallet where walletId in (:walletId)")
+    @Query("select * from wallets where walletId in (:walletId)")
     Wallet getWalletById(int walletId);
 
     @Insert(entity = Wallet.class)
-    void insertAll(Wallet... wallet);
+    void insertAll(Wallet... wallets);
 
     @Update(entity = Wallet.class)
     void updateAll(Wallet... wallet);

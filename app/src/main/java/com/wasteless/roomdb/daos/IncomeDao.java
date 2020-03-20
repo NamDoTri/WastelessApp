@@ -12,20 +12,20 @@ import java.util.List;
 
 @Dao
 public interface IncomeDao {
-    @Query("select * from income")
+    @Query("select * from incomes")
     List<Income> getAll();
 
-    @Query("select * from income where incomeId in (:incomeId)")
+    @Query("select * from incomes where incomeId in (:incomeId)")
     Income getIncomeById(int incomeId);
 
-    @Query("select * from income where date like :date")
+    @Query("select * from incomes where date like :date")
     List<Income> getIncomesByDate(String date);
 
     //TODO: get by tags
 
     //TODO: get by type
 
-    @Query("select * from income where source like :source ")
+    @Query("select * from incomes where source like :source ")
     List<Income> getIncomesBySource(String source);
 
     //TODO: get by wallet

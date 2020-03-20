@@ -12,13 +12,13 @@ import java.util.List;
 
 @Dao
 public interface ExpenseDao {
-    @Query("select * from expense")
+    @Query("select * from expenses")
     List<Expense> getAll();
 
-    @Query("select * from expense where expenseId in (:expenseId)")
+    @Query("select * from expenses where expenseId in (:expenseId)")
     Expense getExpenseById(int expenseId);
 
-    @Query("select * from expense where date like :date")
+    @Query("select * from expenses where date like :date")
     List<Expense> getExpensesByDate(String date);
 
     //TODO: get expenses by wallet

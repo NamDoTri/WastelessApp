@@ -12,13 +12,13 @@ import java.util.List;
 
 @Dao
 public interface BankAccountDao {
-    @Query("select * from bankaccount")
+    @Query("select * from bankaccounts")
     List<BankAccount> getAll();
 
-    @Query("select * from bankaccount where walletId in (:bankAccountId)")
+    @Query("select * from bankaccounts where walletId in (:bankAccountId)")
     BankAccount getBankAccountById(int bankAccountId);
 
-    @Query("select * from bankaccount where ibanNumber in (:ibanNumber)")
+    @Query("select * from bankaccounts where ibanNumber in (:ibanNumber)")
     BankAccount getBankAccountByIban(String ibanNumber);
 
     @Insert(entity = BankAccount.class)

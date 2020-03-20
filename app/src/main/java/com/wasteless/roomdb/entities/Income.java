@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 import androidx.annotation.NonNull;
 
-@Entity
+@Entity(tableName = "incomes")
 public class Income {
     @PrimaryKey(autoGenerate = true)
     public Long incomeId;
