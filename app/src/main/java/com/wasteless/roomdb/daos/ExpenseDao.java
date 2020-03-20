@@ -15,7 +15,7 @@ public interface ExpenseDao {
     @Query("select * from expenses")
     List<Expense> getAll();
 
-    @Query("select * from expenses where expenseId in (:expenseId)")
+    @Query("select * from expenses where transactionId in (:expenseId)")
     Expense getExpenseById(int expenseId);
 
     @Query("select * from expenses where date like :date")
