@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 
 @Entity(tableName = "incomes",
         foreignKeys = @ForeignKey(entity = Wallet.class,
-                parentColumns = "wallets.walletId",
-                childColumns = "incomes.wallet",
+                parentColumns = "walletId",
+                childColumns = "wallet",
                 onDelete = ForeignKey.CASCADE))
 
 public class Income {

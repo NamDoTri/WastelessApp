@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "expenses",
         foreignKeys = @ForeignKey(entity = Wallet.class,
-        parentColumns = "wallets.walletId",
-        childColumns = "expenses.wallet",
+        parentColumns = "walletId",
+        childColumns = "wallet",
         onDelete = ForeignKey.CASCADE))
 
 public class Expense {
