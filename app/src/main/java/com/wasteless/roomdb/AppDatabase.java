@@ -11,5 +11,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BankAccountDao bankAccountDao();
     public abstract ExpenseDao expenseDao();
     public abstract IncomeDao incomeDao();
-    public abstract Wallet walletDao();
+    public abstract WalletDao walletDao();
 }

@@ -8,16 +8,16 @@ import androidx.room.ColumnInfo;
 @Entity
 public class BankAccount {
     @PrimaryKey(autoGenerate = true)
-    private int walletId;
+    public int walletId;
 
     @ColumnInfo(name="balance", defaultValue = "0")
-    private double balance;
+    public double balance;
 
     @ColumnInfo(name = "ibanNumber")
     @NonNull
-    private String ibanNumber;
+    public String ibanNumber;
 
     @ColumnInfo(name = "token")
     // @NonNull
-    private String token;
+    public String token;
 }

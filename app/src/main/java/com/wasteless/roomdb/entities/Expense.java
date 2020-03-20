@@ -8,19 +8,19 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Expense {
     @PrimaryKey(autoGenerate = true)
-    private String expenseId;
+    public Long expenseId;
 
     //TODO: use @TypeConverter
     @ColumnInfo(name = "date")
     @NonNull
-    private String date;
+    public String date;
 
     @ColumnInfo(name = "amount")
     @NonNull
-    private double amount;
+    public double amount;
 
     @ColumnInfo(name = "description")
-    private String description;
+    public String description;
 
     //foreign key - wallet
     // @NonNull

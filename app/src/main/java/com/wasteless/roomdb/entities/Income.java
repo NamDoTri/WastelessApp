@@ -8,19 +8,19 @@ import androidx.annotation.NonNull;
 @Entity
 public class Income {
     @PrimaryKey(autoGenerate = true)
-    private String incomeId;
+    public Long incomeId;
 
     //TODO: use @TypeConverter
     @ColumnInfo(name = "date")
     @NonNull
-    private String date;
+    public String date;
 
     @ColumnInfo(name = "amount", defaultValue = "0")
     @NonNull
-    private double amount;
+    public double amount;
 
     @ColumnInfo(name = "description")
-    private String description;
+    public String description;
 
     //TODO: foreign key - wallet
     // @NonNull
@@ -28,7 +28,7 @@ public class Income {
     //TODO: array of tags
 
     @ColumnInfo(name = "source")
-    private String source;
+    public String source;
 
     //TODO: enum of Type
     // @NonNull
