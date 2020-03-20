@@ -2,6 +2,7 @@ package com.wasteless.ui.settings;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,13 +26,22 @@ public class SettingsFragment extends Fragment{
         SettingsViewModel =
                 ViewModelProviders.of(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
-//        final TextView textView = root.findViewById(R.id.text_settings);
-//        SettingsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
+        root.findViewById(R.id.me_button).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent motionEvent) {
+                switch (motionEvent.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().alpha(0.3f).setDuration(200).start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().alpha(1f).setDuration(200).start();
+                    default :
+                        v.setAlpha(1f);
+                }
+                return false;
+            }
+        });
         root.findViewById(R.id.me_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
