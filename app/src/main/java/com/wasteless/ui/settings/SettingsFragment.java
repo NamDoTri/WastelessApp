@@ -9,11 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
-import com.wasteless.ui.settings.SettingsViewModel;
+import com.wasteless.ui.settings.me.MeFragment;
 
 public class SettingsFragment extends Fragment{
 
@@ -31,6 +32,17 @@ public class SettingsFragment extends Fragment{
 //                textView.setText(s);
 //            }
 //        });
+        root.findViewById(R.id.me_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MeFragment meFragment = new MeFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.nav_host_fragment, meFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
         return root;
     }
 }
