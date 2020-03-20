@@ -31,8 +31,9 @@ public class Expense {
     @ColumnInfo(name = "wallet")
     public Long wallet;
 
-    //array of tags
+    //TODO: array of tags
 
-    //enum of Category
-    //@NonNull
+    //TODO: validator before inserting
+    @ColumnInfo(name = "category")
+    public String category;
 }

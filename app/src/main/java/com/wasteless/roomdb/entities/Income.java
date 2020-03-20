@@ -36,6 +36,7 @@ public class Income {
     @ColumnInfo(name = "source")
     public String source;
 
-    //TODO: enum of Type
-    // @NonNull
+    //TODO: validator before inserting/updating
+    @ColumnInfo(name = "type")
+    public String type;
 }
