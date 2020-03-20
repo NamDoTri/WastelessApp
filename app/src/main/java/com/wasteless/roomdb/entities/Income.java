@@ -13,7 +13,7 @@ public class Income {
     public Long index;
 
     @Embedded
-    Transaction transaction;
+    public Transaction transaction;
 
     @ColumnInfo(name = "source")
     public String source;
