@@ -1,37 +1,19 @@
 package com.wasteless.roomdb.entities;
 
+import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
-import androidx.annotation.NonNull;
 
-@Entity(tableName = "incomes",
-        foreignKeys = @ForeignKey(entity = Wallet.class,
-                parentColumns = "walletId",
-                childColumns = "wallet",
-                onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "incomes")
 
 public class Income {
-    @PrimaryKey(autoGenerate = true)
-    public Long incomeId;
+    @ColumnInfo(name = "index")
+    @PrimaryKey()
+    public Long index;
 
-    //TODO: use @TypeConverter
-    @ColumnInfo(name = "date")
-    @NonNull
-    public String date;
-
-    @ColumnInfo(name = "amount", defaultValue = "0")
-    @NonNull
-    public double amount;
-
-    @ColumnInfo(name = "description")
-    public String description;
-
-    @ColumnInfo(name = "wallet")
-    public Long wallet;
-
-    //TODO: array of tags
+    @Embedded
+    Transaction transaction;
 
     @ColumnInfo(name = "source")
     public String source;
