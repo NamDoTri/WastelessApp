@@ -15,7 +15,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
+import com.wasteless.ui.settings.me.GeneralFragment;
 import com.wasteless.ui.settings.me.MeFragment;
+import com.wasteless.ui.settings.me.NotificationsFragment;
 
 public class SettingsFragment extends Fragment{
 
@@ -49,6 +51,28 @@ public class SettingsFragment extends Fragment{
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.nav_host_fragment, meFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        root.findViewById(R.id.notification_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.nav_host_fragment, notificationsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        root.findViewById(R.id.general_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GeneralFragment generalFragment = new GeneralFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.nav_host_fragment, generalFragment );
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
