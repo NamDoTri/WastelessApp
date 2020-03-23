@@ -21,11 +21,14 @@ public interface ExpenseDao {
     @Query("select * from expenses where date like :date")
     List<Expense> getExpensesByDate(String date);
 
-    //TODO: get expenses by wallet
+    @Query("select * from expenses where wallet = :walletId")
+    List<Expense> getExpensesByWallet(Long walletId);
 
-    //TODO: get expenses by category
+    @Query("select * from expenses where category = :category")
+    List<Expense> getExpensesByCategory(String category);
 
-    //TODO: get expenses by tag
+    @Query("select * from expenses where transactionId in (select transactionId from tag_assoc where tag = :name)")
+    List<Expense> getExpensesByTag(String name);
 
     @Insert(entity = Expense.class)
     void insertAll(Expense... expense);

@@ -1,9 +1,11 @@
 package com.wasteless;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.DatabaseClient;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +13,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         db = DatabaseClient.getDatabaseClient(this);
+        List<Wallet> wallets = db.walletDao().getAll();
+        Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getWalletById(Long.valueOf(1)).walletId));
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);

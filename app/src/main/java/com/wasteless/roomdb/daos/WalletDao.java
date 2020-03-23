@@ -15,8 +15,8 @@ public interface WalletDao {
     @Query("select * from wallets")
     List<Wallet> getAll();
 
-    @Query("select * from wallets where walletId in (:walletId)")
-    Wallet getWalletById(int walletId);
+    @Query("select * from wallets where walletId = :walletId")
+    Wallet getWalletById(Long walletId);
 
     @Insert(entity = Wallet.class)
     void insertAll(Wallet... wallets);

@@ -21,14 +21,17 @@ public interface IncomeDao {
     @Query("select * from incomes where date like :date")
     List<Income> getIncomesByDate(String date);
 
-    //TODO: get by tags
+    @Query("select * from incomes where transactionId in (select transactionId from tag_assoc where tag = :name)")
+    List<Income> getIncomesByTag(String name);
 
-    //TODO: get by type
+    @Query("select * from incomes where type = :type")
+    List<Income> getIncomesByType(String type);
 
     @Query("select * from incomes where source like :source ")
     List<Income> getIncomesBySource(String source);
 
-    //TODO: get by wallet
+    @Query("select * from incomes where wallet = :walletId")
+    List<Income> getIncomesByWallet(Long walletId);
 
     @Insert(entity = Income.class)
     void insertAll(Income... income);
