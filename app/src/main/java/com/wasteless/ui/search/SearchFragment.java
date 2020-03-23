@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,28 +30,24 @@ public class SearchFragment extends Fragment  {
         searchViewModel =
                 ViewModelProviders.of(this).get(SearchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_search, container, false);
-        EditText searchField = root.findViewById(R.id.search_field);
+        SearchView searchField = (SearchView) root.findViewById(R.id.search_field);
+//        EditText searchField = root.findViewById(R.id.search_field);
 
         super.onCreate(savedInstanceState);
 
-        TextWatcher textWatcher=new TextWatcher() {
+        searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("onQueryTextSubmit", "It works: " + query);
+                return false;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            public boolean onQueryTextChange(String newText) {
+                Log.d("onQueryTextChange", "It works: " + newText);
+                return false;
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d("onTextChanged", "It works: " + s);
-            }
-        };
-
-        searchField.addTextChangedListener(textWatcher);
+        });
 
 
 

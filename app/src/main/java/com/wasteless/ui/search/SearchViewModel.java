@@ -9,18 +9,17 @@ public class SearchViewModel extends ViewModel {
     private MutableLiveData<String> searchValue;
     private MutableLiveData<String> filter;
 
+    private SearchModel searchModel = new SearchModel();
+
+
+
+//    searchModel.dummyData.getDummyData();
+
 //    public SearchViewModel() {
 //        searchValue = new MutableLiveData<>();
 //        searchValue.setValue("This is search fragment");
 //    }
 
-    public void setFilter(MutableLiveData<String> filter) {
-        this.filter = filter;
-    }
-
-    public void setSearchValue(MutableLiveData<String> searchValue) {
-        this.searchValue = searchValue;
-    }
 
 //    public LiveData<String> getText() {
 //        return searchValue;
