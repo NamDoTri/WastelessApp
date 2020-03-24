@@ -36,10 +36,6 @@ public class DatabaseClient {
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    //this line doesnt run for some reason
-                    getDatabaseClient(context).expenseDao().insertAll(
-                            new Expense(new Transaction("21/02/2020", 20.2, "cheese", Long.valueOf(1)), "Food")
-                    );
                     getDatabaseClient(context).walletDao().insertAll(
                             new Wallet(400)
                     );

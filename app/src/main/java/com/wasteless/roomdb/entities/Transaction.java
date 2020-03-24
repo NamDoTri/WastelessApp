@@ -33,13 +33,26 @@ public class Transaction {
     @ColumnInfo(name = "wallet")
     public Long wallet;
 
+    @ColumnInfo(name = "isIncome")
+    public boolean isIncome;
+
+    @ColumnInfo(name = "type")
+    public String type;
+
+    // field of only Income
+    @ColumnInfo(name = "source")
+    public String source;
+
     //tags are stored in a separate table
 
-    public Transaction(String date, double amount, String description, Long wallet){
+    public Transaction(String date, double amount, String description, Long wallet, boolean isIncome, String type, String source){
         this.date = date;
         this.amount = amount;
         this.description = description;
         this.wallet = wallet;
+        this.isIncome = isIncome;
+        this.type = type;
+        this.source = source;
         Log.i("Database", "Transaction created");
     }
 }

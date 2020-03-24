@@ -1,7 +1,5 @@
 package com.wasteless.roomdb.daos;
 
-import com.wasteless.roomdb.entities.Expense;
-
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Insert;
