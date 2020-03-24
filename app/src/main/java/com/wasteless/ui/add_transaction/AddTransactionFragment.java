@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,14 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.wasteless.MainActivity;
 import com.wasteless.R;
 
 import java.util.Calendar;
 
 public class AddTransactionFragment extends Fragment {
-    String date;
-
     DatePickerDialog picker;
     TextView tvw;
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -55,6 +51,7 @@ public class AddTransactionFragment extends Fragment {
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 EditText dateField = root.findViewById(R.id.date);
                 EditText categoryField = root.findViewById(R.id.category);
                 EditText sumField = root.findViewById(R.id.sum);
@@ -64,17 +61,20 @@ public class AddTransactionFragment extends Fragment {
                 String date = dateField.getText().toString();
                 String category = categoryField.getText().toString();
                 String sum = sumField.getText().toString().trim();
-//                 Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
+                //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
                 String tags = tagsField.getText().toString();
                 String description = descriptionField.getText().toString();
+
+                //Validation of all the input fields
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
                         tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
+                    // Pop-up message
                     AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                     alertDialog.setTitle("Done");
-                    alertDialog.setMessage("Succesfully added");
+                    alertDialog.setMessage("Succesfully added to nowhere (yet)");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -82,10 +82,10 @@ public class AddTransactionFragment extends Fragment {
                                 }
                             });
                     alertDialog.show();
-
                     Log.i("transaction", "category "+ category +
                             " sum " + sum + " tags " + tags + " description " + description);
                 } else {
+                    //Pop-up message
                     AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                     alertDialog.setTitle("Failed");
                     alertDialog.setMessage("You may have missed a field");
