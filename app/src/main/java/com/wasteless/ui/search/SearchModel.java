@@ -32,28 +32,15 @@ public class SearchModel {
         Log.d("dummyData", "" + dummyData);
     }
 
-    private MutableLiveData<String> searchValue;
-    private MutableLiveData<String> activeFilter;
-
     public ArrayList<Number> getDummyData() {
         generateDummyData();
         return this.dummyData;
-    }
-
-    public MutableLiveData<String> getActiveFilter() {
-        return activeFilter;
     }
 
     public String[] getFilters() {
         return filters;
     }
 
-    public void setActiveFilter(MutableLiveData<String> filter) {
-        this.activeFilter = filter;
-    }
 
-    public void setSearchValue(MutableLiveData<String> searchValue) {
-        this.searchValue = searchValue;
-    }
 
 }

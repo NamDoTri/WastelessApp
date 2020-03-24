@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -36,21 +37,42 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
         SearchView searchField = (SearchView) root.findViewById(R.id.search_field);
-        RecyclerView filtersView = (RecyclerView) root.findViewById(R.id.filters_list);
+        ListView filtersView = (ListView) root.findViewById(R.id.filters_list);
         RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
 
 //     Filter strings
          String[] filters = searchViewModel.getFiltersFromModel();
 //     Filters Adapter
         ArrayAdapter<String> filterArrayAdapter = new ArrayAdapter<String>(
-                this,
+                getActivity(),
                 R.layout.fragment_search_filter,
                 filters
         );
+//        RecyclerView.Adapter
+            FiltersAdapter filtersAdapter = new FiltersAdapter(filters);
+
+        searchField.setOnQueryTextListener(this);
+
+//        RecyclerView.Adapter filtersAdapter = new RecyclerView.Adapter() {
+//            @NonNull
+//            @Override
+//            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                return null;
+//            }
+//
+//            @Override
+//            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+//
+//            }
+//
+//            @Override
+//            public int getItemCount() {
+//                return 0;
+//            }
+//        };
+        filtersView.setAdapter(filterArrayAdapter);
 
         super.onCreate(savedInstanceState);
-
-
 
         return root;
     }
@@ -67,6 +89,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         super.onStop();
     };
 
+//    Search field listeners
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "It works: " + query);
@@ -75,7 +98,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d("onQueryTextSubmit", "It works: " + newText);
+        Log.d("onQueryTextChange", "It works: " + newText);
         return false;
     }
 }

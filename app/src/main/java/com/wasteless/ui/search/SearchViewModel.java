@@ -12,11 +12,26 @@ public class SearchViewModel extends ViewModel {
 //    private MutableLiveData<String> searchValue;
 //    private MutableLiveData<String> filter;
 
+    private MutableLiveData<String> searchValue;
+    private MutableLiveData<String> activeFilter;
+
     SearchModel searchModel = new SearchModel();
     public String[] getFiltersFromModel() {
         String[] filters = searchModel.getFilters();
         return filters;
     };
+
+    public void setActiveFilter(MutableLiveData<String> filter) {
+        this.activeFilter = filter;
+    }
+
+    public void setSearchValue(MutableLiveData<String> searchValue) {
+        this.searchValue = searchValue;
+    }
+
+    public MutableLiveData<String> getActiveFilter() {
+        return activeFilter;
+    }
 
 //    searchModel.setActiveFilter("date");
 
