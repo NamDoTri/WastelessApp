@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = DatabaseClient.getDatabaseClient(this);
         List<Wallet> wallets = db.walletDao().getAll();
-        Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getWalletById(Long.valueOf(1)).walletId));
+        Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getAll()));
+        Log.i("Database", "Expense " + String.valueOf(db.expenseDao().getAll()));
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);

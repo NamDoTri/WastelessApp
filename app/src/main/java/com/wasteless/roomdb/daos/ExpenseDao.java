@@ -15,8 +15,8 @@ public interface ExpenseDao {
     @Query("select * from expenses")
     List<Expense> getAll();
 
-    @Query("select * from expenses where transactionId in (:expenseId)")
-    Expense getExpenseById(int expenseId);
+    @Query("select * from expenses where transactionId = :expenseId")
+    Expense getExpenseById(Long expenseId);
 
     @Query("select * from expenses where date like :date")
     List<Expense> getExpensesByDate(String date);
@@ -31,7 +31,7 @@ public interface ExpenseDao {
     List<Expense> getExpensesByTag(String name);
 
     @Insert(entity = Expense.class)
-    void insertAll(Expense... expense);
+    void insertAll(Expense... expenses);
 
     @Update(entity = Expense.class)
     void updateAll(Expense... expense);

@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.wasteless.roomdb.AppDatabase;
-import com.wasteless.roomdb.entities.Wallet;
+import com.wasteless.roomdb.entities.*;
 
 import java.util.concurrent.Executors;
 
@@ -36,6 +36,10 @@ public class DatabaseClient {
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
+                    //this line doesnt run for some reason
+                    getDatabaseClient(context).expenseDao().insertAll(
+                            new Expense(new Transaction("21/02/2020", 20.2, "cheese", Long.valueOf(1)), "Food")
+                    );
                     getDatabaseClient(context).walletDao().insertAll(
                             new Wallet(400)
                     );

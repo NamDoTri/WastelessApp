@@ -7,7 +7,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 @Database(entities = {BankAccount.class, Expense.class, Income.class, Wallet.class, Tag.class, TagAssociation.class, Transaction.class},
-          version=2)
+          version=1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract BankAccountDao bankAccountDao();
     public abstract ExpenseDao expenseDao();

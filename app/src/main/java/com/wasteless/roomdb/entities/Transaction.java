@@ -1,5 +1,7 @@
 package com.wasteless.roomdb.entities;
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -32,4 +34,12 @@ public class Transaction {
     public Long wallet;
 
     //tags are stored in a separate table
+
+    public Transaction(String date, double amount, String description, Long wallet){
+        this.date = date;
+        this.amount = amount;
+        this.description = description;
+        this.wallet = wallet;
+        Log.i("Database", "Transaction created");
+    }
 }
