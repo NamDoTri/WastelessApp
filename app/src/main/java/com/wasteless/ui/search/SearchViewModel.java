@@ -4,15 +4,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class SearchViewModel extends ViewModel {
 
 //    private MutableLiveData<String> searchValue;
 //    private MutableLiveData<String> filter;
 
+    SearchModel searchModel = new SearchModel();
+    public String[] getFiltersFromModel() {
+        String[] filters = searchModel.getFilters();
+        return filters;
+    };
 
-
-    private SearchModel searchModel = new SearchModel();
-
+//    searchModel.setActiveFilter("date");
 
 
     //    searchModel.dummyData.getDummyData();
