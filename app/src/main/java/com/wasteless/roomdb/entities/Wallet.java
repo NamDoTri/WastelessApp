@@ -1,5 +1,7 @@
 package com.wasteless.roomdb.entities;
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
@@ -15,6 +17,7 @@ public class Wallet {
 
     public Wallet(double balance){
         this.balance = balance;
+        Log.i("Database", "Wallet created: " + String.valueOf(this.walletId));
     }
 
     public String toString(){
