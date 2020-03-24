@@ -6,13 +6,20 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 
 public class SearchModel {
 
     private ArrayList<Number> dummyData;
+    private ArrayList<String> filters = new ArrayList<String>(
+            Arrays.asList("category",
+                                     "date",
+                                     "name",
+                                     "tag")
+    );
 
+//    private String activeFilter = "name";
 
     public void generateDummyData() {
         for (int i = 0;  i < 20; i++ ) {
@@ -22,19 +29,24 @@ public class SearchModel {
         Log.d("dummyData", "" + dummyData);
     }
 
-//    generateDummyData();
-
-
     private MutableLiveData<String> searchValue;
-    private MutableLiveData<String> filter;
+    private MutableLiveData<String> activeFilter;
 
     public ArrayList<Number> getDummyData() {
         generateDummyData();
         return this.dummyData;
     }
 
-    public void setFilter(MutableLiveData<String> filter) {
-        this.filter = filter;
+    public MutableLiveData<String> getActiveFilter() {
+        return activeFilter;
+    }
+
+    public ArrayList<String> getFilters() {
+        return filters;
+    }
+
+    public void setActiveFilter(MutableLiveData<String> filter) {
+        this.activeFilter = filter;
     }
 
     public void setSearchValue(MutableLiveData<String> searchValue) {

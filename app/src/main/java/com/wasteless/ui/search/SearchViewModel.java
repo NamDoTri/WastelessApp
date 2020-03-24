@@ -6,14 +6,16 @@ import androidx.lifecycle.ViewModel;
 
 public class SearchViewModel extends ViewModel {
 
-    private MutableLiveData<String> searchValue;
-    private MutableLiveData<String> filter;
+//    private MutableLiveData<String> searchValue;
+//    private MutableLiveData<String> filter;
+
+
 
     private SearchModel searchModel = new SearchModel();
 
 
 
-//    searchModel.dummyData.getDummyData();
+    //    searchModel.dummyData.getDummyData();
 
 //    public SearchViewModel() {
 //        searchValue = new MutableLiveData<>();
