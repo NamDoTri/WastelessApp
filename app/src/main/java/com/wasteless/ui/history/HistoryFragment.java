@@ -16,30 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wasteless.R;
 import com.wasteless.models.TestTransaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryFragment extends Fragment{
 
-    RecyclerView recyclerView;
-    RecyclerAdapter recyclerAdapter;
-    HistoryViewModel historyViewModel;
-    //List<TestTransaction> historyList = new ArrayList<>();
+    private RecyclerAdapter recyclerAdapter;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        //historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
-        //View root = inflater.inflate(R.layout.fragment_history, container, false);
-        View root = inflater.inflate(R.layout.fragment_historylist, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_history, container, false);
 
-        recyclerView = root.findViewById(R.id.history_recycler);
-
+        RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         recyclerAdapter = new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
 
-        historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
+        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         historyViewModel.getHistoryLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
             @Override
             public void onChanged(@Nullable List<TestTransaction> testTransactions) {
