@@ -23,6 +23,11 @@
         android:label="@string/title_history"
         tools:layout="@layout/fragment_history" />
     <fragment
+        android:id="@+id/navigation_add_new_transaction"
+        android:name="com.wasteless.ui.add_transaction.AddTransactionFragment"
+        android:label="Add new transaction"
+        tools:layout="@layout/fragment_add_new_transaction" />
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.wasteless.ui.settings.SettingsFragment"
         android:label="Settings"
