@@ -39,6 +39,9 @@ public class DatabaseClient {
                     getDatabaseClient(context).walletDao().insertAll(
                             new Wallet(400)
                     );
+                    getDatabaseClient(context).transactionDao().insertAll(
+                            new Transaction("21/02/2020", 34.0, "cheese", Long.valueOf(1), false, "Food")
+                    );
                 }
             });
         }
