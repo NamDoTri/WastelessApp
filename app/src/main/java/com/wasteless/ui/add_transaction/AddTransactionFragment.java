@@ -45,7 +45,6 @@ public class AddTransactionFragment extends Fragment {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 Log.i("data",dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                                   tvw.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                  date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                             }
                         }, year, month, day);
                 picker.show();
@@ -56,18 +55,49 @@ public class AddTransactionFragment extends Fragment {
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditText dateField = root.findViewById(R.id.date);
                 EditText categoryField = root.findViewById(R.id.category);
                 EditText sumField = root.findViewById(R.id.sum);
                 EditText tagsField = root.findViewById(R.id.tags);
                 EditText descriptionField = root.findViewById(R.id.description);
 
+                String date = dateField.getText().toString();
                 String category = categoryField.getText().toString();
-                String sum = (sumField.getText().toString().trim());
+                String sum = sumField.getText().toString().trim();
 //                 Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
                 String tags = tagsField.getText().toString();
                 String description = descriptionField.getText().toString();
+                if(date.trim().length() > 0 &&
+                        category.trim().length() > 0 &&
+                        sum.trim().length() > 0 &&
+                        tags.trim().length() > 0 &&
+                        description.trim().length() > 0) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("Done");
+                    alertDialog.setMessage("Succesfully added");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
 
+                    Log.i("transaction", "category "+ category +
+                            " sum " + sum + " tags " + tags + " description " + description);
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("Failed");
+                    alertDialog.setMessage("You may have missed a field");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
                     Log.i("transaction", "something is missed");
+                };
             }
         });
         return root;
