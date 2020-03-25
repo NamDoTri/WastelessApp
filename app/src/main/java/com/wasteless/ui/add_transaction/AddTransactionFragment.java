@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.wasteless.R;
+import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.DatabaseClient;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +29,7 @@ import java.util.List;
 public class AddTransactionFragment extends Fragment {
     DatePickerDialog picker;
     TextView tvw;
+    private AppDatabase appDatabase = DatabaseClient.getDatabaseClient(getContext());
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
@@ -88,10 +92,13 @@ public class AddTransactionFragment extends Fragment {
                         sum.trim().length() > 0 &&
                         tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
+                    Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, "Default");
+                    appDatabase.transactionDao().insertAll(transaction);
+
                     // Pop-up message
                     AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                     alertDialog.setTitle("Done");
-                    alertDialog.setMessage("Succesfully added to nowhere (yet)");
+                    alertDialog.setMessage("Succesfully added)");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
