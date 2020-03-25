@@ -12,15 +12,15 @@ import java.util.Arrays;
 public class SearchModel {
 
     private ArrayList<Number> dummyData;
-//    private ArrayList<String> filters = new ArrayList<String>(
-//            Arrays.asList("category",
-//                                     "date",
-//                                     "name",
-//                                     "tag")
-//    );
-    private String[] filters = new String[] {
-            "category", "date", "name", "tag"
-    };
+    private ArrayList<String> filters = new ArrayList<String>(
+            Arrays.asList("category",
+                                     "date",
+                                     "name",
+                                     "tag")
+    );
+//    private String[] filters = new String[] {
+//            "category", "date", "name", "tag"
+//    };
 
 //    private String activeFilter = "name";
 
@@ -37,7 +37,7 @@ public class SearchModel {
         return this.dummyData;
     }
 
-    public String[] getFilters() {
+    public ArrayList<String>getFilters() {
         return filters;
     }
 

@@ -10,23 +10,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 
+import java.nio.DoubleBuffer;
 import java.text.BreakIterator;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHolder> {
 
-    private String[] buttonsList;
+    private ArrayList<Filter> buttonsList;
+
+    public FiltersAdapter( ArrayList<Filter> buttonsList) {
+        this.buttonsList = buttonsList;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView buttonText;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            TextView buttonText = (TextView) itemView.findViewById(R.id.filter_button);
+            buttonText = itemView.findViewById(R.id.filter_button);
         }
-    }
-
-    public FiltersAdapter(String[] buttonsList) {
-        this.buttonsList = buttonsList;
     }
 
     @NonNull
@@ -39,12 +42,13 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-//        holder.buttonText.setText(movie.getTitle());
+        Filter filter = buttonsList.get(position);
+        holder.buttonText.setText(filter.getFilterName());
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return buttonsList.size();
     }
 
 

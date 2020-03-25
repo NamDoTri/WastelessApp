@@ -29,52 +29,37 @@ import java.util.ArrayList;
 public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener {
 
     private SearchViewModel searchViewModel;
+    private ArrayList<Filter> filters = new ArrayList<>();
+    private FiltersAdapter filtersAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_search, container, false);
+        View root = inflater.inflate(R.layout.fragment_search_filter, container, false);
 //     Initialised view objects
         SearchView searchField = (SearchView) root.findViewById(R.id.search_field);
-        ListView filtersView = (ListView) root.findViewById(R.id.filters_list);
+        RecyclerView filtersView = (RecyclerView) root.findViewById(R.id.filters_list);
         RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
 
-//     Filter strings
-         String[] filters = searchViewModel.getFiltersFromModel();
-//     Filters Adapter
-        ArrayAdapter<String> filterArrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.fragment_search_filter,
-                filters
-        );
-//        RecyclerView.Adapter
-            FiltersAdapter filtersAdapter = new FiltersAdapter(filters);
+//    RecyclerView.Adapter
+        filtersAdapter = new FiltersAdapter(filters);
 
         searchField.setOnQueryTextListener(this);
 
-//        RecyclerView.Adapter filtersAdapter = new RecyclerView.Adapter() {
-//            @NonNull
-//            @Override
-//            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//                return null;
-//            }
-//
-//            @Override
-//            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-//
-//            }
-//
-//            @Override
-//            public int getItemCount() {
-//                return 0;
-//            }
-//        };
-        filtersView.setAdapter(filterArrayAdapter);
+//        filtersView.setAdapter(filtersAdapter);
 
         super.onCreate(savedInstanceState);
 
+        prepareData();
+
         return root;
+    }
+
+    private void prepareData() {
+        Filter filter = new Filter("date");
+
+
     }
 
     @Override

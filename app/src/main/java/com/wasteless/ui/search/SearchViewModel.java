@@ -16,8 +16,8 @@ public class SearchViewModel extends ViewModel {
     private MutableLiveData<String> activeFilter;
 
     SearchModel searchModel = new SearchModel();
-    public String[] getFiltersFromModel() {
-        String[] filters = searchModel.getFilters();
+    public ArrayList<String> getFiltersFromModel() {
+        ArrayList<String> filters = searchModel.getFilters();
         return filters;
     };
 
