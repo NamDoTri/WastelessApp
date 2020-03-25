@@ -17,16 +17,16 @@ import androidx.navigation.ui.NavigationUI;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-//    private AppDatabase db;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        db = DatabaseClient.getDatabaseClient(this);
-//        Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getAll()));
-//        Log.i("Database", "Expense " + String.valueOf(db.transactionDao().getAllExpenses()));
-//        Log.i("Database", "Income " + String.valueOf(db.transactionDao().getAllIncomes()));
+        db = DatabaseClient.getDatabaseClient(this);
+        Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getAll()));
+        Log.i("Database", "Expense " + String.valueOf(db.transactionDao().getAllExpenses()));
+        Log.i("Database", "Income " + String.valueOf(db.transactionDao().getAllIncomes()));
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
