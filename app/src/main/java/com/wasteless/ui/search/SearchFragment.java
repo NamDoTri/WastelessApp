@@ -39,13 +39,14 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
         SearchView searchField = root.findViewById(R.id.search_field);
-        RecyclerView filtersView = (RecyclerView) root.findViewById(R.id.filters_list);
+        RecyclerView filtersView = root.findViewById(R.id.filters_list);
 //        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
         filtersAdapter = new FiltersAdapter(filters);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         filtersView.setLayoutManager(layoutManager );
+        filtersView.setHasFixedSize(true);
 
         searchField.setOnQueryTextListener(this);
 
@@ -70,6 +71,9 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
         filter = new Filter("category");
         filters.add(filter);
+
+        filtersAdapter.notifyDataSetChanged();
+        Log.d("da davai uzhe ", "the shit should be updated right now");
     }
 
     @Override

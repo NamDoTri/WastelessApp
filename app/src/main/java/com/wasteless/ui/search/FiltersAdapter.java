@@ -38,7 +38,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_search_filter, parent, false);
-        Log.d("onCreateViewHolder", "the shit is here");
+        Log.d("onCreateViewHolder", "the shit is here: " + itemView);
         return new MyViewHolder(itemView);
     }
 
@@ -46,12 +46,12 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Filter filter = buttonsList.get(position);
         holder.buttonText.setText(filter.getFilterName());
-        Log.d("onBindViewHolder", "the shit is here");
+        Log.d("onBindViewHolder", "the text is: " + filter.getFilterName());
     }
 
     @Override
     public int getItemCount() {
-        Log.d("getItemCount", "the shit is here");
+        Log.d("getItemCount", "the shit is here: " + buttonsList.size());
         return buttonsList.size();
     }
 
