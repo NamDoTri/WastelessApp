@@ -6,7 +6,6 @@ import android.util.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Wallet;
-import com.wasteless.ui.DatabaseClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db = DatabaseClient.getDatabaseClient(this);
+        db = AppDatabase.getAppDatabase(this);
         Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getAll()));
         Log.i("Database", "Expense " + String.valueOf(db.transactionDao().getAllExpenses()));
         Log.i("Database", "Income " + String.valueOf(db.transactionDao().getAllIncomes()));
