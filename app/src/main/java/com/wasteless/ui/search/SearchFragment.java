@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
@@ -36,18 +36,20 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_search_filter, container, false);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
-        SearchView searchField = (SearchView) root.findViewById(R.id.search_field);
+        SearchView searchField = root.findViewById(R.id.search_field);
         RecyclerView filtersView = (RecyclerView) root.findViewById(R.id.filters_list);
-        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
+//        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
         filtersAdapter = new FiltersAdapter(filters);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        filtersView.setLayoutManager(layoutManager );
 
         searchField.setOnQueryTextListener(this);
 
-//        filtersView.setAdapter(filtersAdapter);
+        filtersView.setAdapter(filtersAdapter);
 
         super.onCreate(savedInstanceState);
 
@@ -57,9 +59,17 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     }
 
     private void prepareData() {
-        Filter filter = new Filter("date");
+        Filter filter = new Filter("name");
+        filters.add(filter);
 
+        filter = new Filter("date");
+        filters.add(filter);
 
+        filter = new Filter("tag");
+        filters.add(filter);
+
+        filter = new Filter("category");
+        filters.add(filter);
     }
 
     @Override

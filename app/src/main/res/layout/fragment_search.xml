@@ -27,11 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:scrollbars="horizontal" />
-<!--            <ListView-->
-<!--                android:id="@+id/filters_list"-->
-<!--                android:scrollbars="horizontal"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="50dp" />-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_list"

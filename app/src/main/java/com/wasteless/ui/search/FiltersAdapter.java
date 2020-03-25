@@ -1,5 +1,6 @@
 package com.wasteless.ui.search;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHolder> {
 
-    private ArrayList<Filter> buttonsList;
+    private ArrayList<Filter> buttonsList = new ArrayList<Filter>();
 
     public FiltersAdapter( ArrayList<Filter> buttonsList) {
         this.buttonsList = buttonsList;
@@ -37,6 +38,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_search_filter, parent, false);
+        Log.d("onCreateViewHolder", "the shit is here");
         return new MyViewHolder(itemView);
     }
 
@@ -44,10 +46,12 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Filter filter = buttonsList.get(position);
         holder.buttonText.setText(filter.getFilterName());
+        Log.d("onBindViewHolder", "the shit is here");
     }
 
     @Override
     public int getItemCount() {
+        Log.d("getItemCount", "the shit is here");
         return buttonsList.size();
     }
 
