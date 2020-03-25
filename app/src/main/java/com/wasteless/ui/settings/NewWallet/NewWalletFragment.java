@@ -1,4 +1,4 @@
-package com.wasteless.ui.settings.me;
+package com.wasteless.ui.settings.NewWallet;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +11,12 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wasteless.R;
 import com.wasteless.ui.settings.SettingsViewModel;
 
-public class MeFragment extends Fragment {
+public class NewWalletFragment extends Fragment {
     private SettingsViewModel SettingsViewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         SettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
-        View MeFragmentView = inflater.inflate(R.layout.me_fragment, container, false);
+        View MeFragmentView = inflater.inflate(R.layout.new_wallet_fragment, container, false);
 
         return MeFragmentView;
     }

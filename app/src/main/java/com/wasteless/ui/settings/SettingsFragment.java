@@ -5,21 +5,18 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
 import com.wasteless.ui.settings.block.BlockFragment;
 import com.wasteless.ui.settings.help.HelpFragment;
-import com.wasteless.ui.settings.me.GeneralFragment;
-import com.wasteless.ui.settings.me.MeFragment;
-import com.wasteless.ui.settings.me.NotificationsFragment;
+import com.wasteless.ui.settings.NewWallet.GeneralFragment;
+import com.wasteless.ui.settings.NewWallet.NewWalletFragment;
+import com.wasteless.ui.settings.NewWallet.NotificationsFragment;
 import com.wasteless.ui.settings.privacy.PrivacyFragment;
 
 public class SettingsFragment extends Fragment{
@@ -31,7 +28,7 @@ public class SettingsFragment extends Fragment{
         SettingsViewModel =
                 ViewModelProviders.of(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
-        root.findViewById(R.id.me_button).setOnTouchListener(new View.OnTouchListener() {
+        root.findViewById(R.id.add_wallet_button).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent motionEvent) {
                 switch (motionEvent.getAction())
@@ -47,13 +44,13 @@ public class SettingsFragment extends Fragment{
                 return false;
             }
         });
-        root.findViewById(R.id.me_button).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.add_wallet_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MeFragment meFragment = new MeFragment();
+                NewWalletFragment newWalletFragment = new NewWalletFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.nav_host_fragment, meFragment);
+                transaction.replace(R.id.nav_host_fragment, newWalletFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
