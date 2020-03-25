@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +19,9 @@ import androidx.fragment.app.Fragment;
 
 import com.wasteless.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddTransactionFragment extends Fragment {
     DatePickerDialog picker;
@@ -46,6 +50,19 @@ public class AddTransactionFragment extends Fragment {
                 picker.show();
             }
         });
+        Spinner spinner;
+        spinner = root.findViewById(R.id.category);
+        List<String> list = new ArrayList<String>();
+        // Here we need to get categories from the db
+        list.add("No category");
+        list.add("Girls");
+        list.add("Alcohol");
+        list.add("Friends");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
+                R.layout.custom_spinner, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
 
         // Gather all the input fields together
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
@@ -53,13 +70,13 @@ public class AddTransactionFragment extends Fragment {
             public void onClick(View v) {
 
                 EditText dateField = root.findViewById(R.id.date);
-                EditText categoryField = root.findViewById(R.id.category);
+                Spinner categoryField = root.findViewById(R.id.category);
                 EditText sumField = root.findViewById(R.id.sum);
                 EditText tagsField = root.findViewById(R.id.tags);
                 EditText descriptionField = root.findViewById(R.id.description);
 
                 String date = dateField.getText().toString();
-                String category = categoryField.getText().toString();
+                String category = String.valueOf(categoryField.getSelectedItem());
                 String sum = sumField.getText().toString().trim();
                 //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
                 String tags = tagsField.getText().toString();
@@ -82,7 +99,7 @@ public class AddTransactionFragment extends Fragment {
                                 }
                             });
                     alertDialog.show();
-                    Log.i("transaction", "category "+ category +
+                    Log.i("transaction", "category " + category +
                             " sum " + sum + " tags " + tags + " description " + description);
                 } else {
                     //Pop-up message
