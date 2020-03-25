@@ -1,4 +1,4 @@
-package com.wasteless.ui.settings.NewWallet;
+package com.wasteless.ui.settings.newWallet;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

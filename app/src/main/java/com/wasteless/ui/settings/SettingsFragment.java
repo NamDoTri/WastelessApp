@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wasteless.R;
 import com.wasteless.ui.settings.block.BlockFragment;
 import com.wasteless.ui.settings.help.HelpFragment;
-import com.wasteless.ui.settings.NewWallet.GeneralFragment;
-import com.wasteless.ui.settings.NewWallet.NewWalletFragment;
-import com.wasteless.ui.settings.NewWallet.NotificationsFragment;
+import com.wasteless.ui.settings.newWallet.GeneralFragment;
+import com.wasteless.ui.settings.newWallet.NewWalletFragment;
+import com.wasteless.ui.settings.newWallet.NotificationsFragment;
 import com.wasteless.ui.settings.privacy.PrivacyFragment;
 
 public class SettingsFragment extends Fragment{
