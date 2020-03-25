@@ -12,7 +12,7 @@ public class TransactionViewModel extends ViewModel{
 
     public TransactionViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is the transaction fragment. You will find info about transactions here.");
+        mText.setValue("Transactions fragment");
     }
 
     public LiveData<String> getText() {

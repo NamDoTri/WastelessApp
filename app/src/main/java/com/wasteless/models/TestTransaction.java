@@ -1,14 +1,13 @@
 package com.wasteless.models;
 
+
+//THIS IS JUST A TEMPORARY MODEL TO MAKE IT EASIER TO TEST OUT THE RECYCLERVIEW & ITS ADAPTER
+
 public class TestTransaction {
 
     public String description;
     public String category;
     public String amount;
-
-    public TestTransaction(){
-
-    }
 
     public TestTransaction(String description, String category, String amount) {
         this.description = description;
