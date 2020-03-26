@@ -32,9 +32,8 @@ public class TransactionRepository {
     }
 
     public boolean insertExpense(Transaction transaction) throws Exception{
-        if(transaction.isIncome == true){
-            throw new Exception("Transaction is not an expense");
-        }
+        if(transaction.isIncome == true) throw new Exception("Transaction is not an expense");
+
         try{
             try{
                 transactionDao.insertAll(transaction);

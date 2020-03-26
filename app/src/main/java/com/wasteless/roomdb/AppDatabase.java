@@ -42,11 +42,14 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void run() {
                     getAppDatabase(context).walletDao().insertAll(
-                            new Wallet(400)
+                            new Wallet("wallet 1", 400),
+                            new Wallet("wallet 2",500)
                     );
                     getAppDatabase(context).transactionDao().insertAll(
-                            new Transaction("22/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
-                            new Transaction("21/02/2020", 34.0, "cheese", Long.valueOf(1), false, "Food")
+                            new Transaction("25/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
+                            new Transaction("27/02/2020", 45.0, "stolen", Long.valueOf(1), true, "salary", "friend"),
+                            new Transaction("21/02/2020", 34.0, "cheese", Long.valueOf(1), false, "Food"),
+                            new Transaction("23/02/2020", 34.0, "cheesecake", Long.valueOf(1), false, "Food")
                     );
                 }
             });

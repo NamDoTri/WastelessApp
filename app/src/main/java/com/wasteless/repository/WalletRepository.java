@@ -46,4 +46,7 @@ public class WalletRepository {
         return totalBalance;
     }
 
+    public void insertWallet(Wallet wallet){
+        walletDao.insertAll(wallet);
+    }
 }

@@ -16,10 +16,10 @@ import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.settings.SettingsViewModel;
 
 public class NewWalletFragment extends Fragment {
-    private SettingsViewModel SettingsViewModel;
+    private SettingsViewModel settingsViewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        SettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        settingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         final View MeFragmentView = inflater.inflate(R.layout.new_wallet_fragment, container, false);
         MeFragmentView.findViewById(R.id.add_wallet_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,11 +28,9 @@ public class NewWalletFragment extends Fragment {
                 EditText initialValueField = MeFragmentView.findViewById(R.id.initial_value);
                 String name = nameField.getText().toString();
                 String initialValue = initialValueField.getText().toString().trim();
-                if(v.getId() == R.id.add_wallet_button) {
-                    Log.i("wallet", name +" "+initialValue);
-                    AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
-                    appDatabase.walletDao().insertAll(new Wallet(name, Float.parseFloat(initialValue)));
 
+                if(v.getId() == R.id.add_wallet_button) {
+                    settingsViewModel.insertWallet(name, Double.valueOf(initialValue));
                 }
             }
         });

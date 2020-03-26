@@ -1,18 +1,23 @@
 package com.wasteless.ui.settings;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class SettingsViewModel extends ViewModel{
-    private MutableLiveData<String> mText;
+import com.wasteless.repository.WalletRepository;
+import com.wasteless.roomdb.entities.Wallet;
 
-    public SettingsViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is settings fragment. I'm going to use preferenceFragment and it takes time to implement it");
+public class SettingsViewModel extends AndroidViewModel{
+    private WalletRepository walletRepository;
+
+    public SettingsViewModel(Application application) {
+        super(application);
+        walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void insertWallet(String name, double initialBalance){
+        walletRepository.insertWallet( new Wallet(name, initialBalance) );
     }
 }
