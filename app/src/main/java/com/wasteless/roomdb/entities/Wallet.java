@@ -12,10 +12,14 @@ public class Wallet {
     @ColumnInfo(name = "walletId")
     public Long walletId;
 
+    @ColumnInfo(name = "name")
+    public String name;
+
     @ColumnInfo(name="balance", defaultValue = "0")
     public double balance;
 
-    public Wallet(double balance){
+    public Wallet(String name, double balance){
+        this.name = name;
         this.balance = balance;
         Log.i("Database", "Wallet created: " + String.valueOf(this.walletId));
     }
