@@ -31,7 +31,7 @@ public class NewWalletFragment extends Fragment {
                 if(v.getId() == R.id.add_wallet_button) {
                     Log.i("wallet", name +" "+initialValue);
                     AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
-                    appDatabase.walletDao().insertAll(new Wallet(Float.parseFloat(initialValue)));
+                    appDatabase.walletDao().insertAll(new Wallet(name, Float.parseFloat(initialValue)));
 
                 }
             }
