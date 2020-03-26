@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.wasteless.R;
+import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
 
@@ -99,14 +100,22 @@ public class AddTransactionFragment extends Fragment {
                         description.trim().length() > 0) {
                     if (isIncome == false) {
                         Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
-                        appDatabase.transactionDao().insertAll(transaction);
+                        try {
+                            TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
                             Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
-                            appDatabase.transactionDao().insertAll(transaction);
+                            try {
+                                TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             successMessage();
                         }
                     }
