@@ -18,11 +18,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,6 +104,7 @@ public class AddTransactionFragment extends Fragment {
                         Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                         try {
                             TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -148,6 +151,11 @@ public class AddTransactionFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                AddTransactionFragment homeFragment = new AddTransactionFragment();
+                                FragmentTransaction changeTheScreen = getFragmentManager().beginTransaction();
+                                changeTheScreen.replace(R.id.nav_host_fragment, homeFragment);
+                                changeTheScreen.addToBackStack(null);
+                                changeTheScreen.commit();
                             }
                         });
                 alertDialog.show();
