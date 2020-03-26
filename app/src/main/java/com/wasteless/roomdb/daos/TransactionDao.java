@@ -32,6 +32,9 @@ public interface TransactionDao {
     @Query("select * from transactions where isIncome = 1")
     List<Transaction> getAllIncomes();
 
+    @Query("select * from transactions where isIncome = 1 and date like :date")
+    List<Transaction> getIncomesByDate(String date);
+
     @Query("select * from transactions where type = :type")
     List<Transaction> getIncomesByType(String type);
 
@@ -44,6 +47,9 @@ public interface TransactionDao {
     // query expenses
     @Query("select * from transactions where isIncome = 0")
     List<Transaction> getAllExpenses();
+
+    @Query("select * from transactions where isIncome = 0 and date = :date")
+    List<Transaction> getExpensesByDate(String date);
 
     @Query("select * from transactions where type = :type")
     List<Transaction> getExpensesByCategory(String type);
