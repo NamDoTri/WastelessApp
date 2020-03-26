@@ -11,7 +11,7 @@ import com.wasteless.roomdb.entities.Wallet;
 import java.util.List;
 
 public class WalletRepository {
-    private static WalletRepository instance = null;
+    private static volatile WalletRepository instance = null;
     private final WalletDao walletDao;
     private MutableLiveData<Double> totalBalance = new MutableLiveData<>();
 
