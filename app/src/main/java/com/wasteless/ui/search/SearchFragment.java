@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -41,6 +42,11 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
         SearchView searchField = root.findViewById(R.id.search_field);
+        Button filterNameButton = root.findViewById(R.id.filter_name);
+        Button filterDateButton = root.findViewById(R.id.filter_date);
+        Button filterCategoryButton = root.findViewById(R.id.filter_category);
+        Button filterTagButton = root.findViewById(R.id.filter_tag);
+
 //        filtersView = root.findViewById(R.id.filters_list);
 //        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
 

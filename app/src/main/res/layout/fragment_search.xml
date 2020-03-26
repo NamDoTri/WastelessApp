@@ -32,36 +32,39 @@
                 android:fillViewport="false"
                 android:scrollbars="none">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="horizontal">
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/filter_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
                         android:text="@string/filter_name" />
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/filter_date"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
                         android:text="@string/filter_date" />
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/filter_category"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
                         android:text="@string/filter_category" />
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/filter_tag"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:background="@drawable/filter_button_background"
                         android:text="@string/filter_tag" />
-                </LinearLayout>
+                </RadioGroup>
             </HorizontalScrollView>
 <!--            </androidx.recyclerview.widget.RecyclerView>-->
 
@@ -74,5 +77,37 @@
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:scrollbars="horizontal"-->
+<!--        tools:layout_editor_absoluteY="48dp">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_name"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_name" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_date"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_date" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_category"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_category" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_tag"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/filter_tag" />-->
+<!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
