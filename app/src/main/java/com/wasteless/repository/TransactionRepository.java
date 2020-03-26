@@ -47,4 +47,26 @@ public class TransactionRepository {
         }
         return false;
     }
+
+    public boolean insertIncome(Transaction transaction) throws Exception{
+        if(transaction.isIncome != true) throw new Exception("Transaction is not an income");
+
+        try{
+            try{
+                transactionDao.insertAll(transaction);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            // update wallet balance
+            Wallet currentWallet = walletDao.getWalletById(transaction.wallet);
+            currentWallet.balance += transaction.amount;
+            walletDao.updateAll(currentWallet);
+
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
