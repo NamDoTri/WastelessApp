@@ -20,8 +20,8 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
 
     private ArrayList<Filter> buttonsList = new ArrayList<Filter>();
 
-    public FiltersAdapter( ArrayList<Filter> buttonsList) {
-        this.buttonsList = buttonsList;
+    public FiltersAdapter( ArrayList<Filter> buttonsText) {
+        buttonsList = buttonsText;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -29,9 +29,11 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            buttonText = itemView.findViewById(R.id.filter_button);
+//            buttonText = itemView.findViewById(R.id.filter_button);
         }
     }
+
+//    public FiltersAdapter(String)
 
     @NonNull
     @Override
@@ -39,7 +41,9 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_search_filter, parent, false);
         Log.d("onCreateViewHolder", "the shit is here: " + itemView);
+//        MyViewHolder filterView = new MyViewHolder(itemView);
         return new MyViewHolder(itemView);
+//        return filterView;
     }
 
     @Override

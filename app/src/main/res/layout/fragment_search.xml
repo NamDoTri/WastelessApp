@@ -22,17 +22,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <androidx.recyclerview.widget.RecyclerView
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+            <ScrollView
                 android:id="@+id/filters_list"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:scrollbars="horizontal" />
+                android:scrollbars="horizontal" >
+                <LinearLayout
+                    android:scrollbars="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/filter_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_name" />
+
+                <Button
+                    android:id="@+id/filter_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_date" />
+
+                <Button
+                    android:id="@+id/filter_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_category" />
+
+                <Button
+                    android:id="@+id/filter_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/filter_tag" />
+                </LinearLayout>
+            </ScrollView>
+<!--            </androidx.recyclerview.widget.RecyclerView>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
