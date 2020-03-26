@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
+import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.settings.SettingsViewModel;
 
 public class NewWalletFragment extends Fragment {
@@ -28,6 +30,9 @@ public class NewWalletFragment extends Fragment {
                 String initialValue = initialValueField.getText().toString().trim();
                 if(v.getId() == R.id.add_wallet_button) {
                     Log.i("wallet", name +" "+initialValue);
+                    AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
+                    appDatabase.walletDao().insertAll(new Wallet(Float.parseFloat(initialValue)));
+
                 }
             }
         });
