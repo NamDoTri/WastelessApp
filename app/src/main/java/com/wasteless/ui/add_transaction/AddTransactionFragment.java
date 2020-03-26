@@ -115,7 +115,7 @@ public class AddTransactionFragment extends Fragment {
                         } else {
                             Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
                             try {
-                                TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
+                                TransactionRepository.getTransactionRepository(getContext()).insertIncome(transaction);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
