@@ -42,7 +42,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void run() {
                     getAppDatabase(context).walletDao().insertAll(
-                            new Wallet(400)
+                            new Wallet("default", 400)
                     );
                     getAppDatabase(context).transactionDao().insertAll(
                             new Transaction("22/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
