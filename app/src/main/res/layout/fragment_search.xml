@@ -24,7 +24,6 @@
 
 <!--            <androidx.recyclerview.widget.RecyclerView-->
             <HorizontalScrollView
-                android:id="@+id/filters_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
@@ -33,6 +32,7 @@
                 android:scrollbars="none">
 
                 <RadioGroup
+                    android:id="@+id/filters_list"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
