@@ -2,6 +2,7 @@ package com.wasteless.roomdb.daos;
 
 import com.wasteless.roomdb.entities.Transaction;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Insert;
@@ -56,6 +57,10 @@ public interface TransactionDao {
 
     @Query("select * from transactions where wallet = :walletId and isIncome = 0")
     List<Transaction> getExpensesByWallet(Long walletId);
+
+    // Query for getting the data to history view in order
+    @Query("select * from transactions order by date desc")
+    LiveData<List<Transaction>> getAllOrderByDate();
 
     //TODO: get incomes and expenses before and after a date
 

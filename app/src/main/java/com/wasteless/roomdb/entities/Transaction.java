@@ -58,6 +58,15 @@ public class Transaction {
         Log.i("Database", "Transaction created");
     }
 
+    //Test getters for data in the history tab
+    public String getDescription() {
+        return description;
+    }
+    public double getAmount() {
+        return amount;
+    }
+    public String getType(){ return type; }
+
     //constructor for income
     @Ignore
     public Transaction(String date, double amount, String description, Long wallet, boolean isIncome, String type, String source){
