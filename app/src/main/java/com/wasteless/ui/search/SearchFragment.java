@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener, RadioGroup.OnCheckedChangeListener {
 
     private SearchViewModel searchViewModel;
-//    private RecyclerView filtersView;
+    private RecyclerView searchResultView;
 //    private RecyclerView.Adapter filtersAdapter;
 //    private RecyclerView.LayoutManager layoutManager;
 
@@ -45,9 +45,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         SearchView searchField = root.findViewById(R.id.search_field);
         RadioGroup filterButtons = root.findViewById(R.id.filters_list);
         RadioButton checkedRadioButton = filterButtons.findViewById(filterButtons.getCheckedRadioButtonId());
-
-//        filtersView = root.findViewById(R.id.filters_list);
-//        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
+        searchResultView = root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
 //        filtersAdapter = new FiltersAdapter(filters);

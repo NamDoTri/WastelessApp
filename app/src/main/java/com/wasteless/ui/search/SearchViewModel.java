@@ -16,10 +16,6 @@ public class SearchViewModel extends ViewModel {
     private MutableLiveData<String> activeFilter;
 
     SearchModel searchModel = new SearchModel();
-    public ArrayList<String> getFiltersFromModel() {
-        ArrayList<String> filters = searchModel.getFilters();
-        return filters;
-    };
 
     public void setActiveFilter(MutableLiveData<String> filter) {
         this.activeFilter = filter;
@@ -33,18 +29,5 @@ public class SearchViewModel extends ViewModel {
         return activeFilter;
     }
 
-//    searchModel.setActiveFilter("date");
 
-
-    //    searchModel.dummyData.getDummyData();
-
-//    public SearchViewModel() {
-//        searchValue = new MutableLiveData<>();
-//        searchValue.setValue("This is search fragment");
-//    }
-
-
-//    public LiveData<String> getText() {
-//        return searchValue;
-//    }
 }
