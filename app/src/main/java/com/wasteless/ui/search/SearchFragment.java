@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -27,11 +29,10 @@ import com.wasteless.R;
 
 import java.util.ArrayList;
 
-public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener {
+public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener, RadioGroup.OnCheckedChangeListener {
 
     private SearchViewModel searchViewModel;
-//    private ArrayList<Filter> filters = new ArrayList<>();
-//    private RecyclerView filtersView;
+    private RecyclerView searchResultView;
 //    private RecyclerView.Adapter filtersAdapter;
 //    private RecyclerView.LayoutManager layoutManager;
 
@@ -42,13 +43,9 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
         SearchView searchField = root.findViewById(R.id.search_field);
-        Button filterNameButton = root.findViewById(R.id.filter_name);
-        Button filterDateButton = root.findViewById(R.id.filter_date);
-        Button filterCategoryButton = root.findViewById(R.id.filter_category);
-        Button filterTagButton = root.findViewById(R.id.filter_tag);
-
-//        filtersView = root.findViewById(R.id.filters_list);
-//        RecyclerView searchResultView = (RecyclerView) root.findViewById(R.id.search_list);
+        RadioGroup filterButtons = root.findViewById(R.id.filters_list);
+        RadioButton checkedRadioButton = filterButtons.findViewById(filterButtons.getCheckedRadioButtonId());
+        searchResultView = root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
 //        filtersAdapter = new FiltersAdapter(filters);
@@ -57,6 +54,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 //        filtersView.setHasFixedSize(true);
 
         searchField.setOnQueryTextListener(this);
+        filterButtons.setOnCheckedChangeListener(this);
 
 //        filtersView.setAdapter(filtersAdapter);
 
@@ -107,5 +105,10 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     public boolean onQueryTextChange(String newText) {
         Log.d("onQueryTextChange", "It works: " + newText);
         return false;
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        Log.d("RadioListener", "button Id: " + checkedId + "was checked!");
     }
 }
