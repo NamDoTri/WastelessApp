@@ -1,7 +1,6 @@
 package com.wasteless.repository;
 
 import android.content.Context;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
@@ -11,9 +10,8 @@ import com.wasteless.roomdb.entities.Wallet;
 import java.util.List;
 
 public class WalletRepository {
-    private static WalletRepository instance = null;
+    private static volatile WalletRepository instance = null;
     private final WalletDao walletDao;
-    private MutableLiveData<Double> totalBalance = new MutableLiveData<>();
 
     private WalletRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
@@ -40,11 +38,11 @@ public class WalletRepository {
 //            }
 //        }).start();
         final List<Wallet> wallets = walletDao.getAll();
-        double balance = totalBalance.getValue() == null ? 0 : totalBalance.getValue() ;
+        MutableLiveData<Double> totalBalance = new MutableLiveData<>();
+        totalBalance.setValue(0.0);
         for(int i = 0; i < wallets.size(); i++){
-            balance += wallets.get(i).balance;
+             totalBalance.setValue( totalBalance.getValue() + wallets.get(i).balance );
         }
-        totalBalance.setValue(balance);
         return totalBalance;
     }
 
