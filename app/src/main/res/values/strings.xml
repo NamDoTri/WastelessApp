@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Wasteless</string>
     <string name="title_home">Home</string>
+    <!--  Search strings  -->
     <string name="title_search">Search</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="filter_name" > Name </string>
+    <string name="filter_date" > Date </string>
+    <string name="filter_category" > Category </string>
+    <string name="filter_tag" > Tag </string>
+    <!--  History strings  -->
     <string name="title_history">History</string>
     <string name="button_back">&lt;</string>
     <string name="button_next">&gt;</string>

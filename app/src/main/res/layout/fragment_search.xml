@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.search.SearchFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,23 +16,98 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <SearchView
+                android:id="@+id/search_field"
+                android:iconifiedByDefault="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+            <HorizontalScrollView
+                android:id="@+id/filters_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Search by anything" />
+                android:clipToPadding="false"
+                android:measureAllChildren="false"
+                android:fillViewport="false"
+                android:scrollbars="none">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"/>
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-            <ListView
+                    <RadioButton
+                        android:id="@+id/filter_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
+                        android:text="@string/filter_name" />
+
+                    <RadioButton
+                        android:id="@+id/filter_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
+                        android:text="@string/filter_date" />
+
+                    <RadioButton
+                        android:id="@+id/filter_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
+                        android:text="@string/filter_category" />
+
+                    <RadioButton
+                        android:id="@+id/filter_tag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_background"
+                        android:text="@string/filter_tag" />
+                </RadioGroup>
+            </HorizontalScrollView>
+<!--            </androidx.recyclerview.widget.RecyclerView>-->
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:scrollbars="horizontal"-->
+<!--        tools:layout_editor_absoluteY="48dp">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_name"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_name" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_date"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_date" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_category"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/filter_category" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/filter_tag"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/filter_tag" />-->
+<!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

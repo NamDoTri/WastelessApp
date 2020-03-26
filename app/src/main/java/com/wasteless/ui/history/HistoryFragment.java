@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.models.TestTransaction;
+import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
 import java.util.List;

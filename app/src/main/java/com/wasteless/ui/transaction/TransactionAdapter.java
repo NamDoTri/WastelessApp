@@ -1,4 +1,4 @@
-package com.wasteless.ui.history;
+package com.wasteless.ui.transaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
