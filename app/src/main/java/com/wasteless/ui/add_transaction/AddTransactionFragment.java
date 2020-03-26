@@ -30,8 +30,7 @@ import java.util.List;
 public class AddTransactionFragment extends Fragment {
     DatePickerDialog picker;
     TextView tvw;
-    RadioGroup radioGroup;
-    RadioButton radioButton;
+    boolean isIncome;
 
     private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -82,12 +81,14 @@ public class AddTransactionFragment extends Fragment {
                 EditText sumField = root.findViewById(R.id.sum);
                 EditText tagsField = root.findViewById(R.id.tags);
                 EditText descriptionField = root.findViewById(R.id.description);
+                EditText sourceField = root.findViewById(R.id.source);
 
                 String date = dateField.getText().toString();
                 String category = String.valueOf(categoryField.getSelectedItem());
                 String sum = sumField.getText().toString().trim();
                 //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
                 String tags = tagsField.getText().toString();
+                String source = sourceField.getText().toString();
                 String description = descriptionField.getText().toString();
 
                 //Validation of all the input fields
@@ -96,36 +97,51 @@ public class AddTransactionFragment extends Fragment {
                         sum.trim().length() > 0 &&
                         tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
-                    Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
-                    appDatabase.transactionDao().insertAll(transaction);
-
-                    // Pop-up message
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                    alertDialog.setTitle("Done");
-                    alertDialog.setMessage("Succesfully added");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                    Log.i("transaction", "category " + category +
-                            " sum " + sum + " tags " + tags + " description " + description);
+                    if (isIncome == false) {
+                        Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
+                        appDatabase.transactionDao().insertAll(transaction);
+                        successMessage();
+                    } else {
+                        if (source.trim().length() <= 0) {
+                            failedMessage();
+                        } else {
+                            Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
+                            appDatabase.transactionDao().insertAll(transaction);
+                            successMessage();
+                        }
+                    }
                 } else {
-                    //Pop-up message
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                    alertDialog.setTitle("Failed");
-                    alertDialog.setMessage("You may have missed a field");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    failedMessage();
                     Log.i("transaction", "something is missed");
                 };
+            }
+
+            private void failedMessage() {
+                //Pop-up message
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle("Failed");
+                alertDialog.setMessage("You may have missed a field");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+
+            private void successMessage() {
+                // Pop-up message
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle("Done");
+                alertDialog.setMessage("Succesfully added");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         });
         return root;
@@ -139,8 +155,10 @@ public class AddTransactionFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (root.findViewById(R.id.expense).getId() == checkedId) {
                     root.findViewById(R.id.source).setVisibility(View.GONE);
+                    isIncome = false;
                 } else {
                     root.findViewById(R.id.source).setVisibility(View.VISIBLE);
+                    isIncome = true;
                 }
             }
         });
