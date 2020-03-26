@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,7 +22,6 @@ import androidx.fragment.app.Fragment;
 import com.wasteless.R;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
-import com.wasteless.ui.DatabaseClient;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +30,10 @@ import java.util.List;
 public class AddTransactionFragment extends Fragment {
     DatePickerDialog picker;
     TextView tvw;
-    private AppDatabase appDatabase = DatabaseClient.getDatabaseClient(getContext());
+    RadioGroup radioGroup;
+    RadioButton radioButton;
+
+    private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
@@ -67,7 +71,7 @@ public class AddTransactionFragment extends Fragment {
                 R.layout.custom_spinner, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-
+        checkTheExpense(root);
         // Gather all the input fields together
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,13 +96,13 @@ public class AddTransactionFragment extends Fragment {
                         sum.trim().length() > 0 &&
                         tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
-                    Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, "Default");
+                    Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                     appDatabase.transactionDao().insertAll(transaction);
 
                     // Pop-up message
                     AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                     alertDialog.setTitle("Done");
-                    alertDialog.setMessage("Succesfully added)");
+                    alertDialog.setMessage("Succesfully added");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -125,5 +129,20 @@ public class AddTransactionFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void checkTheExpense(final View root) {
+        RadioGroup radioGroup =root.findViewById(R.id.radio);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (root.findViewById(R.id.expense).getId() == checkedId) {
+                    root.findViewById(R.id.source).setVisibility(View.GONE);
+                } else {
+                    root.findViewById(R.id.source).setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }
