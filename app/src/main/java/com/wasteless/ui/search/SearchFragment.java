@@ -26,20 +26,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
+import com.wasteless.models.TestTransaction;
+import com.wasteless.ui.transaction.TransactionAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener, RadioGroup.OnCheckedChangeListener {
 
     private SearchViewModel searchViewModel;
     private RecyclerView searchResultView;
-//    private RecyclerView.Adapter filtersAdapter;
-//    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
+    private TransactionAdapter transactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+//        searchViewModel.getTestTransactionsList().observer().
+        transactionAdapter = new TransactionAdapter();
+        searchViewModel.getSearchLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
+            @Override
+            public void onChanged(@Nullable List<TestTransaction> testTransactions) {
+                transactionAdapter.setTestTransactions(testTransactions);
+            }
+        });
+
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
         SearchView searchField = root.findViewById(R.id.search_field);
@@ -48,15 +60,14 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         searchResultView = root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
-//        filtersAdapter = new FiltersAdapter(filters);
-//        layoutManager = new LinearLayoutManager(getActivity());
-//        filtersView.setLayoutManager(layoutManager );
-//        filtersView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        searchResultView.setAdapter(transactionAdapter);
+        searchResultView.setLayoutManager(layoutManager );
+        searchResultView.setHasFixedSize(true);
+
 
         searchField.setOnQueryTextListener(this);
         filterButtons.setOnCheckedChangeListener(this);
-
-//        filtersView.setAdapter(filtersAdapter);
 
         super.onCreate(savedInstanceState);
 
@@ -65,22 +76,22 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         return root;
     }
 
-    private void prepareData() {
-//        Filter filter = new Filter("name");
-//        filters.add(filter);
-//
-//        filter = new Filter("date");
-//        filters.add(filter);
-//
-//        filter = new Filter("tag");
-//        filters.add(filter);
-//
-//        filter = new Filter("category");
-//        filters.add(filter);
-//
-//        filtersAdapter.notifyDataSetChanged();
-        Log.d("da davai uzhe ", "the shit should be updated right now");
-    }
+//    private void prepareData() {
+////        Filter filter = new Filter("name");
+////        filters.add(filter);
+////
+////        filter = new Filter("date");
+////        filters.add(filter);
+////
+////        filter = new Filter("tag");
+////        filters.add(filter);
+////
+////        filter = new Filter("category");
+////        filters.add(filter);
+////
+////        filtersAdapter.notifyDataSetChanged();
+//        Log.d("da davai uzhe ", "the shit should be updated right now");
+//    }
 
     @Override
     public void onPause() {
