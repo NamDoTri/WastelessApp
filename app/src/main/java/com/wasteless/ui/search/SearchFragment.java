@@ -65,7 +65,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
 
-
         searchField.setOnQueryTextListener(this);
         filterButtons.setOnCheckedChangeListener(this);
 
