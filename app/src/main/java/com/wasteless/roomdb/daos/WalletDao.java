@@ -18,6 +18,9 @@ public interface WalletDao {
     @Query("select * from wallets where walletId = :walletId")
     Wallet getWalletById(Long walletId);
 
+    @Query("select sum(balance) from wallets")
+    Double getTotalBalance();
+
     @Insert(entity = Wallet.class)
     void insertAll(Wallet... wallets);
 
