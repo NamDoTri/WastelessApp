@@ -45,6 +45,7 @@ public class AddTransactionFragment extends Fragment {
     private EditText editText;
     private Button button;
     private ChipGroup chipGroup;
+    ArrayList<String> tags =new ArrayList<String>();
 
     private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -54,7 +55,6 @@ public class AddTransactionFragment extends Fragment {
         // Tags
         editText = root.findViewById(R.id.e);
         chipGroup = root.findViewById(R.id.chipGroup);
-
         editText.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -69,7 +69,7 @@ public class AddTransactionFragment extends Fragment {
                 } else if(s.toString().indexOf(" ") != -1)
                 {
                     Log.i("key",  s.toString());
-                    addNewChip(root, editText.getText());
+                    addNewChip(root, editText.getText().toString());
                     editText.setText("");
                 }
             }
@@ -201,7 +201,8 @@ public class AddTransactionFragment extends Fragment {
         return root;
     }
 
-    private void addNewChip(View root, Editable text) {
+    private void addNewChip(View root, final String text) {
+        tags.add(text);
         final Chip chip = new Chip(getContext());
         ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
                 null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
@@ -216,6 +217,9 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 chipGroup.removeView(chip);
+                tags.remove(chip.getText().toString());
+                String yes = chip.getText().toString();
+                Log.i("tag", String.valueOf(tags.size()));
             }
         });
         chipGroup.addView(chip);
