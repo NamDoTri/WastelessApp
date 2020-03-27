@@ -2,16 +2,21 @@ package com.wasteless.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
+import java.util.List;
+
 public class TransactionRepository {
     private static volatile TransactionRepository instance = null;
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
+    private LiveData<List<Transaction>> allTransactions;
 
     private TransactionRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
@@ -48,6 +53,10 @@ public class TransactionRepository {
         return false;
     }
 
+    public LiveData<List<Transaction>> getAllTransactions(){
+        return allTransactions = transactionDao.getAllOrderByDate();
+    }
+    
     public boolean insertIncome(Transaction transaction) throws Exception{
         if(transaction.isIncome != true) throw new Exception("Transaction is not an income");
 
