@@ -45,19 +45,25 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getBudgetAmount() {
         return budgetAmount;
     }
+
     public LiveData<String> getBalanceAmount() {
         return balanceAmount;
     }
-    public LiveData<String> getExpensesAmount() {
-        //get date in format dd/mm/yyyy
 
+    public LiveData<String> getExpensesAmount() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        String expenseAmountString = String.valueOf(transactionRepository.getTotalExpenseByDate(today).getValue());
-        expensesAmount.setValue(expenseAmountString);
+        Double todayTotalExpense = transactionRepository.getTotalExpenseByDate(today).getValue();
+        expensesAmount.setValue(String.valueOf(todayTotalExpense));
+
         return expensesAmount;
     }
+
     public LiveData<String> getIncomesAmount() {
+        String today = dateFormatter.format(LocalDateTime.now());
+
+        Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today).getValue();
+        incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
     }
 }

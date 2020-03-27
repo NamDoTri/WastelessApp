@@ -48,6 +48,18 @@ public class TransactionRepository {
         return totalExpense;
     }
 
+    public LiveData<Double> getTotalIncomeByDate(String date){
+        MutableLiveData<Double> totalIncome = new MutableLiveData<>();
+        totalIncome.setValue(0.0);
+
+        List<Transaction> incomes = transactionDao.getIncomesByDate(date);
+        for(Transaction t : incomes){
+            totalIncome.setValue( totalIncome.getValue() + t.amount );
+        }
+
+        return totalIncome;
+    }
+
     public boolean insertExpense(Transaction transaction) throws Exception{
         if(transaction.isIncome == true) throw new Exception("Transaction is not an expense");
 
