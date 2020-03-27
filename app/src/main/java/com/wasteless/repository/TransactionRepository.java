@@ -16,7 +16,6 @@ public class TransactionRepository {
     private static volatile TransactionRepository instance = null;
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
-    private LiveData<List<Transaction>> allTransactions;
 
     private TransactionRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
@@ -29,6 +28,10 @@ public class TransactionRepository {
             instance = new TransactionRepository(context);
         }
         return instance;
+    }
+
+    public LiveData<List<Transaction>> getAllTransactions(){
+        return transactionDao.getAllOrderByDate();
     }
 
     public boolean insertExpense(Transaction transaction) throws Exception{
@@ -51,10 +54,6 @@ public class TransactionRepository {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public LiveData<List<Transaction>> getAllTransactions(){
-        return allTransactions = transactionDao.getAllOrderByDate();
     }
     
     public boolean insertIncome(Transaction transaction) throws Exception{
