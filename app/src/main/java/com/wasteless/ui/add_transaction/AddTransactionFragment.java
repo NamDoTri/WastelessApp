@@ -4,22 +4,30 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
@@ -34,12 +42,42 @@ public class AddTransactionFragment extends Fragment {
     DatePickerDialog picker;
     TextView tvw;
     boolean isIncome;
+    private EditText editText;
+    private Button button;
+    private ChipGroup chipGroup;
 
     private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
         tvw = root.findViewById(R.id.date);
+        // Tags
+        editText = root.findViewById(R.id.e);
+        chipGroup = root.findViewById(R.id.chipGroup);
+
+        editText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            public void onTextChanged(CharSequence s,
+                                      int start, int before, int count)
+            {
+                if (s.toString().length() == 1 && s.toString().contains(" ")){
+                    editText.setText("");
+                } else if(s.toString().indexOf(" ") != -1)
+                {
+                    Log.i("key",  s.toString());
+                    addNewChip(root, editText.getText());
+                    editText.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         // Picking up the date
         root.findViewById(R.id.date).setOnClickListener(new View.OnClickListener() {
@@ -162,6 +200,26 @@ public class AddTransactionFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void addNewChip(View root, Editable text) {
+        final Chip chip = new Chip(getContext());
+        ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
+                null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
+        chip.setChipDrawable(drawable);
+        chip.setCheckable(false);
+        chip.setClickable(false);
+        chip.setChipIconResource(R.drawable.ic_extension_black_24dp);
+        chip.setIconStartPadding(3f);
+        chip.setPadding(60, 10, 60, 10);
+        chip.setText(text);
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chipGroup.removeView(chip);
+            }
+        });
+        chipGroup.addView(chip);
     }
 
     private void checkTheExpense(final View root) {
