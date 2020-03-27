@@ -3,6 +3,7 @@ package com.wasteless.repository;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TransactionDao;
@@ -10,6 +11,7 @@ import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionRepository {
@@ -32,6 +34,14 @@ public class TransactionRepository {
 
     public LiveData<List<Transaction>> getAllTransactions(){
         return transactionDao.getAllOrderByDate();
+    }
+
+    public double getTotalExpenseByDate(String date){
+        return transactionDao.getTotalExpenseByDate(date);
+    }
+
+    public double getTotalIncomeByDate(String date){
+        return transactionDao.getTotalIncomeByDate(date);
     }
 
     public boolean insertExpense(Transaction transaction) throws Exception{

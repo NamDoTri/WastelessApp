@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -47,9 +48,13 @@ public class AddTransactionFragment extends Fragment {
     private ChipGroup chipGroup;
     ArrayList<String> tags =new ArrayList<String>();
 
+    private AddTransactionViewModel addTransactionViewModel;
     private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
+
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
+
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
         tvw = root.findViewById(R.id.date);
         // Tags
@@ -85,14 +90,13 @@ public class AddTransactionFragment extends Fragment {
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
+                final int month = cldr.get(Calendar.MONTH);
                 int year = cldr.get(Calendar.YEAR);
                 picker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Log.i("data",dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                  tvw.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                tvw.setText(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy
                             }
                         }, year, month, day);
                 picker.show();
@@ -100,15 +104,10 @@ public class AddTransactionFragment extends Fragment {
         });
         Spinner spinner;
         spinner = root.findViewById(R.id.category);
-        List<String> list = new ArrayList<String>();
-        // Here we need to get categories from the db
-        list.add("No category");
-        list.add("Girls");
-        list.add("Alcohol");
-        list.add("Friends");
+        List<String> categoryList = addTransactionViewModel.getAllCategories();
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
-                R.layout.custom_spinner, list);
+                R.layout.custom_spinner, categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
         checkTheExpense(root);
