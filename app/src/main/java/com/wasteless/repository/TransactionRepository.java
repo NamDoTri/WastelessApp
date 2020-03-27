@@ -36,28 +36,12 @@ public class TransactionRepository {
         return transactionDao.getAllOrderByDate();
     }
 
-    public LiveData<Double> getTotalExpenseByDate(String date){
-        MutableLiveData<Double> totalExpense = new MutableLiveData<>();
-        totalExpense.setValue(0.0);
-
-        List<Transaction> expenses = transactionDao.getExpensesByDate(date);
-        for(Transaction t : expenses){
-            totalExpense.setValue( totalExpense.getValue() + t.amount );
-        }
-
-        return totalExpense;
+    public double getTotalExpenseByDate(String date){
+        return transactionDao.getTotalExpenseByDate(date);
     }
 
-    public LiveData<Double> getTotalIncomeByDate(String date){
-        MutableLiveData<Double> totalIncome = new MutableLiveData<>();
-        totalIncome.setValue(0.0);
-
-        List<Transaction> incomes = transactionDao.getIncomesByDate(date);
-        for(Transaction t : incomes){
-            totalIncome.setValue( totalIncome.getValue() + t.amount );
-        }
-
-        return totalIncome;
+    public double getTotalIncomeByDate(String date){
+        return transactionDao.getTotalIncomeByDate(date);
     }
 
     public boolean insertExpense(Transaction transaction) throws Exception{

@@ -30,16 +30,14 @@ public class HomeViewModel extends AndroidViewModel {
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
 
         budgetAmount = new MutableLiveData<>();
+        //TODO: set budget
         budgetAmount.setValue("234");
 
         balanceAmount = new MutableLiveData<>();
-        balanceAmount.setValue(String.valueOf( walletRepository.getTotalBalance().getValue() ));
+        balanceAmount.setValue(String.valueOf(walletRepository.getTotalBalance()));
 
         expensesAmount = new MutableLiveData<>();
-        expensesAmount.setValue("-23");
-
         incomesAmount = new MutableLiveData<>();
-        incomesAmount.setValue("100");
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -53,7 +51,7 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getExpensesAmount() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        Double todayTotalExpense = transactionRepository.getTotalExpenseByDate(today).getValue();
+        Double todayTotalExpense = transactionRepository.getTotalExpenseByDate(today);
         expensesAmount.setValue(String.valueOf(todayTotalExpense));
 
         return expensesAmount;
@@ -62,7 +60,7 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getIncomesAmount() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today).getValue();
+        Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today);
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
     }
