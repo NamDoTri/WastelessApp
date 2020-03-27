@@ -1,4 +1,4 @@
-package com.wasteless.ui.history;
+package com.wasteless.ui.transaction;
 
 //package com.wasteless.ui.transaction;
 
@@ -16,7 +16,7 @@ import com.wasteless.roomdb.entities.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TransactionHolder> {
+public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.TransactionHolder> {
 
     private List<Transaction> transactions = new ArrayList<>();
     private OnTransactionClickListener listener;

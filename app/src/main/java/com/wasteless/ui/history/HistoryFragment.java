@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 //import com.wasteless.models.TestTransaction;
-import com.wasteless.models.TestTransaction;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.ui.transaction.ActualAdapter;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class HistoryFragment extends Fragment{
 
     private TransactionAdapter transactionAdapter;
-    private TempAdapter tempAdapter;
+    private ActualAdapter actualAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
@@ -47,14 +47,14 @@ public class HistoryFragment extends Fragment{
             }
         });*/
 
-        tempAdapter = new TempAdapter();
-        recyclerView.setAdapter(tempAdapter);
+        actualAdapter = new ActualAdapter();
+        recyclerView.setAdapter(actualAdapter);
 
         HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
-                tempAdapter.setTransactions(transactions);
+                actualAdapter.setTransactions(transactions);
             }
         });
 
@@ -66,7 +66,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
-        tempAdapter.setOnTransactionClickListener(new TempAdapter.OnTransactionClickListener() {
+        actualAdapter.setOnTransactionClickListener(new ActualAdapter.OnTransactionClickListener() {
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
