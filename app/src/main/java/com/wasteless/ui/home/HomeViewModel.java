@@ -8,10 +8,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
+    private TransactionRepository transactionRepository;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private MutableLiveData<String> budgetAmount;
     private MutableLiveData<String> balanceAmount;
     private MutableLiveData<String> expensesAmount;
@@ -20,6 +27,7 @@ public class HomeViewModel extends AndroidViewModel {
     public HomeViewModel(Application application) {
         super(application);
         walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
+        transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
 
         budgetAmount = new MutableLiveData<>();
         budgetAmount.setValue("234");
@@ -41,6 +49,12 @@ public class HomeViewModel extends AndroidViewModel {
         return balanceAmount;
     }
     public LiveData<String> getExpensesAmount() {
+        //get date in format dd/mm/yyyy
+
+        String today = dateFormatter.format(LocalDateTime.now());
+
+        String expenseAmountString = String.valueOf(transactionRepository.getTotalExpenseByDate(today).getValue());
+        expensesAmount.setValue(expenseAmountString);
         return expensesAmount;
     }
     public LiveData<String> getIncomesAmount() {
