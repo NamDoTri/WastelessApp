@@ -25,6 +25,10 @@ public class WalletRepository {
         return instance;
     }
 
+    public List<Wallet> getAllWallets(){
+        return walletDao.getAll();
+    }
+
     public MutableLiveData<Double> getTotalBalance(){
 //        new Thread(new Runnable() {
 //            @Override

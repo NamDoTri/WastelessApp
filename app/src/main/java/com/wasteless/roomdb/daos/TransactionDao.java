@@ -29,6 +29,10 @@ public interface TransactionDao {
     @Query("select * from transactions where wallet = :walletId")
     List<Transaction> getTransactionsByWallet(Long walletId);
 
+    // Query for getting the data to history view in order
+    @Query("select * from transactions order by date desc")
+    LiveData<List<Transaction>> getAllOrderByDate();
+
     // query incomes
     @Query("select * from transactions where isIncome = 1")
     List<Transaction> getAllIncomes();
@@ -57,10 +61,6 @@ public interface TransactionDao {
 
     @Query("select * from transactions where wallet = :walletId and isIncome = 0")
     List<Transaction> getExpensesByWallet(Long walletId);
-
-    // Query for getting the data to history view in order
-    @Query("select * from transactions order by date desc")
-    LiveData<List<Transaction>> getAllOrderByDate();
 
     //TODO: get incomes and expenses before and after a date
 
