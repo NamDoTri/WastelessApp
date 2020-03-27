@@ -1,23 +1,33 @@
 package com.wasteless.ui.history;
 
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.wasteless.models.TestTransaction;
+import com.wasteless.repository.TransactionRepository;
+import com.wasteless.roomdb.entities.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryViewModel extends ViewModel {
+public class HistoryViewModel extends AndroidViewModel {
+
+    private TransactionRepository transactionRepository;
+    private LiveData<List<Transaction>> allTransactions;
 
     private MutableLiveData<List<TestTransaction>> historyLiveData;
     private List<TestTransaction> historyArrayList = new ArrayList<>();
 
-    public HistoryViewModel(){
-       historyLiveData = new MutableLiveData<>();
-       initViewModel();
+    public HistoryViewModel(Application application){
+        super(application);
+        transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
+        allTransactions = transactionRepository.getAllTransactions();
+        historyLiveData = new MutableLiveData<>();
+        initViewModel();
     }
 
     private void initViewModel(){
@@ -40,6 +50,10 @@ public class HistoryViewModel extends ViewModel {
 
     LiveData<List<TestTransaction>> getHistoryLiveData() {
         return historyLiveData;
+    }
+
+    LiveData<List<Transaction>> getAllTransactions(){
+        return allTransactions;
     }
 
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
-import com.wasteless.models.TestTransaction;
+//import com.wasteless.models.TestTransaction;
+import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.ui.transaction.ActualAdapter;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
@@ -24,13 +28,15 @@ import java.util.List;
 public class HistoryFragment extends Fragment{
 
     private TransactionAdapter transactionAdapter;
+    private ActualAdapter actualAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
+        final TextView balanceAmount = root.findViewById(R.id.balance_amount);
 
         RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        transactionAdapter = new TransactionAdapter();
+        /*transactionAdapter = new TransactionAdapter();
         recyclerView.setAdapter(transactionAdapter);
 
         HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
@@ -39,11 +45,30 @@ public class HistoryFragment extends Fragment{
             public void onChanged(@Nullable List<TestTransaction> testTransactions) {
                 transactionAdapter.setTestTransactions(testTransactions);
             }
+        });*/
+
+        actualAdapter = new ActualAdapter();
+        recyclerView.setAdapter(actualAdapter);
+
+        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
+        historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                actualAdapter.setTransactions(transactions);
+            }
         });
 
-        transactionAdapter.setOnTransactionClickListener(new TransactionAdapter.OnTransactionClickListener() {
+        HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
             @Override
-            public void onTransactionClick(TestTransaction testTransaction) {
+            public void onChanged(@Nullable String s){
+                balanceAmount.setText(s);
+            }
+        });
+
+        actualAdapter.setOnTransactionClickListener(new ActualAdapter.OnTransactionClickListener() {
+            @Override
+            public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
 
                 //I think that in the end I only need to transfer the ID of the item that was clicked
@@ -51,15 +76,15 @@ public class HistoryFragment extends Fragment{
 
                 //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
-                transactionBundle.putString("description", testTransaction.getDescription());
-                transactionBundle.putString("category", testTransaction.getCategory());
-                transactionBundle.putString("amount", testTransaction.getAmount());
+                transactionBundle.putString("description", transaction.description);
+                //transactionBundle.putString("category", transaction.category);
+                transactionBundle.putString("amount", String.valueOf(transaction.amount));
                 transactionFragment.setArguments(transactionBundle);
 
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, transactionFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, transactionFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
