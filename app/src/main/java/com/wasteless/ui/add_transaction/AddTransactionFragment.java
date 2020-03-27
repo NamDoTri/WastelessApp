@@ -120,7 +120,6 @@ public class AddTransactionFragment extends Fragment {
                 EditText dateField = root.findViewById(R.id.date);
                 Spinner categoryField = root.findViewById(R.id.category);
                 EditText sumField = root.findViewById(R.id.sum);
-                EditText tagsField = root.findViewById(R.id.tags);
                 EditText descriptionField = root.findViewById(R.id.description);
                 EditText sourceField = root.findViewById(R.id.source);
 
@@ -128,7 +127,7 @@ public class AddTransactionFragment extends Fragment {
                 String category = String.valueOf(categoryField.getSelectedItem());
                 String sum = sumField.getText().toString().trim();
                 //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
-                String tags = tagsField.getText().toString();
+//                String tags= tags.toString();
                 String source = sourceField.getText().toString();
                 String description = descriptionField.getText().toString();
 
@@ -136,7 +135,7 @@ public class AddTransactionFragment extends Fragment {
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
-                        tags.trim().length() > 0 &&
+//                        tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
                         Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
