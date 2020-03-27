@@ -85,14 +85,13 @@ public class AddTransactionFragment extends Fragment {
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
+                final int month = cldr.get(Calendar.MONTH);
                 int year = cldr.get(Calendar.YEAR);
                 picker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Log.i("data",dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                  tvw.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                tvw.setText(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy
                             }
                         }, year, month, day);
                 picker.show();
