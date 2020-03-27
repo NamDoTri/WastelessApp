@@ -83,4 +83,8 @@ public class TransactionRepository {
         transactionDao.delete(transaction);
     }
 
+    public void update(Transaction transaction){
+        transactionDao.updateAll(transaction);
+    }
+
 }

@@ -38,16 +38,6 @@ public class HistoryFragment extends Fragment{
 
         RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        /*transactionAdapter = new TransactionAdapter();
-        recyclerView.setAdapter(transactionAdapter);
-
-        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
-        historyViewModel.getHistoryLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
-            @Override
-            public void onChanged(@Nullable List<TestTransaction> testTransactions) {
-                transactionAdapter.setTestTransactions(testTransactions);
-            }
-        });*/
 
         actualAdapter = new ActualAdapter();
         recyclerView.setAdapter(actualAdapter);
@@ -80,7 +70,6 @@ public class HistoryFragment extends Fragment{
                 Bundle transactionBundle = new Bundle();
                 transactionBundle.putString("id", String.valueOf(transaction.transactionId));
                 transactionBundle.putString("description", transaction.description);
-                //transactionBundle.putString("category", transaction.category);
                 transactionBundle.putString("amount", String.valueOf(transaction.amount));
                 transactionFragment.setArguments(transactionBundle);
 
@@ -91,6 +80,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
+        //CREATE A CONFIRMATION FOR THIS!1!1!!!!1!1
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
