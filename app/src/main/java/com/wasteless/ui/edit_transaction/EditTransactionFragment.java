@@ -1,5 +1,7 @@
 package com.wasteless.ui.edit_transaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +12,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.add_transaction.AddTransactionFragment;
 
 public class EditTransactionFragment extends Fragment {
 
@@ -44,8 +48,10 @@ public class EditTransactionFragment extends Fragment {
                 String source = sourceField.getText().toString();
                 String description = descriptionField.getText().toString();
 
+
                 Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                 TransactionRepository.getTransactionRepository(getContext()).update(transaction);
+
             }
         });
         return root;
