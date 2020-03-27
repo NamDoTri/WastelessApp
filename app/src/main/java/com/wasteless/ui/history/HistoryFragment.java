@@ -76,9 +76,9 @@ public class HistoryFragment extends Fragment{
 
                 //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
-                transactionBundle.putString("description", transaction.getDescription());
-                //transactionBundle.putString("category", transaction.getCategory());
-                transactionBundle.putString("amount", String.valueOf(transaction.getAmount()));
+                transactionBundle.putString("description", transaction.description);
+                //transactionBundle.putString("category", transaction.category);
+                transactionBundle.putString("amount", String.valueOf(transaction.amount));
                 transactionFragment.setArguments(transactionBundle);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();

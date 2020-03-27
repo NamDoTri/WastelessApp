@@ -37,9 +37,9 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TransactionHol
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
         Transaction transaction = transactions.get(position);
 
-        holder.description.setText(transaction.getDescription());
-        holder.type.setText(transaction.getType());
-        holder.amount.setText(String.valueOf(transaction.getAmount()));
+        holder.description.setText(transaction.description);
+        holder.type.setText(transaction.type);
+        holder.amount.setText(String.valueOf(transaction.amount));
     }
 
     @Override
