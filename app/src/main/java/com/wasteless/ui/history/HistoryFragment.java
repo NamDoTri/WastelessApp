@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,7 +52,7 @@ public class HistoryFragment extends Fragment{
         actualAdapter = new ActualAdapter();
         recyclerView.setAdapter(actualAdapter);
 
-        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
+        final HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
@@ -76,6 +78,7 @@ public class HistoryFragment extends Fragment{
 
                 //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
+                transactionBundle.putString("id", String.valueOf(transaction.transactionId));
                 transactionBundle.putString("description", transaction.description);
                 //transactionBundle.putString("category", transaction.category);
                 transactionBundle.putString("amount", String.valueOf(transaction.amount));
@@ -87,6 +90,20 @@ public class HistoryFragment extends Fragment{
                 fragmentTransaction.commit();
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                historyViewModel.delete(actualAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
 
         /*root.findViewById(R.id.history_transaction).setOnClickListener(new View.OnClickListener() {
             @Override

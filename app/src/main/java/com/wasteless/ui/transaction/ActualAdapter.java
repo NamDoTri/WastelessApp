@@ -47,6 +47,10 @@ public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.Transactio
         return transactions.size();
     }
 
+    public Transaction getTransactionAt(int position){
+        return transactions.get(position);
+    }
+
     class TransactionHolder extends RecyclerView.ViewHolder {
         private TextView description;
         private TextView type;

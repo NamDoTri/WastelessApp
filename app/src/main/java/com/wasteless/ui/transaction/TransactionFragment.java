@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
+import com.wasteless.models.Transaction;
 
 public class TransactionFragment extends Fragment {
 
@@ -30,6 +31,13 @@ public class TransactionFragment extends Fragment {
         final TextView description = root.findViewById(R.id.description);
 
         final Bundle transactionBundle = this.getArguments();
+
+        Context context = getContext();
+        CharSequence text = "ID is " + transactionBundle.getString("id");
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
         transactionViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -59,6 +67,8 @@ public class TransactionFragment extends Fragment {
         root.findViewById(R.id.transaction_delete_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //transactionViewModel.delete();
 
                 //Delete fragment OR function with confirmation goes here
 

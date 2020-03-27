@@ -80,6 +80,7 @@ public class TransactionRepository {
     }
 
     public void delete(Transaction transaction){
-        transactionDao.delete(transaction[0]);
+        transactionDao.delete(transaction);
     }
+
 }
