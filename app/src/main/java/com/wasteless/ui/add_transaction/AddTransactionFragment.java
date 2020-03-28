@@ -108,12 +108,12 @@ public class AddTransactionFragment extends Fragment {
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String date = root.findViewById(R.id.date).getText().toString();
-                String category = root.findViewById(R.id.category).getSelectedItem().toString();
-                String sum = root.findViewById(R.id.sum).getText().toString().trim();
-                String description = oot.findViewById(R.id.description).getText().toString();
-                String source = root.findViewById(R.id.source).getText().toString();
-                //String tags= tags.toString();
+                String date        = ((EditText)root.findViewById(R.id.date)).getText().toString();
+                String category    = ((Spinner )root.findViewById(R.id.category)).getSelectedItem().toString();
+                String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
+                String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
+                String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
+                //tags = tags.toString();
 
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
