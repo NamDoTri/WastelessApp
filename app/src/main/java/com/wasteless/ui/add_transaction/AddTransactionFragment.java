@@ -63,9 +63,7 @@ public class AddTransactionFragment extends Fragment {
         editText.addTextChangedListener(new TextWatcher()
         {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s,
                                       int start, int before, int count)
             {
@@ -79,9 +77,7 @@ public class AddTransactionFragment extends Fragment {
                 }
             }
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         // Picking up the date
@@ -111,6 +107,7 @@ public class AddTransactionFragment extends Fragment {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
         checkTheExpense(root);
+
         // Gather all the input fields together
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,24 +134,13 @@ public class AddTransactionFragment extends Fragment {
 //                        tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
-                        Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
-                        try {
-                            TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
-                            Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
-                            try {
-                                TransactionRepository.getTransactionRepository(getContext()).insertIncome(transaction);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
                             successMessage();
                         }
                     }
@@ -225,7 +211,7 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private void checkTheExpense(final View root) {
-        RadioGroup radioGroup =root.findViewById(R.id.radio);
+        RadioGroup radioGroup = root.findViewById(R.id.radio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
