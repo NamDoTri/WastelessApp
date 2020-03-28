@@ -8,17 +8,19 @@ import androidx.room.ColumnInfo;
 @Entity(tableName = "tag_assoc",
         foreignKeys = {@ForeignKey(entity = Transaction.class,
                                     parentColumns = "transactionId",
-                                    childColumns = "transaction",
-                                    onDelete = ForeignKey.CASCADE),
+                                    childColumns = "transactionId",
+                                    onDelete = ForeignKey.CASCADE,
+                                    onUpdate = ForeignKey.CASCADE),
                        @ForeignKey(entity = Tag.class,
                                     parentColumns = "tag",
                                     childColumns = "tag",
-                                    onDelete = ForeignKey.CASCADE)})
+                                    onDelete = ForeignKey.CASCADE,
+                                    onUpdate = ForeignKey.CASCADE)})
 public class TagAssociation {
     @PrimaryKey(autoGenerate = true)
     public Long index;
 
-    @ColumnInfo(name = "transaction")
+    @ColumnInfo(name = "transactionId")
     public Long transaction;
 
     @ColumnInfo(name = "tag")

@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 
 @Entity(tableName = "tags", indices = {@Index(value = {"tag"}, unique = true)})
 public class Tag {
-    @ColumnInfo(name = "tag")
     @NonNull
     @PrimaryKey()
+    @ColumnInfo(name = "tag")
     public String tagName;
 }
