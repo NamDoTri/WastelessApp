@@ -20,19 +20,19 @@ public interface TagDao {
     List<Tag> getTagsByName(String name);
 
     @Insert(entity = Tag.class, onConflict = OnConflictStrategy.IGNORE)
-    Long insertAll(Tag... tag);
+    List<Long> insertAll(Tag... tag);
 
     @Update(entity = Tag.class, onConflict = OnConflictStrategy.IGNORE)
-    Long updateAll(Tag... tag);
+    int updateAll(Tag... tag);
 
     @Delete
     void delete(Tag tag);
 
     // tag_assoc queries
-    @Query("select * from tag_assoc where transactionId = :transactionId")
+    @Query("select tag from tag_assoc where transactionId = :transactionId")
     List<String> getAllTagsOf(Long transactionId);
 
-    @Query("select * from tag_assoc where tag =:tagName")
+    @Query("select transactionId from tag_assoc where tag =:tagName")
     List<Long> getAllTransactionIdsOf(String tagName);
 
     //TODO: experiment with specifying different entities for insert and update

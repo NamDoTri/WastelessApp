@@ -1,7 +1,6 @@
 package com.wasteless.repository;
 
 import android.content.Context;
-import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.WalletDao;
@@ -29,9 +28,7 @@ public class WalletRepository {
         return walletDao.getAll();
     }
 
-    public double getTotalBalance(){
-        return walletDao.getTotalBalance();
-    }
+    public double getTotalBalance(){return walletDao.getTotalBalance();}
 
     public void insertWallet(Wallet wallet){
         walletDao.insertAll(wallet);

@@ -18,7 +18,7 @@
         android:focusableInTouchMode="false"
         />
     <EditText
-        android:id="@+id/e"
+        android:id="@+id/add_tags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/date"
@@ -29,7 +29,7 @@
         android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/e"
+        app:layout_constraintTop_toBottomOf="@+id/add_tags"
         app:layout_constraintRight_toRightOf="parent"
         >
 

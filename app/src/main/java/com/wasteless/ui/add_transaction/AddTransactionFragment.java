@@ -40,40 +40,36 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AddTransactionFragment extends Fragment {
-    DatePickerDialog picker;
-    TextView tvw;
     boolean isIncome;
-    private EditText editText;
-    private Button button;
     private ChipGroup chipGroup;
-    ArrayList<String> tags =new ArrayList<String>();
+    ArrayList<String> tags = new ArrayList<String>();
 
     private AddTransactionViewModel addTransactionViewModel;
-    private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
+    private AppDatabase appDatabase;
 
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
-
+        appDatabase = AppDatabase.getAppDatabase(getContext());
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
-        tvw = root.findViewById(R.id.date);
+        final TextView tvw = root.findViewById(R.id.date);
+
         // Tags
-        editText = root.findViewById(R.id.e);
+        final EditText tagsInput = root.findViewById(R.id.add_tags);
         chipGroup = root.findViewById(R.id.chipGroup);
-        editText.addTextChangedListener(new TextWatcher()
+        tagsInput.addTextChangedListener(new TextWatcher()
         {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s,
-                                      int start, int before, int count)
+            public void onTextChanged(CharSequence s, int start, int before, int count)
             {
                 if (s.toString().length() == 1 && s.toString().contains(" ")){
-                    editText.setText("");
-                } else if(s.toString().indexOf(" ") != -1)
-                {
+                    tagsInput.setText("");
+                }
+                else if(s.toString().indexOf(" ") != -1){
                     Log.i("key",  s.toString());
-                    addNewChip(root, editText.getText().toString());
-                    editText.setText("");
+                    addNewChip(root, tagsInput.getText().toString());
+                    tagsInput.setText("");
                 }
             }
             @Override
@@ -88,7 +84,7 @@ public class AddTransactionFragment extends Fragment {
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
                 final int month = cldr.get(Calendar.MONTH);
                 int year = cldr.get(Calendar.YEAR);
-                picker = new DatePickerDialog(getActivity(),
+                DatePickerDialog picker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -98,10 +94,10 @@ public class AddTransactionFragment extends Fragment {
                 picker.show();
             }
         });
-        Spinner spinner;
-        spinner = root.findViewById(R.id.category);
-        List<String> categoryList = addTransactionViewModel.getAllCategories();
 
+        // category selection menu
+        Spinner spinner = root.findViewById(R.id.category);
+        List<String> categoryList = addTransactionViewModel.getAllCategories();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
                 R.layout.custom_spinner, categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -112,28 +108,20 @@ public class AddTransactionFragment extends Fragment {
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                EditText dateField = root.findViewById(R.id.date);
-                Spinner categoryField = root.findViewById(R.id.category);
-                EditText sumField = root.findViewById(R.id.sum);
-                EditText descriptionField = root.findViewById(R.id.description);
-                EditText sourceField = root.findViewById(R.id.source);
-
-                String date = dateField.getText().toString();
-                String category = String.valueOf(categoryField.getSelectedItem());
-                String sum = sumField.getText().toString().trim();
-                //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
-//                String tags= tags.toString();
-                String source = sourceField.getText().toString();
-                String description = descriptionField.getText().toString();
+                String date        = ((EditText)root.findViewById(R.id.date)).getText().toString();
+                String category    = ((Spinner )root.findViewById(R.id.category)).getSelectedItem().toString();
+                String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
+                String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
+                String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
+                //tags = tags.toString();
 
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
-//                        tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
+                        //Log.i("tag", tags);
                         addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                         successMessage();
                     } else {
