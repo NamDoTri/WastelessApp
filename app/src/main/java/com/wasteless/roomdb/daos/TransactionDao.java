@@ -40,7 +40,7 @@ public interface TransactionDao {
     @Query("select * from transactions where isIncome = 1 and date like :date")
     List<Transaction> getIncomesByDate(String date);
 
-    @Query("select sum(amount) from transactions where isIncome = 1 and date = :date")
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date = :date")
     Double getTotalIncomeByDate(String date);
 
     @Query("select * from transactions where type = :type")
@@ -59,7 +59,7 @@ public interface TransactionDao {
     @Query("select * from transactions where isIncome = 0 and date = :date")
     List<Transaction> getExpensesByDate(String date);
 
-    @Query("select sum(amount) from transactions where isIncome = 0 and date = :date")
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 0 and date = :date")
     Double getTotalExpenseByDate(String date);
 
     @Query("select * from transactions where type = :type")
