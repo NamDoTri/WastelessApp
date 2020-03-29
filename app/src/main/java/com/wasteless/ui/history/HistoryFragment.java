@@ -21,16 +21,16 @@ import com.wasteless.R;
 //import com.wasteless.models.TestTransaction;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
-import com.wasteless.ui.transaction.ActualAdapter;
 import com.wasteless.ui.transaction.TransactionAdapter;
+import com.wasteless.ui.transaction.TestTransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
 import java.util.List;
 
 public class HistoryFragment extends Fragment{
 
+    private TestTransactionAdapter testTransactionAdapter;
     private TransactionAdapter transactionAdapter;
-    private ActualAdapter actualAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
@@ -39,14 +39,14 @@ public class HistoryFragment extends Fragment{
         RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        actualAdapter = new ActualAdapter();
-        recyclerView.setAdapter(actualAdapter);
+        transactionAdapter = new TransactionAdapter();
+        recyclerView.setAdapter(transactionAdapter);
 
         final HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
-                actualAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions);
             }
         });
 
@@ -58,7 +58,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
-        actualAdapter.setOnTransactionClickListener(new ActualAdapter.OnTransactionClickListener() {
+        transactionAdapter.setOnTransactionClickListener(new TransactionAdapter.OnTransactionClickListener() {
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
@@ -90,7 +90,7 @@ public class HistoryFragment extends Fragment{
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                historyViewModel.delete(actualAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
+                historyViewModel.delete(transactionAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);

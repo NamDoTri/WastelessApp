@@ -1,21 +1,13 @@
 package com.wasteless.ui.search;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,9 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.models.TestTransaction;
-import com.wasteless.ui.transaction.TransactionAdapter;
+import com.wasteless.ui.transaction.TestTransactionAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener, RadioGroup.OnCheckedChangeListener {
@@ -37,18 +28,18 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private SearchViewModel searchViewModel;
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
-    private TransactionAdapter transactionAdapter;
+    private TestTransactionAdapter testTransactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
 //        searchViewModel.getTestTransactionsList().observer().
-        transactionAdapter = new TransactionAdapter();
+        testTransactionAdapter = new TestTransactionAdapter();
         searchViewModel.getSearchLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
             @Override
             public void onChanged(@Nullable List<TestTransaction> testTransactions) {
-                transactionAdapter.setTestTransactions(testTransactions);
+                testTransactionAdapter.setTestTransactions(testTransactions);
             }
         });
 
@@ -61,7 +52,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
-        searchResultView.setAdapter(transactionAdapter);
+        searchResultView.setAdapter(testTransactionAdapter);
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
 

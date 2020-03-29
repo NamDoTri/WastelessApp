@@ -1,7 +1,5 @@
 package com.wasteless.ui.transaction;
 
-//package com.wasteless.ui.transaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
-import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.models.TestTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.TransactionHolder> {
+public class TestTransactionAdapter extends RecyclerView.Adapter<TestTransactionAdapter.TransactionHolder> {
 
-    private List<Transaction> transactions = new ArrayList<>();
+    private List<TestTransaction> testTransactions = new ArrayList<>();
     private OnTransactionClickListener listener;
 
-    public void setTransactions(List<Transaction> transactions){
-        this.transactions = transactions;
+    public void setTestTransactions(List<TestTransaction> testTransactions){
+        this.testTransactions = testTransactions;
         notifyDataSetChanged();
     }
 
@@ -35,31 +33,27 @@ public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.Transactio
 
     @Override
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
-        Transaction transaction = transactions.get(position);
+        TestTransaction transaction = testTransactions.get(position);
 
-        holder.description.setText(transaction.description);
-        holder.type.setText(transaction.type);
-        holder.amount.setText(String.valueOf(transaction.amount));
+        holder.description.setText(transaction.getDescription());
+        holder.category.setText(transaction.getCategory());
+        holder.amount.setText(transaction.getAmount());
     }
 
     @Override
     public int getItemCount() {
-        return transactions.size();
-    }
-
-    public Transaction getTransactionAt(int position){
-        return transactions.get(position);
+        return testTransactions.size();
     }
 
     class TransactionHolder extends RecyclerView.ViewHolder {
         private TextView description;
-        private TextView type;
+        private TextView category;
         private TextView amount;
 
         public TransactionHolder(View itemView) {
             super(itemView);
             description = itemView.findViewById(R.id.transaction_description);
-            type = itemView.findViewById(R.id.transaction_category);
+            category = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +61,7 @@ public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.Transactio
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onTransactionClick(transactions.get(position));
+                        listener.onTransactionClick(testTransactions.get(position));
                     }
                 }
             });
@@ -75,7 +69,7 @@ public class ActualAdapter extends RecyclerView.Adapter<ActualAdapter.Transactio
     }
 
     public interface OnTransactionClickListener{
-        void onTransactionClick(Transaction transaction);
+        void onTransactionClick(TestTransaction testTransaction);
     }
 
     public void setOnTransactionClickListener(OnTransactionClickListener listener){
