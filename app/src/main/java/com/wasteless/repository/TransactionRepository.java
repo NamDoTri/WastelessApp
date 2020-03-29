@@ -1,25 +1,31 @@
 package com.wasteless.repository;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 
 import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.daos.TagDao;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionRepository {
     private static volatile TransactionRepository instance = null;
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
+    private final TagDao tagDao;
 
     private TransactionRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
         transactionDao = db.transactionDao();
         walletDao = db.walletDao();
+        tagDao = db.tagDao();
     }
 
     public static TransactionRepository getTransactionRepository(Context context){
@@ -83,5 +89,8 @@ public class TransactionRepository {
             e.printStackTrace();
         }
         return false;
+    }
+    public void handleTags(ArrayList<String> tags){
+        Log.i("tag", String.valueOf(tags.size()));
     }
 }

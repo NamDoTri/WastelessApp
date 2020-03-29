@@ -1,6 +1,7 @@
 package com.wasteless.ui.add_transaction;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 
@@ -9,6 +10,7 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,5 +50,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    public void handleTags(ArrayList<String> tags){
+        transactionRepository.handleTags(tags);
     }
 }
