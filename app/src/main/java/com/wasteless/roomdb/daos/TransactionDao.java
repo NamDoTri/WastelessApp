@@ -29,6 +29,11 @@ public interface TransactionDao {
     @Query("select * from transactions where wallet = :walletId")
     List<Transaction> getTransactionsByWallet(Long walletId);
 
+    // QUIRIES FOR SEARCH FRAGMENT
+    // Query to get transactions with a specific string somewhere in description
+    @Query("SELECT * FROM transactions WHERE description LIKE  :description")
+    LiveData<List<Transaction>> getTransactionsByDescription(String description);
+
     // Query for getting the data to history view in order
     @Query("select * from transactions order by date desc")
     LiveData<List<Transaction>> getAllOrderByDate();

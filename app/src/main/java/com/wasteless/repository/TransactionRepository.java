@@ -22,6 +22,12 @@ public class TransactionRepository {
         walletDao = db.walletDao();
     }
 
+//    SEARCH TRANSACTION METHODS
+
+    public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
+        return transactionDao.getTransactionsByDescription(description);
+    }
+
     public static TransactionRepository getTransactionRepository(Context context){
         if(instance == null){
             instance = new TransactionRepository(context);
