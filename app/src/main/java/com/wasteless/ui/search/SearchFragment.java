@@ -30,7 +30,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private SearchViewModel searchViewModel;
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
-    private TestTransactionAdapter testTransactionAdapter;
+    private TransactionAdapter transactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
-        searchResultView.setAdapter(testTransactionAdapter);
+        searchResultView.setAdapter(transactionAdapter);
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
 

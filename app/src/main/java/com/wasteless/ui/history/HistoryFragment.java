@@ -22,14 +22,12 @@ import com.wasteless.R;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
 import com.wasteless.ui.transaction.TransactionAdapter;
-import com.wasteless.ui.transaction.TestTransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
 import java.util.List;
 
 public class HistoryFragment extends Fragment{
 
-//    private SoonToBeDeletedAdapter soonToBeDeletedAdapter;
     private TransactionAdapter transactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
