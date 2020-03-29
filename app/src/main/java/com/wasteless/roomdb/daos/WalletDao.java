@@ -18,6 +18,9 @@ public interface WalletDao {
     @Query("select * from wallets where walletId = :walletId")
     Wallet getWalletById(Long walletId);
 
+    @Query("select coalesce(sum(balance), 0) from wallets")
+    Double getTotalBalance();
+
     @Insert(entity = Wallet.class)
     void insertAll(Wallet... wallets);
 
@@ -26,7 +29,4 @@ public interface WalletDao {
 
     @Delete
     void delete(Wallet wallet);
-
-    //TODO: remove all incomes & expenses when deleting wallet
-
 }

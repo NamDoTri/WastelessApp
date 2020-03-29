@@ -17,15 +17,14 @@ import java.util.concurrent.Executors;
           version=1)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance = null; //write to main memory, not to cache
-    private static Context context;
+    private static Context context; //TODO: remove this in production
 
-    public abstract BankAccountDao bankAccountDao();
+    public abstract TagDao tagDao();
     public abstract WalletDao walletDao();
     public abstract TransactionDao transactionDao();
 
     public static synchronized AppDatabase getAppDatabase(Context context){
         context = context;
-
         if(instance == null){
             instance = Room.databaseBuilder(context, AppDatabase.class, "wastelessDB")
                     .allowMainThreadQueries()

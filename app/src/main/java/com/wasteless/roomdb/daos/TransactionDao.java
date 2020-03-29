@@ -29,12 +29,24 @@ public interface TransactionDao {
     @Query("select * from transactions where wallet = :walletId")
     List<Transaction> getTransactionsByWallet(Long walletId);
 
+    // QUIRIES FOR SEARCH FRAGMENT
+    // Query to get transactions with a specific string somewhere in description
+    @Query("SELECT * FROM transactions WHERE description LIKE  :description")
+    LiveData<List<Transaction>> getTransactionsByDescription(String description);
+
+    // Query for getting the data to history view in order
+    @Query("select * from transactions order by date desc")
+    LiveData<List<Transaction>> getAllOrderByDate();
+
     // query incomes
     @Query("select * from transactions where isIncome = 1")
     List<Transaction> getAllIncomes();
 
     @Query("select * from transactions where isIncome = 1 and date like :date")
     List<Transaction> getIncomesByDate(String date);
+
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date = :date")
+    Double getTotalIncomeByDate(String date);
 
     @Query("select * from transactions where type = :type")
     List<Transaction> getIncomesByType(String type);
@@ -52,15 +64,14 @@ public interface TransactionDao {
     @Query("select * from transactions where isIncome = 0 and date = :date")
     List<Transaction> getExpensesByDate(String date);
 
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 0 and date = :date")
+    Double getTotalExpenseByDate(String date);
+
     @Query("select * from transactions where type = :type")
     List<Transaction> getExpensesByCategory(String type);
 
     @Query("select * from transactions where wallet = :walletId and isIncome = 0")
     List<Transaction> getExpensesByWallet(Long walletId);
-
-    // Query for getting the data to history view in order
-    @Query("select * from transactions order by date desc")
-    LiveData<List<Transaction>> getAllOrderByDate();
 
     //TODO: get incomes and expenses before and after a date
 

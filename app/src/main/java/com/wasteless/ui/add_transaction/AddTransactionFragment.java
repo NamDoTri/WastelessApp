@@ -4,22 +4,31 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
@@ -31,15 +40,41 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AddTransactionFragment extends Fragment {
-    DatePickerDialog picker;
-    TextView tvw;
     boolean isIncome;
+    private ChipGroup chipGroup;
+    ArrayList<String> tags = new ArrayList<String>();
 
-    private AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
+    private AddTransactionViewModel addTransactionViewModel;
+    private AppDatabase appDatabase;
+
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
+        appDatabase = AppDatabase.getAppDatabase(getContext());
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
-        tvw = root.findViewById(R.id.date);
+        final TextView tvw = root.findViewById(R.id.date);
+
+        // Tags
+        final EditText tagsInput = root.findViewById(R.id.add_tags);
+        chipGroup = root.findViewById(R.id.chipGroup);
+        tagsInput.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (s.toString().length() == 1 && s.toString().contains(" ")){
+                    tagsInput.setText("");
+                }
+                else if(s.toString().indexOf(" ") != -1){
+                    Log.i("key",  s.toString());
+                    addNewChip(root, tagsInput.getText().toString());
+                    tagsInput.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Picking up the date
         root.findViewById(R.id.date).setOnClickListener(new View.OnClickListener() {
@@ -47,78 +82,53 @@ public class AddTransactionFragment extends Fragment {
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
+                final int month = cldr.get(Calendar.MONTH);
                 int year = cldr.get(Calendar.YEAR);
-                picker = new DatePickerDialog(getActivity(),
+                DatePickerDialog picker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Log.i("data",dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                  tvw.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                tvw.setText(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy
                             }
                         }, year, month, day);
                 picker.show();
             }
         });
-        Spinner spinner;
-        spinner = root.findViewById(R.id.category);
-        List<String> list = new ArrayList<String>();
-        // Here we need to get categories from the db
-        list.add("No category");
-        list.add("Girls");
-        list.add("Alcohol");
-        list.add("Friends");
 
+        // category selection menu
+        Spinner spinner = root.findViewById(R.id.category);
+        List<String> categoryList = addTransactionViewModel.getAllCategories();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
-                R.layout.custom_spinner, list);
+                R.layout.custom_spinner, categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
         checkTheExpense(root);
+
         // Gather all the input fields together
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                EditText dateField = root.findViewById(R.id.date);
-                Spinner categoryField = root.findViewById(R.id.category);
-                EditText sumField = root.findViewById(R.id.sum);
-                EditText tagsField = root.findViewById(R.id.tags);
-                EditText descriptionField = root.findViewById(R.id.description);
-                EditText sourceField = root.findViewById(R.id.source);
-
-                String date = dateField.getText().toString();
-                String category = String.valueOf(categoryField.getSelectedItem());
-                String sum = sumField.getText().toString().trim();
-                //Float sum1 = Float.parseFloat(sumField.getText().toString().trim());
-                String tags = tagsField.getText().toString();
-                String source = sourceField.getText().toString();
-                String description = descriptionField.getText().toString();
+                String date        = ((EditText)root.findViewById(R.id.date)).getText().toString();
+                String category    = ((Spinner )root.findViewById(R.id.category)).getSelectedItem().toString();
+                String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
+                String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
+                String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
+                //tags = tags.toString();
 
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
-                        tags.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
-                        Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
-                        try {
-                            TransactionRepository.getTransactionRepository(getContext()).insertExpense(transaction);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        //Log.i("tag", tags);
+                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
-                            Transaction transaction = new Transaction(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
-                            try {
-                                TransactionRepository.getTransactionRepository(getContext()).insertIncome(transaction);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
                             successMessage();
                         }
                     }
@@ -164,8 +174,32 @@ public class AddTransactionFragment extends Fragment {
         return root;
     }
 
+    private void addNewChip(View root, final String text) {
+        tags.add(text);
+        final Chip chip = new Chip(getContext());
+        ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
+                null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
+        chip.setChipDrawable(drawable);
+        chip.setCheckable(false);
+        chip.setClickable(false);
+        chip.setChipIconResource(R.drawable.ic_extension_black_24dp);
+        chip.setIconStartPadding(3f);
+        chip.setPadding(60, 10, 60, 10);
+        chip.setText(text);
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chipGroup.removeView(chip);
+                tags.remove(chip.getText().toString());
+                String yes = chip.getText().toString();
+                Log.i("tag", String.valueOf(tags.size()));
+            }
+        });
+        chipGroup.addView(chip);
+    }
+
     private void checkTheExpense(final View root) {
-        RadioGroup radioGroup =root.findViewById(R.id.radio);
+        RadioGroup radioGroup = root.findViewById(R.id.radio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override

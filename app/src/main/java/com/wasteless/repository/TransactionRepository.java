@@ -1,7 +1,6 @@
 package com.wasteless.repository;
 
 import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 
 import com.wasteless.roomdb.AppDatabase;
@@ -16,7 +15,6 @@ public class TransactionRepository {
     private static volatile TransactionRepository instance = null;
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
-    private LiveData<List<Transaction>> allTransactions;
 
     private TransactionRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
@@ -24,11 +22,29 @@ public class TransactionRepository {
         walletDao = db.walletDao();
     }
 
+//    SEARCH TRANSACTION METHODS
+
+    public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
+        return transactionDao.getTransactionsByDescription(description);
+    }
+
     public static TransactionRepository getTransactionRepository(Context context){
         if(instance == null){
             instance = new TransactionRepository(context);
         }
         return instance;
+    }
+
+    public LiveData<List<Transaction>> getAllTransactions(){
+        return transactionDao.getAllOrderByDate();
+    }
+
+    public double getTotalExpenseByDate(String date){
+        return transactionDao.getTotalExpenseByDate(date);
+    }
+
+    public double getTotalIncomeByDate(String date){
+        return transactionDao.getTotalIncomeByDate(date);
     }
 
     public boolean insertExpense(Transaction transaction) throws Exception{
@@ -51,10 +67,6 @@ public class TransactionRepository {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public LiveData<List<Transaction>> getAllTransactions(){
-        return allTransactions = transactionDao.getAllOrderByDate();
     }
     
     public boolean insertIncome(Transaction transaction) throws Exception{

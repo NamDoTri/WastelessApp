@@ -2,6 +2,7 @@ package com.wasteless.ui.transaction;
 
 //package com.wasteless.ui.transaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +46,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public int getItemCount() {
         return transactions.size();
-    }
-
-    public Transaction getTransactionAt(int position){
-        return transactions.get(position);
     }
 
     class TransactionHolder extends RecyclerView.ViewHolder {

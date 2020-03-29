@@ -29,7 +29,7 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment{
 
-    private TestTransactionAdapter testTransactionAdapter;
+//    private SoonToBeDeletedAdapter soonToBeDeletedAdapter;
     private TransactionAdapter transactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
