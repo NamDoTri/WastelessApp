@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.models.TestTransaction;
+import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.transaction.ActualAdapter;
 import com.wasteless.ui.transaction.TransactionAdapter;
 
 import java.util.ArrayList;
@@ -37,18 +39,18 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private SearchViewModel searchViewModel;
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
-    private TransactionAdapter transactionAdapter;
+    private ActualAdapter transactionAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
 //        searchViewModel.getTestTransactionsList().observer().
-        transactionAdapter = new TransactionAdapter();
-        searchViewModel.getSearchLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
+        transactionAdapter = new ActualAdapter();
+        searchViewModel.getOnOpenData().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
-            public void onChanged(@Nullable List<TestTransaction> testTransactions) {
-                transactionAdapter.setTestTransactions(testTransactions);
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                transactionAdapter.setTransactions(transactions);
             }
         });
 
@@ -74,23 +76,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
         return root;
     }
-
-//    private void prepareData() {
-////        Filter filter = new Filter("name");
-////        filters.add(filter);
-////
-////        filter = new Filter("date");
-////        filters.add(filter);
-////
-////        filter = new Filter("tag");
-////        filters.add(filter);
-////
-////        filter = new Filter("category");
-////        filters.add(filter);
-////
-////        filtersAdapter.notifyDataSetChanged();
-//        Log.d("da davai uzhe ", "the shit should be updated right now");
-//    }
 
     @Override
     public void onPause() {
