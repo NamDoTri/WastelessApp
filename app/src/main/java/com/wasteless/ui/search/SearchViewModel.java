@@ -59,6 +59,9 @@ public class SearchViewModel extends AndroidViewModel {
         return searchLiveData;
     }
 
+//    TODO add a search by description functionality here
+//    public LiveData<List<Transaction>> searchTransactionsByDescription() { }
+
     public void setActiveFilter(MutableLiveData<String> filter) {
         this.activeFilter = filter;
     }

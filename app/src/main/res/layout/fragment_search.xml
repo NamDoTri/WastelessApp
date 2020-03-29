@@ -49,6 +49,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/filter_button_background"
+                        android:checked="true"
                         android:text="@string/filter_date" />
 
                     <RadioButton
