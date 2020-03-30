@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +51,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         SearchView searchField = root.findViewById(R.id.search_field);
         RadioGroup filterButtons = root.findViewById(R.id.filters_list);
         RadioButton checkedRadioButton = filterButtons.findViewById(filterButtons.getCheckedRadioButtonId());
+        Log.d("chosenFilter", "radio button" + checkedRadioButton.getText());
         searchResultView = root.findViewById(R.id.search_list);
 
 //    RecyclerView.Adapter
@@ -104,6 +106,15 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "It works: " + query);
+//        LiveData<List<Transaction>> searchedData = searchViewModel.searchTransactionsByDescription(query);
+        searchViewModel.searchTransactionsByDescription(query).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                Log.d("onQueryTextSubmit", "" + transactions);
+                transactionAdapter.setTransactions(transactions);
+            }
+        });
+//        transactionAdapter.setTransactions(searchedData);
         return false;
     }
 

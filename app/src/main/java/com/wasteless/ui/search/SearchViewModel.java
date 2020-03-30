@@ -37,30 +37,23 @@ public class SearchViewModel extends AndroidViewModel {
         searchLiveData.setValue(testTransactionsList);
     }
 
-//    private void populateList() {
-//        Transaction transaction = new Transaction("A box of milk", "Groceries", "1.80");
-//        testTransactionsList.add(transaction);
-//
-//        transaction = new Transaction("Bread", "Groceries", "2.40");
-//        testTransactionsList.add(transaction);
-//
-//        transaction = new Transaction("Cookies", "Groceries", "4.28");
-//        testTransactionsList.add(transaction);
-//
-//        transaction = new Transaction("BigMac", "Cafes and Restaurants", "5.00");
-//        testTransactionsList.add(transaction);
-//    }
-
     public LiveData<List<Transaction>> getOnOpenData() {
         return onOpenData;
     }
 
-    public LiveData<List<Transaction>> getSearchLiveData() {
-        return searchLiveData;
+//    Get transaction by date
+    public LiveData<List<Transaction>> getDataByDate(String date) {
+        return transactionRepository.getTransactionsByDate(date);
     }
+//    Search transactions by a string in description
+//    public LiveData<List<Transaction>> getSearchLiveData(String description) {
+//        return transactionRepository.getTransactionsByDescription(description);
+//    }
 
 //    TODO add a search by description functionality here
-//    public LiveData<List<Transaction>> searchTransactionsByDescription() { }
+    public LiveData<List<Transaction>> searchTransactionsByDescription(String  description) {
+        return transactionRepository.getTransactionsByDescription(description);
+    }
 
     public void setActiveFilter(MutableLiveData<String> filter) {
         this.activeFilter = filter;

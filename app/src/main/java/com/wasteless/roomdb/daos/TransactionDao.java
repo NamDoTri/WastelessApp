@@ -34,6 +34,10 @@ public interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE description LIKE  :description")
     LiveData<List<Transaction>> getTransactionsByDescription(String description);
 
+//    Query to get transaction with specific date
+    @Query("select * from transactions order by date like :date")
+    LiveData<List<Transaction>> getTranscationsByDate(String date);
+
     // Query for getting the data to history view in order
     @Query("select * from transactions order by date desc")
     LiveData<List<Transaction>> getAllOrderByDate();
