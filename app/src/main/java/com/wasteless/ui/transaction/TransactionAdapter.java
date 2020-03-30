@@ -1,8 +1,5 @@
 package com.wasteless.ui.transaction;
 
-//package com.wasteless.ui.transaction;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +74,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public void setOnTransactionClickListener(OnTransactionClickListener listener){
         this.listener = listener;
+    }
+
+    public Transaction getTransactionAt(int position){
+        return transactions.get(position);
     }
 
     /*Probably gonna need these later on when implementing transactions as separate expenses and incomes
