@@ -70,4 +70,5 @@ public class Transaction {
         this.source = source;
         Log.i("Database", "Transaction created: " + String.valueOf(this.transactionId));
     }
+
 }

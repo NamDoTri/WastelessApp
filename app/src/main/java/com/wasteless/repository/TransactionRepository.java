@@ -47,6 +47,10 @@ public class TransactionRepository {
         return transactionDao.getAllOrderByDate();
     }
 
+    public Transaction getTransactionById(Long transactionId){
+        return transactionDao.getTransactionById(transactionId);
+    }
+
     public double getTotalExpenseByDate(String date){
         return transactionDao.getTotalExpenseByDate(date);
     }

@@ -77,7 +77,7 @@
                             android:layout_height="40dp"
                             android:layout_marginHorizontal="10dp"
                             android:layout_marginVertical="5dp"
-                            app:layout_constraintBottom_toTopOf="@id/wallet_container"
+                            app:layout_constraintBottom_toTopOf="@id/type_container"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/description_container"
@@ -109,6 +109,43 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/type_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginVertical="5dp"
+                            app:layout_constraintBottom_toTopOf="@id/wallet_container"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/amount_container"
+                            android:background="@drawable/border">
+
+                            <TextView
+                                android:id="@+id/type_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Type"
+                                android:textSize="20sp"
+                                android:layout_marginLeft="20dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Entertainment"
+                                android:textSize="20sp"
+                                android:layout_marginRight="20dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/wallet_container"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
@@ -118,7 +155,7 @@
                             app:layout_constraintBottom_toTopOf="@id/date_container"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/amount_container"
+                            app:layout_constraintTop_toBottomOf="@id/type_container"
                             android:background="@drawable/border">
 
                             <TextView
