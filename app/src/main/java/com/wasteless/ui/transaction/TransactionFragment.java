@@ -11,10 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
+import com.wasteless.ui.edit_transaction.EditTransactionFragment;
 
 public class TransactionFragment extends Fragment {
 
@@ -31,6 +33,13 @@ public class TransactionFragment extends Fragment {
 
         final Bundle transactionBundle = this.getArguments();
 
+        Context context = getContext();
+        CharSequence text = "ID is " + transactionBundle.getString("id");
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
         transactionViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -43,9 +52,16 @@ public class TransactionFragment extends Fragment {
         root.findViewById(R.id.transaction_edit_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditTransactionFragment editTransactionFragment = new EditTransactionFragment();
+                editTransactionFragment.setArguments(transactionBundle);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, editTransactionFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 
                 //Edit fragment with a form goes here ---> sending a bundle filled with transaction
                 //data to pre-fill the form?
+
 
                 Context context = getContext();
                 CharSequence text = "Edit clicked";
@@ -59,6 +75,8 @@ public class TransactionFragment extends Fragment {
         root.findViewById(R.id.transaction_delete_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //transactionViewModel.delete();
 
                 //Delete fragment OR function with confirmation goes here
 

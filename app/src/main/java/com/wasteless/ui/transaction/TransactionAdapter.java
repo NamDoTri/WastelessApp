@@ -79,6 +79,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.listener = listener;
     }
 
+    public Transaction getTransactionAt(int position){
+        return transactions.get(position);
+    }
+
     /*Probably gonna need these later on when implementing transactions as separate expenses and incomes
 
     class ExpenseViewHolder extends RecyclerView.ViewHolder {

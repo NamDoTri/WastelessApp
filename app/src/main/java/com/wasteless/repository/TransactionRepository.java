@@ -90,4 +90,13 @@ public class TransactionRepository {
         }
         return false;
     }
+
+    public void delete(Transaction transaction){
+        transactionDao.delete(transaction);
+    }
+
+    public void update(Transaction transaction){
+        transactionDao.updateAll(transaction);
+    }
+
 }
