@@ -9,10 +9,12 @@ import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TagDao;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
+import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TransactionRepository {
@@ -91,6 +93,13 @@ public class TransactionRepository {
         return false;
     }
     public void handleTags(ArrayList<String> tags){
-        Log.i("tag", String.valueOf(tags.size()));
+        //convert ArrayList<String> to ArrayList<Tag>
+        ArrayList<Tag> toInsert = new ArrayList<>();
+        for(String tagName : tags){
+            toInsert.add(new Tag(tagName));
+        }
+        //insert to db
+        List<Long> rows = tagDao.insertAll(toInsert.toArray(new Tag[toInsert.size()] ));
+        Log.i("tag", String.valueOf(rows));
     }
 }

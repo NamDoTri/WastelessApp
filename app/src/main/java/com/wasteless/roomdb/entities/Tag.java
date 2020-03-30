@@ -12,4 +12,8 @@ public class Tag {
     @PrimaryKey()
     @ColumnInfo(name = "tag")
     public String tagName;
+
+    public Tag(String tagName){
+        this.tagName= tagName;
+    }
 }
