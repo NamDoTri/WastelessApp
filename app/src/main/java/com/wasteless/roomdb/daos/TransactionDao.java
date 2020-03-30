@@ -71,10 +71,10 @@ public interface TransactionDao {
     //TODO: get incomes and expenses before and after a date
 
     @Insert(entity = Transaction.class)
-    void insertAll(Transaction... transactions);
+    List<Long> insertAll(Transaction... transactions);
 
     @Update(entity = Transaction.class)
-    void updateAll(Transaction... transactions);
+    int updateAll(Transaction... transactions);
 
     @Delete
     void delete(Transaction transaction);

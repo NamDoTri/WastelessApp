@@ -49,12 +49,18 @@ public class TransactionRepository {
         return transactionDao.getTotalIncomeByDate(date);
     }
 
-    public boolean insertExpense(Transaction transaction) throws Exception{
-        if(transaction.isIncome == true) throw new Exception("Transaction is not an expense");
+    public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
+        if(transaction.isIncome) throw new Exception("Transaction is not an expense");
 
         try{
             try{
-                transactionDao.insertAll(transaction);
+                //TODO: find a better solution to this because the parameter takes in only 1 transaction at a time
+                List<Long> rows = transactionDao.insertAll(transaction);
+                if(rows.size() > 0 && tags.size() > 0){
+                    for(Long rowId : rows){
+                        this.handleTags(rowId, tags);
+                    }
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -71,12 +77,17 @@ public class TransactionRepository {
         return false;
     }
     
-    public boolean insertIncome(Transaction transaction) throws Exception{
-        if(transaction.isIncome != true) throw new Exception("Transaction is not an income");
+    public boolean insertIncome(Transaction transaction, ArrayList<String> tags) throws Exception{
+        if(!transaction.isIncome) throw new Exception("Transaction is not an income");
 
         try{
             try{
-                transactionDao.insertAll(transaction);
+                List<Long> rows = transactionDao.insertAll(transaction);
+                if(rows.size() > 0 && tags.size() > 0){
+                    for(Long rowId : rows){
+                        this.handleTags(rowId, tags);
+                    }
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -92,14 +103,16 @@ public class TransactionRepository {
         }
         return false;
     }
-    public void handleTags(ArrayList<String> tags){
-        //convert ArrayList<String> to ArrayList<Tag>
-        ArrayList<Tag> toInsert = new ArrayList<>();
+
+    private void handleTags(Long rowId, ArrayList<String> tags){
+        //insert to tag table
+        ArrayList<Tag> tagsToInsert = new ArrayList<>();
         for(String tagName : tags){
-            toInsert.add(new Tag(tagName));
+            tagsToInsert.add(new Tag(tagName));
+
+            //insert to tag_assoc
+            tagDao.insertTagAssociation(rowId, tagName);
         }
-        //insert to db
-        List<Long> rows = tagDao.insertAll(toInsert.toArray(new Tag[toInsert.size()] ));
-        Log.i("tag", String.valueOf(rows));
+        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()] ));
     }
 }

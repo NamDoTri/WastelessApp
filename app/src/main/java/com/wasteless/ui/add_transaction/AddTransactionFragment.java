@@ -113,21 +113,19 @@ public class AddTransactionFragment extends Fragment {
                 String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
                 String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
 
-                addTransactionViewModel.handleTags(tags);
-
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
-                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
+                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category, tags);
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
-                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
+                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source, tags);
                             successMessage();
                         }
                     }
