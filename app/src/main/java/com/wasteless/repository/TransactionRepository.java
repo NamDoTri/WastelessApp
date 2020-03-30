@@ -23,9 +23,9 @@ public class TransactionRepository {
     }
 
 //    SEARCH TRANSACTION METHODS
-
     public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
-        return transactionDao.getTransactionsByDescription(description);
+        String adaptedString = "%" + description + "%";
+        return transactionDao.getTransactionsByDescription(adaptedString);
     }
 
     public static TransactionRepository getTransactionRepository(Context context){
