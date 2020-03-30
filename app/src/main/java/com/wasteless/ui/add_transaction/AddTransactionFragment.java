@@ -33,6 +33,7 @@ import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeFragment;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class AddTransactionFragment extends Fragment {
     boolean isIncome;
     private ChipGroup chipGroup;
     ArrayList<String> tags = new ArrayList<String>();
+    ArrayList<String> allWalletsNames = new ArrayList<String>();
+
 
     private AddTransactionViewModel addTransactionViewModel;
     private AppDatabase appDatabase;
@@ -101,6 +104,19 @@ public class AddTransactionFragment extends Fragment {
                 R.layout.custom_spinner, categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+
+        // wallet selection menu
+        Spinner walletSpinner = root.findViewById(R.id.wallet);
+        List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
+        for (int i = 0; i < allWallets.size(); i++) {
+            allWalletsNames.add(i,allWallets.get(i).name);
+            Log.i("array", allWallets.get(i).name);
+        }
+        ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(),
+                R.layout.custom_spinner, allWalletsNames);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        walletSpinner.setAdapter(walletAdapter);
+
         checkTheExpense(root);
 
         // Gather all the input fields together
@@ -112,20 +128,30 @@ public class AddTransactionFragment extends Fragment {
                 String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
                 String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
                 String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
+                String wallet      = ((Spinner)root.findViewById(R.id.wallet)).getSelectedItem().toString();
 
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
                         category.trim().length() > 0 &&
+                        wallet.trim().length() > 0 &&
                         sum.trim().length() > 0 &&
                         description.trim().length() > 0) {
+                    Long id = null;
+                    List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
+                    for (int i = 0; i < allWallets.size(); i++) {
+                        if (allWallets.get(i).name.contains(wallet)){
+                            id = allWallets.get(i).walletId;
+                            Log.i("id", String.valueOf(id));
+                        }
+                    }
                     if (isIncome == false) {
-                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category, tags);
+                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, id, false, category, tags);
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
-                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source, tags);
+                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, id, true, category, source, tags);
                             successMessage();
                         }
                     }
