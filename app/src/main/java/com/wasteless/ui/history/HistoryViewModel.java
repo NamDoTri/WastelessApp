@@ -48,6 +48,10 @@ public class HistoryViewModel extends AndroidViewModel {
 
     }
 
+    public void delete(Transaction transaction) {
+        transactionRepository.delete(transaction);
+    }
+
     LiveData<List<TestTransaction>> getHistoryLiveData() {
         return historyLiveData;
     }
@@ -55,5 +59,4 @@ public class HistoryViewModel extends AndroidViewModel {
     LiveData<List<Transaction>> getAllTransactions(){
         return allTransactions;
     }
-
 }

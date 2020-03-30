@@ -30,6 +30,12 @@ public class TransactionRepository {
         tagDao = db.tagDao();
     }
 
+//    SEARCH TRANSACTION METHODS
+
+    public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
+        return transactionDao.getTransactionsByDescription(description);
+    }
+
     public static TransactionRepository getTransactionRepository(Context context){
         if(instance == null){
             instance = new TransactionRepository(context);
@@ -115,4 +121,13 @@ public class TransactionRepository {
         }
         tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()] ));
     }
+
+    public void delete(Transaction transaction){
+        transactionDao.delete(transaction);
+    }
+
+    public void update(Transaction transaction){
+        transactionDao.updateAll(transaction);
+    }
+
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +21,6 @@ import com.wasteless.R;
 //import com.wasteless.models.TestTransaction;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
-import com.wasteless.ui.transaction.ActualAdapter;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
@@ -28,7 +29,6 @@ import java.util.List;
 public class HistoryFragment extends Fragment{
 
     private TransactionAdapter transactionAdapter;
-    private ActualAdapter actualAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
@@ -36,25 +36,15 @@ public class HistoryFragment extends Fragment{
 
         RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        /*transactionAdapter = new TransactionAdapter();
+
+        transactionAdapter = new TransactionAdapter();
         recyclerView.setAdapter(transactionAdapter);
 
-        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
-        historyViewModel.getHistoryLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
-            @Override
-            public void onChanged(@Nullable List<TestTransaction> testTransactions) {
-                transactionAdapter.setTestTransactions(testTransactions);
-            }
-        });*/
-
-        actualAdapter = new ActualAdapter();
-        recyclerView.setAdapter(actualAdapter);
-
-        HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
+        final HistoryViewModel historyViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
-                actualAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions);
             }
         });
 
@@ -66,7 +56,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
-        actualAdapter.setOnTransactionClickListener(new ActualAdapter.OnTransactionClickListener() {
+        transactionAdapter.setOnTransactionClickListener(new TransactionAdapter.OnTransactionClickListener() {
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
@@ -76,8 +66,8 @@ public class HistoryFragment extends Fragment{
 
                 //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
+                transactionBundle.putString("id", String.valueOf(transaction.transactionId));
                 transactionBundle.putString("description", transaction.description);
-                //transactionBundle.putString("category", transaction.category);
                 transactionBundle.putString("amount", String.valueOf(transaction.amount));
                 transactionFragment.setArguments(transactionBundle);
 
@@ -87,6 +77,21 @@ public class HistoryFragment extends Fragment{
                 fragmentTransaction.commit();
             }
         });
+
+        //CREATE A CONFIRMATION FOR THIS!1!1!!!!1!1
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                historyViewModel.delete(transactionAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
 
         /*root.findViewById(R.id.history_transaction).setOnClickListener(new View.OnClickListener() {
             @Override

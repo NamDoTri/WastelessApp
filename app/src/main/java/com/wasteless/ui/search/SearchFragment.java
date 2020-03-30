@@ -1,35 +1,28 @@
 package com.wasteless.ui.search;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
-import com.wasteless.models.TestTransaction;
+import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
+import com.wasteless.ui.transaction.TransactionFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements  SearchView.OnQueryTextListener, RadioGroup.OnCheckedChangeListener {
@@ -45,10 +38,10 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
 //        searchViewModel.getTestTransactionsList().observer().
         transactionAdapter = new TransactionAdapter();
-        searchViewModel.getSearchLiveData().observe(getViewLifecycleOwner(), new Observer<List<TestTransaction>>() {
+        searchViewModel.getOnOpenData().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
-            public void onChanged(@Nullable List<TestTransaction> testTransactions) {
-                transactionAdapter.setTestTransactions(testTransactions);
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                transactionAdapter.setTransactions(transactions);
             }
         });
 
@@ -65,33 +58,35 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
 
+        transactionAdapter.setOnTransactionClickListener(new TransactionAdapter.OnTransactionClickListener() {
+            @Override
+            public void onTransactionClick(Transaction transaction) {
+                TransactionFragment transactionFragment = new TransactionFragment();
+
+                //I think that in the end I only need to transfer the ID of the item that was clicked
+                //since we should pull more data from the db in the transaction details-fragment (like actual date, wallet etc).
+
+                //So this is just to test out the process of changing fragments and to design the details
+                Bundle transactionBundle = new Bundle();
+                transactionBundle.putString("description", transaction.description);
+                //transactionBundle.putString("category", transaction.category);
+                transactionBundle.putString("amount", String.valueOf(transaction.amount));
+                transactionFragment.setArguments(transactionBundle);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, transactionFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
         searchField.setOnQueryTextListener(this);
         filterButtons.setOnCheckedChangeListener(this);
 
         super.onCreate(savedInstanceState);
 
-//        prepareData();
-
         return root;
     }
-
-//    private void prepareData() {
-////        Filter filter = new Filter("name");
-////        filters.add(filter);
-////
-////        filter = new Filter("date");
-////        filters.add(filter);
-////
-////        filter = new Filter("tag");
-////        filters.add(filter);
-////
-////        filter = new Filter("category");
-////        filters.add(filter);
-////
-////        filtersAdapter.notifyDataSetChanged();
-//        Log.d("da davai uzhe ", "the shit should be updated right now");
-//    }
 
     @Override
     public void onPause() {
