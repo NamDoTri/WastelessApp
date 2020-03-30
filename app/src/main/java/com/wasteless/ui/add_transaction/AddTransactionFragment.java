@@ -67,7 +67,6 @@ public class AddTransactionFragment extends Fragment {
                     tagsInput.setText("");
                 }
                 else if(s.toString().indexOf(" ") != -1){
-                    Log.i("key",  s.toString());
                     addNewChip(root, tagsInput.getText().toString());
                     tagsInput.setText("");
                 }
@@ -113,7 +112,6 @@ public class AddTransactionFragment extends Fragment {
                 String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
                 String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
                 String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
-                //tags = tags.toString();
 
                 //Validation of all the input fields
                 if(date.trim().length() > 0 &&
@@ -121,14 +119,13 @@ public class AddTransactionFragment extends Fragment {
                         sum.trim().length() > 0 &&
                         description.trim().length() > 0) {
                     if (isIncome == false) {
-                        //Log.i("tag", tags);
-                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category);
+                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, Long.valueOf(1), false, category, tags);
                         successMessage();
                     } else {
                         if (source.trim().length() <= 0) {
                             failedMessage();
                         } else {
-                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source);
+                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, Long.valueOf(1), true, category, source, tags);
                             successMessage();
                         }
                     }
@@ -175,7 +172,7 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private void addNewChip(View root, final String text) {
-        tags.add(text);
+        tags.add(text.trim());
         final Chip chip = new Chip(getContext());
         ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
                 null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
@@ -192,7 +189,6 @@ public class AddTransactionFragment extends Fragment {
                 chipGroup.removeView(chip);
                 tags.remove(chip.getText().toString());
                 String yes = chip.getText().toString();
-                Log.i("tag", String.valueOf(tags.size()));
             }
         });
         chipGroup.addView(chip);
