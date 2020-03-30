@@ -33,6 +33,7 @@ import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeFragment;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class AddTransactionFragment extends Fragment {
     boolean isIncome;
     private ChipGroup chipGroup;
     ArrayList<String> tags = new ArrayList<String>();
+    ArrayList<String> allWalletsNames = new ArrayList<String>();
+
 
     private AddTransactionViewModel addTransactionViewModel;
     private AppDatabase appDatabase;
@@ -101,6 +104,18 @@ public class AddTransactionFragment extends Fragment {
                 R.layout.custom_spinner, categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+
+        Spinner walletSpinner = root.findViewById(R.id.wallet);
+        List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
+        for (int i = 0; i < allWallets.size(); i++) {
+            allWalletsNames.add(i,allWallets.get(i).name);
+            Log.i("array", allWallets.get(i).name);
+        }
+        ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(),
+                R.layout.custom_spinner, allWalletsNames);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        walletSpinner.setAdapter(walletAdapter);
+
         checkTheExpense(root);
 
         // Gather all the input fields together
