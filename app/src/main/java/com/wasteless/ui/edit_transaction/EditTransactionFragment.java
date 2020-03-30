@@ -13,13 +13,18 @@ import androidx.fragment.app.Fragment;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Transaction;
+import com.wasteless.ui.transaction.TransactionViewModel;
 
 public class EditTransactionFragment extends Fragment {
+
+    TransactionViewModel transactionViewModel;
 
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
 
         final Bundle transactionBundle = this.getArguments();
+
+        final Transaction transaction = transactionViewModel.getTransactionById(transactionBundle.getLong("id"));
 
         final EditText dateField = root.findViewById(R.id.date);
         final Spinner categoryField = root.findViewById(R.id.category);
@@ -28,8 +33,10 @@ public class EditTransactionFragment extends Fragment {
         final EditText descriptionField = root.findViewById(R.id.description);
         final EditText sourceField = root.findViewById(R.id.source);
 
-        descriptionField.setText(transactionBundle.getString("description"));
-        sumField.setText(transactionBundle.getString("amount"));
+        dateField.setText(transaction.date);
+        descriptionField.setText(transaction.description);
+        sumField.setText(String.valueOf(transaction.amount));
+
 
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override

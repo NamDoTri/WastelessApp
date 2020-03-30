@@ -5,9 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Transaction;
 
@@ -21,6 +19,10 @@ public class TransactionViewModel extends AndroidViewModel{
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
         mText = new MutableLiveData<>();
         mText.setValue("Transaction Details");
+    }
+
+    public Transaction getTransactionById(Long transactionId){
+        return  transactionRepository.getTransactionById(transactionId);
     }
 
     public void delete(Transaction transaction){

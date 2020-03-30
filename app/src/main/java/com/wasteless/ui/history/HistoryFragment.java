@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
-//import com.wasteless.models.TestTransaction;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
 import com.wasteless.ui.transaction.TransactionAdapter;
@@ -66,9 +65,7 @@ public class HistoryFragment extends Fragment{
 
                 //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
-                transactionBundle.putString("id", String.valueOf(transaction.transactionId));
-                transactionBundle.putString("description", transaction.description);
-                transactionBundle.putString("amount", String.valueOf(transaction.amount));
+                transactionBundle.putLong("id", transaction.transactionId);
                 transactionFragment.setArguments(transactionBundle);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
