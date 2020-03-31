@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -114,9 +116,17 @@ public class HomeViewModel extends AndroidViewModel {
             entries.add(new PieEntry((float) totalAmountPerType, expenseCategories[i]));
         }
 
-        PieDataSet expenseDataSet = new PieDataSet(entries, "Expenses");
-        expenseDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        PieDataSet expensePieDataSet = new PieDataSet(entries, "Expenses");
+        expensePieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
-        return new PieData(expenseDataSet);
+        return new PieData(expensePieDataSet);
+    }
+
+    public BarData getExpenseBarChart(){
+
+        //BarDataSet expenseBarDataSet = new BarDataSet(expenses, "Total expenses per month");
+
+        //return new BarData(month, expenseBarDataSet);
+        return null;
     }
 }

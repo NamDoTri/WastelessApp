@@ -266,12 +266,10 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
+                    <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/expenses_bar_chart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/bar_chart_sample"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/expenses_chart_title" />
@@ -282,9 +280,7 @@
                         android:layout_width="match_parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/expenses_bar_chart">
-
-                    </com.github.mikephil.charting.charts.PieChart>
+                        app:layout_constraintTop_toBottomOf="@id/expenses_bar_chart"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </LinearLayout>

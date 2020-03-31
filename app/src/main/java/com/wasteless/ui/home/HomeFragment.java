@@ -13,7 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
 import com.wasteless.R;
 
@@ -32,6 +34,7 @@ public class HomeFragment extends Fragment {
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
         final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
+        final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -80,6 +83,8 @@ public class HomeFragment extends Fragment {
         PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
         incomePieChart.setData(incomePieChartData);
+
+        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
 
         return root;
     }
