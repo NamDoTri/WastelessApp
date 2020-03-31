@@ -121,6 +121,13 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("onQueryTextChange", "It works: " + newText);
+        searchViewModel.searchTransactionsByDescription(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                Log.d("onQueryTextSubmit", "" + transactions);
+                transactionAdapter.setTransactions(transactions);
+            }
+        });
         return false;
     }
 
