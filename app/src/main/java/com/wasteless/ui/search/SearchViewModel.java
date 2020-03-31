@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.wasteless.models.TestTransaction;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Transaction;
 
