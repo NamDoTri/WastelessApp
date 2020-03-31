@@ -25,6 +25,7 @@ public class SearchViewModel extends AndroidViewModel {
     private MutableLiveData<String> activeFilter;
     private MutableLiveData<List<Transaction>> searchLiveData;
     private LiveData<List<Transaction>> onOpenData;
+    private LiveData<List<Transaction>> onSearchData;
     private List<Transaction> testTransactionsList = new ArrayList<>();
 
     public SearchViewModel(Application application){
@@ -36,6 +37,10 @@ public class SearchViewModel extends AndroidViewModel {
         searchLiveData.setValue(testTransactionsList);
     }
 
+    public void globalSearchHandler(String searchValue) {
+
+    }
+
     public LiveData<List<Transaction>> getOnOpenData() {
         return onOpenData;
     }
@@ -44,6 +49,7 @@ public class SearchViewModel extends AndroidViewModel {
     public LiveData<List<Transaction>> getDataByDate(String date) {
         return transactionRepository.getTransactionsByDate(date);
     }
+
 //    Search transactions by a string in description
 //    public LiveData<List<Transaction>> getSearchLiveData(String description) {
 //        return transactionRepository.getTransactionsByDescription(description);

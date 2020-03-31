@@ -11,10 +11,12 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,11 +74,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
-
-                //I think that in the end I only need to transfer the ID of the item that was clicked
-                //since we should pull more data from the db in the transaction details-fragment (like actual date, wallet etc).
-
-                //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
                 transactionBundle.putString("description", transaction.description);
                 //transactionBundle.putString("category", transaction.category);
@@ -144,8 +141,27 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         Log.d("RadioListener", "button Id: " + checkedId + " was checked!");
         if (checkedId == 2131230857) {
             Log.d("RadioListener", "category");
+//            MutableLiveData<String> category = Transformations.map("category", new Function<String, MutableLiveData<String>>() {
+//                @Override
+//                public MutableLiveData<String> apply(String input) {
+//                    return null;
+//                }
+//            });
+            MutableLiveData<String> category = null;
+            category.observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    s = "category";
+                    Log.d("someShit", "" + s);
+                }
+            });
 //            MutableLiveData<String> category = "category";
-//            searchViewModel.setActiveFilter(category);
+//            searchViewModel.setActiveFilter("category").observe(getViewLifecycleOwner(), new Observer<MutableLiveData<String>>() {
+//                @Override
+//                public void onChanged(MutableLiveData<String> stringMutableLiveData) {
+//
+//                }
+//            });
 //            searchViewModel.setActiveFilter();
         }
 
