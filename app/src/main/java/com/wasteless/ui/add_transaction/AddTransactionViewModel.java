@@ -17,7 +17,6 @@ import java.util.List;
 public class AddTransactionViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
-    private final String[] CATEGORIES = {"Groceries", "Entertainment", "Rent", "Commute"};
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -30,7 +29,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
     }
 
     public List<String> getAllCategories(){
-        return Arrays.asList(CATEGORIES);
+        return Arrays.asList(transactionRepository.getAllCategories());
     }
 
     //TODO: find the most optimal way to input wallet id
