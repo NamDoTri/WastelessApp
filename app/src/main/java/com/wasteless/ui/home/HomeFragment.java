@@ -76,6 +76,10 @@ public class HomeFragment extends Fragment {
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
         expensePieChart.getDescription().setEnabled(false);
         expensePieChart.setData(expensePieChartData);
+        
+        PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
+        PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
+        incomePieChart.setData(incomePieChartData);
 
         return root;
     }

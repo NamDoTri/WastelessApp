@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+<TextView
+    android:id="@+id/day_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:gravity="center"
+    android:textSize="30dp"
+    android:text="Daily goal"/>
+    <EditText
+        android:id="@+id/daily_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="How much do you want to save per day?"
+        android:ems="10"
+        app:layout_constraintTop_toBottomOf="@id/day_text"
+        app:layout_constraintRight_toRightOf="parent"
+        android:inputType="numberDecimal|numberSigned"
+        />
 
     <TextView
-        android:id="@+id/goal_view_title"
+        android:id="@+id/week_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Weekly goal"
+        android:textSize="30dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/daily_goal" />
+
+    <EditText
+        android:id="@+id/weekly_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="How much do you want to save per week?"
+        android:ems="10"
+        app:layout_constraintTop_toBottomOf="@id/week_text"
+        app:layout_constraintRight_toRightOf="parent"
+        android:inputType="numberDecimal|numberSigned"
+        />
+
+    <Button
+        android:id="@+id/submit_goals"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You can view goal details or set new goal here" />
+        android:text="Submit"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/weekly_goal" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
