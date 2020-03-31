@@ -69,6 +69,10 @@ public class TransactionRepository {
         return transactionDao.getTransactionById(transactionId);
     }
 
+    public List<Transaction> getIncomesByMonth(String month){ // mm/yyyy
+        return transactionDao.getIncomesByMonth("%" + month);
+    }
+
     public double getTotalExpenseByDate(String date){
         return transactionDao.getTotalExpenseByDate(date);
     }
