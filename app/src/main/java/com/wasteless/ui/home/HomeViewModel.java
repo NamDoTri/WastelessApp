@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.mikephil.charting.data.PieData;
 
@@ -48,7 +50,6 @@ public class HomeViewModel extends AndroidViewModel {
         incomesAmount = new MutableLiveData<>();
 
         this.getMonthIncomePieChart();
-        this.getMonthlyExpensePieChart();
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -91,8 +92,17 @@ public class HomeViewModel extends AndroidViewModel {
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        for (int i=0; i<expensesThisMonth.size(); i++){
-            entries.add(new PieEntry((float) expensesThisMonth.get(i).amount, expensesThisMonth.get(i).description));
+        String[] expenseCategories = transactionRepository.getAllCategories();
+
+        //Testing mapping
+        Map<String, Double> mappedExpenses = expensesThisMonth.stream().collect(Collectors.groupingBy((Transaction::getType), Collectors.summingDouble(Transaction::getAmount)));
+
+        for (int i=0; i<mappedExpenses.size(); i++){
+            //String expenseCategory = expenseCategories[i];
+
+            //entries.add(new PieEntry((float) expensesThisMonth.get(i).amount, expensesThisMonth.get(i).description));
+
+            entries.add(new PieEntry((float) mappedExpenses), expenseCategories[i]));
         }
 
         PieDataSet expenseDataSet = new PieDataSet(entries, "Expenses");
