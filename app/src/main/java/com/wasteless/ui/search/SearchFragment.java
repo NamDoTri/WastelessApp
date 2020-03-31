@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +32,11 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
     private TransactionAdapter transactionAdapter;
+
+    private int descriptionButtonId;
+    private int dateButtonId;
+    private int tagButtonId;
+    private int categoryButtonId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +58,9 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         RadioButton checkedRadioButton = filterButtons.findViewById(filterButtons.getCheckedRadioButtonId());
         Log.d("chosenFilter", "radio button" + checkedRadioButton.getText());
         searchResultView = root.findViewById(R.id.search_list);
+
+//        Assigning buttonIds
+//        filterButtons.findViewById(root.findIdById(R.id.filter_name))
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
@@ -121,11 +129,65 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("onQueryTextChange", "It works: " + newText);
+        searchViewModel.searchTransactionsByDescription(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                Log.d("onQueryTextSubmit", "" + transactions);
+                transactionAdapter.setTransactions(transactions);
+            }
+        });
         return false;
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        Log.d("RadioListener", "button Id: " + checkedId + "was checked!");
+        Log.d("RadioListener", "button Id: " + checkedId + " was checked!");
+        if (checkedId == 2131230857) {
+            Log.d("RadioListener", "category");
+//            MutableLiveData<String> category = "category";
+//            searchViewModel.setActiveFilter(category);
+//            searchViewModel.setActiveFilter();
+        }
+
+        if (checkedId == 2131230858) {
+            Log.d("RadioListener", "date");
+        }
+
+        if (checkedId == 2131230859) {
+            Log.d("RadioListener", "description");
+        }
+
+        if (checkedId == 2131230860) {
+            Log.d("RadioListener", "tag");
+        }
+//        searchViewModel.setActiveFilter(checkedId);
     }
+
+//    @Override
+//    public void onRadioButtonClicked(View view) {
+//        boolean checked = ((RadioButton) view).isChecked();
+//
+//        // Check which radio button was clicked
+//        switch(view.getId()) {
+//            case R.id.filter_name:
+//                if (checked)
+//                    Log.d("checkedRadioButton", "name");
+//                    break;
+//            case R.id.filter_date:
+//                if (checked)
+//                    // Ninjas rule
+//                    Log.d("checkedRadioButton", "date");
+//                    break;
+//            case R.id.filter_category:
+//                if (checked)
+//                    // Pirates are the best
+//                    Log.d("checkedRadioButton", "category");
+//                    break;
+//            case R.id.filter_tag:
+//                if (checked)
+//                    // Ninjas rule
+//                    Log.d("checkedRadioButton", "tag");
+//                    break;
+//        }
+//    }
 }
