@@ -1,6 +1,7 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,8 +12,20 @@ import androidx.lifecycle.ViewModel;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 
+import com.wasteless.roomdb.entities.Transaction;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -38,6 +51,8 @@ public class HomeViewModel extends AndroidViewModel {
 
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
+
+        this.getMonthIncomePieChart();
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -63,5 +78,14 @@ public class HomeViewModel extends AndroidViewModel {
         Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today);
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
+    }
+
+    public PieData getMonthIncomePieChart(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+        List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
+        Log.i("chart", String.valueOf(incomesThisMonth.size()));
+//        ArrayList pieChartSegments = new ArrayList();
+
+        return new PieData();
     }
 }

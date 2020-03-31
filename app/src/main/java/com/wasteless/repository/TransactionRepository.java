@@ -23,11 +23,29 @@ public class TransactionRepository {
     private final WalletDao walletDao;
     private final TagDao tagDao;
 
+    private final String[] CATEGORIES = {"Groceries", "Entertainment", "Rent", "Commute"};
+    private final String[] INCOMETYPES = {"Salary", "Gift", "Stolen"};
+
     private TransactionRepository(Context context){
         AppDatabase db = AppDatabase.getAppDatabase(context);
         transactionDao = db.transactionDao();
         walletDao = db.walletDao();
         tagDao = db.tagDao();
+    }
+
+    public static TransactionRepository getTransactionRepository(Context context){
+        if(instance == null){
+            instance = new TransactionRepository(context);
+        }
+        return instance;
+    }
+
+    public String[] getAllCategories(){
+        return this.CATEGORIES;
+    }
+
+    public String[] getAllIncomeTypes(){
+        return this.INCOMETYPES;
     }
 
 //    SEARCH TRANSACTION METHODS
@@ -43,19 +61,16 @@ public class TransactionRepository {
         return transactionDao.getTranscationsByDate(date);
     }
 
-    public static TransactionRepository getTransactionRepository(Context context){
-        if(instance == null){
-            instance = new TransactionRepository(context);
-        }
-        return instance;
-    }
-
     public LiveData<List<Transaction>> getAllTransactions(){
         return transactionDao.getAllOrderByDate();
     }
 
     public Transaction getTransactionById(Long transactionId){
         return transactionDao.getTransactionById(transactionId);
+    }
+
+    public List<Transaction> getIncomesByMonth(String month){ // mm/yyyy
+        return transactionDao.getIncomesByMonth("%" + month);
     }
 
     public double getTotalExpenseByDate(String date){
