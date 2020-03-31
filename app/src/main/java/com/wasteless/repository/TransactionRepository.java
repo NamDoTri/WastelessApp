@@ -86,6 +86,10 @@ public class TransactionRepository {
         return transactionDao.getTotalIncomeByDate(date);
     }
 
+    public List<Transaction> getAllExpenses(){
+        return transactionDao.getAllExpenses();
+    }
+
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
         if(transaction.isIncome) throw new Exception("Transaction is not an expense");
 

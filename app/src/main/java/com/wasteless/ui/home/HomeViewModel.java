@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
@@ -19,6 +21,7 @@ import com.wasteless.roomdb.entities.Transaction;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -123,10 +126,38 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public BarData getExpenseBarChart(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+        List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
-        //BarDataSet expenseBarDataSet = new BarDataSet(expenses, "Total expenses per month");
+        ArrayList expenseDays = new ArrayList();
+        ArrayList entries = new ArrayList<>();
+        ArrayList labels = new ArrayList<>();
 
-        //return new BarData(month, expenseBarDataSet);
-        return null;
+        for (int i=0; i<expensesThisMonth.size(); i++){
+            if(expenseDays.contains(expensesThisMonth.get(i).date)){
+                //
+            }
+            else{
+                String date = expensesThisMonth.get(i).date;
+                expenseDays.add(date);
+            }
+        }
+        
+        for (int i=0; i<expenseDays.size(); i++){
+            String expenseDay = (String) expenseDays.get(i);
+
+            double totalAmountPerDay = expensesThisMonth.stream()
+                    .filter(transaction -> transaction.date.equalsIgnoreCase(expenseDay))
+                    .mapToDouble(transaction -> transaction.amount)
+                    .reduce(0, Double::sum);
+
+            entries.add(new BarEntry(i, (float) totalAmountPerDay));
+            labels.add(expenseDay);
+        }
+
+        BarDataSet expenseBarDataSet = new BarDataSet(entries, "Total expenses per day");
+        expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        return new BarData(expenseBarDataSet);
     }
 }

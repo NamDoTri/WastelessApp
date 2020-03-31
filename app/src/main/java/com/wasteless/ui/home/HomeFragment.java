@@ -85,6 +85,7 @@ public class HomeFragment extends Fragment {
         incomePieChart.setData(incomePieChartData);
 
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+        expenseBarChart.setData(expenseBarChartData);
 
         return root;
     }
