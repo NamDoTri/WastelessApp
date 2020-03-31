@@ -1,6 +1,7 @@
 package com.wasteless.ui.search;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.SearchView;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -32,7 +33,7 @@ public class SearchViewModel extends AndroidViewModel {
         super(application);
         searchLiveData = new MutableLiveData<>();
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
-        onOpenData = transactionRepository.getTransactionsByFilterAndDescription(activeFilter.toString(), searchValue.toString());
+        onOpenData = transactionRepository.getTransactionsByFilterAndDescription(activeFilter.getValue(), searchValue.getValue());
     }
 
 //    Getters
@@ -54,10 +55,8 @@ public class SearchViewModel extends AndroidViewModel {
 
 //    Global search handler that assigns the values based on the filter and search values
     public LiveData<List<Transaction>> globalSearchHandler() {
-        return transactionRepository.getTransactionsByFilterAndDescription(activeFilter.toString(), searchValue.toString());
-//        if ( activeFilter ) {
-//
-//        }
+        Log.d("SEX", "" + activeFilter.getValue());
+        return transactionRepository.getTransactionsByFilterAndDescription(activeFilter.getValue(), searchValue.getValue());
     }
 
     public LiveData<List<Transaction>> getOnOpenData() {

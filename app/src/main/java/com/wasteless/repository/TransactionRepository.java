@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TagDao;
@@ -50,7 +51,7 @@ public class TransactionRepository {
 
 //    SEARCH TRANSACTION METHODS
 //    Get transactions by description
-    public LiveData<List<Transaction>> getTransactionsByFilterAndDescription(String  activeFilter, String description) {
+    public LiveData<List<Transaction>> getTransactionsByFilterAndDescription(String activeFilter, String description) {
         String adaptedString = "%" + description + "%";
         return transactionDao.getTransactionsByActiveFilterAndSearchValue(activeFilter, adaptedString);
     }
