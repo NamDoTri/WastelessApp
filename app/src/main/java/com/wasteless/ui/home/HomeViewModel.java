@@ -95,14 +95,19 @@ public class HomeViewModel extends AndroidViewModel {
         String[] expenseCategories = transactionRepository.getAllCategories();
 
         //Testing mapping
-        Map<String, Double> mappedExpenses = expensesThisMonth.stream().collect(Collectors.groupingBy((Transaction::getType), Collectors.summingDouble(Transaction::getAmount)));
+        //Map<Double, expenseCategories> mappedExpenses = expensesThisMonth.stream().collect(Collectors.groupingBy(Transaction::getType, Collectors.summingDouble(Transaction::getAmount)));
 
-        for (int i=0; i<mappedExpenses.size(); i++){
-            //String expenseCategory = expenseCategories[i];
+
+        for (int i=0; i<expensesThisMonth.size(); i++){
+            String expenseCategory = expenseCategories[i];
 
             //entries.add(new PieEntry((float) expensesThisMonth.get(i).amount, expensesThisMonth.get(i).description));
+            double totalAmountPerType = expensesThisMonth.stream()
+                    .filter(transaction -> transaction.type.equalsIgnoreCase(expenseCategory))
+                    .mapToDouble(transaction -> transaction.amount)
+                    .reduce(0, Double::sum);
 
-            entries.add(new PieEntry((float) mappedExpenses), expenseCategories[i]));
+            entries.add(new PieEntry((float) totalAmountPerType, expenseCategories[i]));
         }
 
         PieDataSet expenseDataSet = new PieDataSet(entries, "Expenses");
