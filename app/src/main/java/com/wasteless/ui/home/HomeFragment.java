@@ -5,16 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
 import com.wasteless.R;
 
 import com.wasteless.ui.home.goal.GoalFragment;
@@ -71,6 +71,10 @@ public class HomeFragment extends Fragment {
                 transaction.commit();
             }
         });
+
+        PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
+        PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
+        incomePieChart.setData(incomePieChartData);
 
         return root;
     }

@@ -1,13 +1,10 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
@@ -19,13 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -51,8 +44,6 @@ public class HomeViewModel extends AndroidViewModel {
 
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
-
-        this.getMonthIncomePieChart();
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -83,9 +74,20 @@ public class HomeViewModel extends AndroidViewModel {
     public PieData getMonthIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
-        Log.i("chart", String.valueOf(incomesThisMonth.size()));
-//        ArrayList pieChartSegments = new ArrayList();
 
-        return new PieData();
+        String[] incomeTypes = transactionRepository.getAllCategories(); //TODO: change it to income type after refactoring add transaction viewmodel
+
+        ArrayList pieChartSegments = new ArrayList();
+
+        for(int i = 0; i< incomeTypes.length; i++){
+            String incomeType = incomeTypes[i];
+            double totalIncomeOfThisType = incomesThisMonth.stream()
+                                                        .filter(transaction -> transaction.type.equalsIgnoreCase(incomeType))
+                                                        .mapToDouble(transaction -> transaction.amount)
+                                                        .reduce(0, Double::sum);
+            pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, (float)i));
+        }
+        PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "Income this month");
+        return new PieData(incomeDataSet);
     }
 }
