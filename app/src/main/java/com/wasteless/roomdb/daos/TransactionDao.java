@@ -31,8 +31,8 @@ public interface TransactionDao {
 
     // QUIRIES FOR SEARCH FRAGMENT
     // Query to get transactions with a specific string somewhere in description
-    @Query("SELECT * FROM transactions WHERE description LIKE  :description")
-    LiveData<List<Transaction>> getTransactionsByDescription(String description);
+    @Query("SELECT * FROM transactions WHERE :activeFilter LIKE  :searchValue")
+    LiveData<List<Transaction>> getTransactionsByActiveFilterAndSearchValue(String activeFilter, String searchValue);
 
 //    Query to get transaction with specific date
     @Query("select * from transactions order by date like :date")

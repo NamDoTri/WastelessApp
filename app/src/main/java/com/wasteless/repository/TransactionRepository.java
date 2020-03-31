@@ -50,9 +50,9 @@ public class TransactionRepository {
 
 //    SEARCH TRANSACTION METHODS
 //    Get transactions by description
-    public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
+    public LiveData<List<Transaction>> getTransactionsByFilterAndDescription(String  activeFilter, String description) {
         String adaptedString = "%" + description + "%";
-        return transactionDao.getTransactionsByDescription(adaptedString);
+        return transactionDao.getTransactionsByActiveFilterAndSearchValue(activeFilter, adaptedString);
     }
 
 //    Get transactions by date

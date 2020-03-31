@@ -52,6 +52,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                 transactionAdapter.setTransactions(transactions);
             }
         });
+        searchViewModel.setActiveFilter("date");
+
 
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 //     Initialised view objects
@@ -96,6 +98,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+    }
+
+    @Override
     public void onPause() {
         Log.d("onPause", "It has stopped at this point");
         super.onPause();
@@ -104,6 +112,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public void onStop() {
         Log.d("onStop",  "it has stopped at this point");
+//        onSaveInstanceState();
         super.onStop();
     };
 
@@ -112,27 +121,29 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "It works: " + query);
 //        LiveData<List<Transaction>> searchedData = searchViewModel.searchTransactionsByDescription(query);
-        searchViewModel.searchTransactionsByDescription(query).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
-            @Override
-            public void onChanged(@Nullable List<Transaction> transactions) {
-                Log.d("onQueryTextSubmit", "" + transactions);
-                transactionAdapter.setTransactions(transactions);
-            }
-        });
+//        searchViewModel.searchTransactionsByDescription(query).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Transaction> transactions) {
+//                Log.d("onQueryTextSubmit", "" + transactions);
+//                transactionAdapter.setTransactions(transactions);
+//            }
+//        });
 //        transactionAdapter.setTransactions(searchedData);
+        searchViewModel.setSearchValue(query);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("onQueryTextChange", "It works: " + newText);
-        searchViewModel.searchTransactionsByDescription(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
-            @Override
-            public void onChanged(@Nullable List<Transaction> transactions) {
-                Log.d("onQueryTextSubmit", "" + transactions);
-                transactionAdapter.setTransactions(transactions);
-            }
-        });
+//        searchViewModel.globalSearchHandler(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Transaction> transactions) {
+//                Log.d("onQueryTextSubmit", "" + transactions);
+//                transactionAdapter.setTransactions(transactions);
+//            }
+//        });
+        searchViewModel.setSearchValue(newText);
         return false;
     }
 
@@ -142,75 +153,29 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         if (checkedId == R.id.filter_category) {
             Log.d("RadioListener", "category");
             searchViewModel.setActiveFilter("category");
-            String activeFilter = searchViewModel.getActiveFilter();
+            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
             Log.d("RadioListener", "" + activeFilter);
-//            category.setValue("category");
-//            searchViewModel.setActiveFilter(category);
-//            category.observe(this, new Observer<String>() {
-//                @Override
-//                public void onChanged(String s) {
-//                    s = "category";
-//                    Log.d("someShit", "" + s);
-//                }
-//            });
-//            MutableLiveData<String> category = "category";
-//            searchViewModel.setActiveFilter("category").observe(getViewLifecycleOwner(), new Observer<MutableLiveData<String>>() {
-//                @Override
-//                public void onChanged(MutableLiveData<String> stringMutableLiveData) {
-//
-//                }
-//            });
-//            searchViewModel.setActiveFilter();
         }
 
         if (checkedId == R.id.filter_date) {
             Log.d("RadioListener", "date");
             searchViewModel.setActiveFilter("date");
-            String activeFilter = searchViewModel.getActiveFilter();
+            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
             Log.d("RadioListener", "" + activeFilter);
         }
 
         if (checkedId == R.id.filter_name) {
             Log.d("RadioListener", "description");
             searchViewModel.setActiveFilter("description");
-            String activeFilter = searchViewModel.getActiveFilter();
+            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
             Log.d("RadioListener", "" + activeFilter);
         }
 
         if (checkedId == R.id.filter_tag) {
             Log.d("RadioListener", "tag");
             searchViewModel.setActiveFilter("tag");
-            String activeFilter = searchViewModel.getActiveFilter();
+            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
             Log.d("RadioListener", "" + activeFilter);
         }
-//        searchViewModel.setActiveFilter(checkedId);
     }
-
-//    @Override
-//    public void onRadioButtonClicked(View view) {
-//        boolean checked = ((RadioButton) view).isChecked();
-//
-//        // Check which radio button was clicked
-//        switch(view.getId()) {
-//            case R.id.filter_name:
-//                if (checked)
-//                    Log.d("checkedRadioButton", "name");
-//                    break;
-//            case R.id.filter_date:
-//                if (checked)
-//                    // Ninjas rule
-//                    Log.d("checkedRadioButton", "date");
-//                    break;
-//            case R.id.filter_category:
-//                if (checked)
-//                    // Pirates are the best
-//                    Log.d("checkedRadioButton", "category");
-//                    break;
-//            case R.id.filter_tag:
-//                if (checked)
-//                    // Ninjas rule
-//                    Log.d("checkedRadioButton", "tag");
-//                    break;
-//        }
-//    }
 }

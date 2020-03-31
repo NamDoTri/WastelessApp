@@ -21,8 +21,8 @@ public class SearchViewModel extends AndroidViewModel {
 
     private TransactionRepository transactionRepository;
 
-    private MutableLiveData<String> searchValue;
-    private String activeFilter;
+    private MutableLiveData<String> searchValue = new MutableLiveData<String>();
+    private MutableLiveData<String> activeFilter = new MutableLiveData<String>();
     private MutableLiveData<List<Transaction>> searchLiveData;
     private LiveData<List<Transaction>> onOpenData;
     private LiveData<List<Transaction>> onSearchData;
@@ -32,13 +32,30 @@ public class SearchViewModel extends AndroidViewModel {
         super(application);
         searchLiveData = new MutableLiveData<>();
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
-        onOpenData = transactionRepository.getAllTransactions();
-//        populateList();
-        searchLiveData.setValue(testTransactionsList);
+        onOpenData = transactionRepository.getTransactionsByFilterAndDescription(activeFilter.toString(), searchValue.toString());
     }
 
-    public void globalSearchHandler(String searchValue) {
+//    Getters
+    public MutableLiveData<String> getActiveFilter() {
+    return activeFilter;
+}
 
+//    Setters
+    public void setActiveFilter(String filter) {
+        activeFilter.setValue(filter);
+        globalSearchHandler();
+    }
+
+    public void setSearchValue(String searchV) {
+        searchValue.setValue(searchV);
+        globalSearchHandler();
+    }
+
+//    Global search handler that assigns the values based on the filter and search values
+    public void globalSearchHandler() {
+//        if ( activeFilter ) {
+//
+//        }
     }
 
     public LiveData<List<Transaction>> getOnOpenData() {
@@ -55,22 +72,10 @@ public class SearchViewModel extends AndroidViewModel {
 //        return transactionRepository.getTransactionsByDescription(description);
 //    }
 
+//    searchValue
+
 //    TODO add a search by description functionality here
-    public LiveData<List<Transaction>> searchTransactionsByDescription(String  description) {
-        return transactionRepository.getTransactionsByDescription(description);
-    }
-
-    public void setActiveFilter(String filter) {
-        this.activeFilter = filter;
-    }
-
-    public void setSearchValue(MutableLiveData<String> searchValue) {
-        this.searchValue = searchValue;
-    }
-
-    public String getActiveFilter() {
-        return activeFilter;
-    }
-
-
+//    public LiveData<List<Transaction>> searchTransactionsByDescription(searchValue) {
+//        return transactionRepository.getTransactionsByDescription(description);
+//    }
 }
