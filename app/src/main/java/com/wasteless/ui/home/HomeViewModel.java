@@ -89,19 +89,13 @@ public class HomeViewModel extends AndroidViewModel {
     public PieData getMonthlyExpensePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
+        String[] expenseCategories = transactionRepository.getAllCategories();
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        String[] expenseCategories = transactionRepository.getAllCategories();
-
-        //Testing mapping
-        //Map<Double, expenseCategories> mappedExpenses = expensesThisMonth.stream().collect(Collectors.groupingBy(Transaction::getType, Collectors.summingDouble(Transaction::getAmount)));
-
-
-        for (int i=0; i<expensesThisMonth.size(); i++){
+        for (int i=0; i<expenseCategories.length; i++){
             String expenseCategory = expenseCategories[i];
 
-            //entries.add(new PieEntry((float) expensesThisMonth.get(i).amount, expensesThisMonth.get(i).description));
             double totalAmountPerType = expensesThisMonth.stream()
                     .filter(transaction -> transaction.type.equalsIgnoreCase(expenseCategory))
                     .mapToDouble(transaction -> transaction.amount)
