@@ -22,7 +22,7 @@ public class SearchViewModel extends AndroidViewModel {
     private TransactionRepository transactionRepository;
 
     private MutableLiveData<String> searchValue;
-    private MutableLiveData<String> activeFilter;
+    private String activeFilter;
     private MutableLiveData<List<Transaction>> searchLiveData;
     private LiveData<List<Transaction>> onOpenData;
     private LiveData<List<Transaction>> onSearchData;
@@ -60,7 +60,7 @@ public class SearchViewModel extends AndroidViewModel {
         return transactionRepository.getTransactionsByDescription(description);
     }
 
-    public void setActiveFilter(MutableLiveData<String> filter) {
+    public void setActiveFilter(String filter) {
         this.activeFilter = filter;
     }
 
@@ -68,7 +68,7 @@ public class SearchViewModel extends AndroidViewModel {
         this.searchValue = searchValue;
     }
 
-    public MutableLiveData<String> getActiveFilter() {
+    public String getActiveFilter() {
         return activeFilter;
     }
 

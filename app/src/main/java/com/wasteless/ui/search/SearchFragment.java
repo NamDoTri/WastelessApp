@@ -38,7 +38,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private int descriptionButtonId;
     private int dateButtonId;
     private int tagButtonId;
-    private int categoryButtonId;
+    private MutableLiveData<String> category;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -139,22 +139,20 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         Log.d("RadioListener", "button Id: " + checkedId + " was checked!");
-        if (checkedId == 2131230857) {
+        if (checkedId == R.id.filter_category) {
             Log.d("RadioListener", "category");
-//            MutableLiveData<String> category = Transformations.map("category", new Function<String, MutableLiveData<String>>() {
+            searchViewModel.setActiveFilter("category");
+            String activeFilter = searchViewModel.getActiveFilter();
+            Log.d("RadioListener", "" + activeFilter);
+//            category.setValue("category");
+//            searchViewModel.setActiveFilter(category);
+//            category.observe(this, new Observer<String>() {
 //                @Override
-//                public MutableLiveData<String> apply(String input) {
-//                    return null;
+//                public void onChanged(String s) {
+//                    s = "category";
+//                    Log.d("someShit", "" + s);
 //                }
 //            });
-            MutableLiveData<String> category = null;
-            category.observe(this, new Observer<String>() {
-                @Override
-                public void onChanged(String s) {
-                    s = "category";
-                    Log.d("someShit", "" + s);
-                }
-            });
 //            MutableLiveData<String> category = "category";
 //            searchViewModel.setActiveFilter("category").observe(getViewLifecycleOwner(), new Observer<MutableLiveData<String>>() {
 //                @Override
@@ -165,16 +163,25 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 //            searchViewModel.setActiveFilter();
         }
 
-        if (checkedId == 2131230858) {
+        if (checkedId == R.id.filter_date) {
             Log.d("RadioListener", "date");
+            searchViewModel.setActiveFilter("date");
+            String activeFilter = searchViewModel.getActiveFilter();
+            Log.d("RadioListener", "" + activeFilter);
         }
 
-        if (checkedId == 2131230859) {
+        if (checkedId == R.id.filter_name) {
             Log.d("RadioListener", "description");
+            searchViewModel.setActiveFilter("description");
+            String activeFilter = searchViewModel.getActiveFilter();
+            Log.d("RadioListener", "" + activeFilter);
         }
 
-        if (checkedId == 2131230860) {
+        if (checkedId == R.id.filter_tag) {
             Log.d("RadioListener", "tag");
+            searchViewModel.setActiveFilter("tag");
+            String activeFilter = searchViewModel.getActiveFilter();
+            Log.d("RadioListener", "" + activeFilter);
         }
 //        searchViewModel.setActiveFilter(checkedId);
     }
