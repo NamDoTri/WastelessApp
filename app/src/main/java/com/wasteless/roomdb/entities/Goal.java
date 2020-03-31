@@ -16,8 +16,8 @@ public class Goal
     public String goalName;
 
     @ColumnInfo(name = "timeLeft")
-
     public String timeLeft;
+
     public Goal(String goalName, String timeLeft){
         this.goalName = goalName;
         this.timeLeft = timeLeft;
