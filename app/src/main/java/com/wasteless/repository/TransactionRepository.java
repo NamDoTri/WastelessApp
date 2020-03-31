@@ -31,9 +31,16 @@ public class TransactionRepository {
     }
 
 //    SEARCH TRANSACTION METHODS
-
+//    Get transactions by description
     public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
-        return transactionDao.getTransactionsByDescription(description);
+        String adaptedString = "%" + description + "%";
+        return transactionDao.getTransactionsByDescription(adaptedString);
+    }
+
+//    Get transactions by date
+    public LiveData<List<Transaction>> getTransactionsByDate(String date) {
+//        String adaptedString = "%" + description + "%";
+        return transactionDao.getTranscationsByDate(date);
     }
 
     public static TransactionRepository getTransactionRepository(Context context){
