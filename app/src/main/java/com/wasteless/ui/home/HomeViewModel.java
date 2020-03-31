@@ -3,12 +3,11 @@ package com.wasteless.ui.home;
 import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.github.mikephil.charting.data.PieEntry;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 
@@ -19,13 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -36,6 +29,8 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> balanceAmount;
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
+
+    private LiveData<List<Transaction>> expensesThisMonth;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -53,6 +48,7 @@ public class HomeViewModel extends AndroidViewModel {
         incomesAmount = new MutableLiveData<>();
 
         this.getMonthIncomePieChart();
+        this.getMonthlyExpenses();
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -87,5 +83,12 @@ public class HomeViewModel extends AndroidViewModel {
 //        ArrayList pieChartSegments = new ArrayList();
 
         return new PieData();
+    }
+
+    LiveData<List<Transaction>> getMonthlyExpenses(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+        expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
+
+        return expensesThisMonth;
     }
 }

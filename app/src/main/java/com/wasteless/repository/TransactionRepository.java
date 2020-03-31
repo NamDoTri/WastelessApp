@@ -69,8 +69,13 @@ public class TransactionRepository {
         return transactionDao.getTransactionById(transactionId);
     }
 
+    //GET METHODS FOR MONTHLY INCOMES & EXPENSES
     public List<Transaction> getIncomesByMonth(String month){ // mm/yyyy
         return transactionDao.getIncomesByMonth("%" + month);
+    }
+
+    public LiveData<List<Transaction>> getExpensesByMonth(String month){ // mm/yyyy
+        return transactionDao.getExpensesByMonth("%" + month);
     }
 
     public double getTotalExpenseByDate(String date){
