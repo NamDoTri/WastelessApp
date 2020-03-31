@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 
@@ -30,8 +32,6 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
 
-    private LiveData<List<Transaction>> expensesThisMonth;
-
     public HomeViewModel(Application application) {
         super(application);
         walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
@@ -48,7 +48,7 @@ public class HomeViewModel extends AndroidViewModel {
         incomesAmount = new MutableLiveData<>();
 
         this.getMonthIncomePieChart();
-        this.getMonthlyExpenses();
+        this.getMonthlyExpensePieChart();
     }
 
     public LiveData<String> getBudgetAmount() {
@@ -85,10 +85,19 @@ public class HomeViewModel extends AndroidViewModel {
         return new PieData();
     }
 
-    LiveData<List<Transaction>> getMonthlyExpenses(){
+    public PieData getMonthlyExpensePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
+        List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
-        return expensesThisMonth;
+        ArrayList<PieEntry> entries = new ArrayList<>();
+
+        for (int i=0; i<expensesThisMonth.size(); i++){
+            entries.add(new PieEntry((float) expensesThisMonth.get(i).amount, expensesThisMonth.get(i).description));
+        }
+
+        PieDataSet expenseDataSet = new PieDataSet(entries, "Expenses");
+        expenseDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        return new PieData(expenseDataSet);
     }
 }

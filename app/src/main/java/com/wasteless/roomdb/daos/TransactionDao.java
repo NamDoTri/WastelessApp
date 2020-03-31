@@ -65,7 +65,7 @@ public interface TransactionDao {
     List<Transaction> getIncomesByMonth(String month);
 
     @Query("select * from transactions where isIncome = 0 and date like :month")
-    LiveData<List<Transaction>> getExpensesByMonth(String month);
+    List<Transaction> getExpensesByMonth(String month);
 
     // query expenses
     @Query("select * from transactions where isIncome = 0")

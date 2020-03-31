@@ -44,6 +44,15 @@ public class Transaction {
     @ColumnInfo(name = "source")
     public String source;
 
+    //COUPLE OF TEST GETTERS
+    public String getType() {
+        return type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
     //tags are stored in a separate table
 
     //constructor for expense

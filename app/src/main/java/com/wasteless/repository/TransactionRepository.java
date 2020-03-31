@@ -74,7 +74,7 @@ public class TransactionRepository {
         return transactionDao.getIncomesByMonth("%" + month);
     }
 
-    public LiveData<List<Transaction>> getExpensesByMonth(String month){ // mm/yyyy
+    public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
         return transactionDao.getExpensesByMonth("%" + month);
     }
 
