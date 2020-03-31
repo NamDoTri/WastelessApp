@@ -46,13 +46,15 @@ public class SearchViewModel extends AndroidViewModel {
         globalSearchHandler();
     }
 
-    public void setSearchValue(String searchV) {
+    public LiveData<List<Transaction>> setSearchValue(String searchV) {
         searchValue.setValue(searchV);
-        globalSearchHandler();
+        LiveData<List<Transaction>> transactions = globalSearchHandler();
+        return transactions;
     }
 
 //    Global search handler that assigns the values based on the filter and search values
-    public void globalSearchHandler() {
+    public LiveData<List<Transaction>> globalSearchHandler() {
+        return transactionRepository.getTransactionsByFilterAndDescription(activeFilter.toString(), searchValue.toString());
 //        if ( activeFilter ) {
 //
 //        }

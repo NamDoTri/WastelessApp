@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
@@ -136,14 +137,15 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("onQueryTextChange", "It works: " + newText);
-//        searchViewModel.globalSearchHandler(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Transaction> transactions) {
-//                Log.d("onQueryTextSubmit", "" + transactions);
-//                transactionAdapter.setTransactions(transactions);
-//            }
-//        });
-        searchViewModel.setSearchValue(newText);
+        searchViewModel.setSearchValue(newText).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                Log.d("onQueryTextSubmit", "" + transactions);
+                transactionAdapter.setTransactions(transactions);
+            }
+        });
+//        LiveData<List<Transaction>> transactions = searchViewModel.setSearchValue(newText);
+//        transactionAdapter.setTransactions(transactions);
         return false;
     }
 
