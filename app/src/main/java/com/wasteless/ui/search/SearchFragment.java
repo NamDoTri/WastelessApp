@@ -77,10 +77,18 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
+//                Bundle transactionBundle = new Bundle();
+//                transactionBundle.putString("description", transaction.description);
+//                //transactionBundle.putString("category", transaction.category);
+//                transactionBundle.putString("amount", String.valueOf(transaction.amount));
+//                transactionFragment.setArguments(transactionBundle);
+//
+//                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.nav_host_fragment, transactionFragment);
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
                 Bundle transactionBundle = new Bundle();
-                transactionBundle.putString("description", transaction.description);
-                //transactionBundle.putString("category", transaction.category);
-                transactionBundle.putString("amount", String.valueOf(transaction.amount));
+                transactionBundle.putLong("id", transaction.transactionId);
                 transactionFragment.setArguments(transactionBundle);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
