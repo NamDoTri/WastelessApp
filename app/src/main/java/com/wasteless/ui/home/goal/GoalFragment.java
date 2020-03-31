@@ -14,6 +14,9 @@ import com.wasteless.R;
 
 import com.wasteless.ui.home.HomeViewModel;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class GoalFragment extends Fragment {
     private GoalViewModel goalViewModel;
 
@@ -25,7 +28,10 @@ public class GoalFragment extends Fragment {
             public void onClick(View v) {
                 String dailyGoal = ((EditText) goalFragmentView.findViewById(R.id.daily_goal)).getText().toString();
                 String weeklyGoal = ((EditText) goalFragmentView.findViewById(R.id.weekly_goal)).getText().toString();
-                goalViewModel.insertGoal("yes","1231231");
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                String date = dtf.format(now);
+                goalViewModel.insertGoal("month", date, Double.parseDouble(dailyGoal));
                 Log.i("goals", dailyGoal);
             }
         });

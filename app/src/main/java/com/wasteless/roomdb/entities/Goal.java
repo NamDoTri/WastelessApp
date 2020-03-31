@@ -12,15 +12,21 @@ public class Goal
     @PrimaryKey (autoGenerate = true)
     public int id;
 
-    @ColumnInfo(name = "goalName")
-    public String goalName;
+    @ColumnInfo(name = "goalType")
+    public String goalType;
 
-    @ColumnInfo(name = "timeLeft")
-    public String timeLeft;
+    @ColumnInfo(name = "timeOfCreation")
+    public String timeOfCreation;
+    
+    @ColumnInfo(name = "amountOfMoney")
+    public double amountOfMoney;
 
-    public Goal(String goalName, String timeLeft){
-        this.goalName = goalName;
-        this.timeLeft = timeLeft;
+    public Goal(String goalType, String timeOfCreation, double amountOfMoney){
+        this.goalType = goalType;
+        this.timeOfCreation = timeOfCreation;
+        this.amountOfMoney = amountOfMoney;
         Log.i("Database", "Goal created");
     }
+
+
 }

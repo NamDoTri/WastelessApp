@@ -15,8 +15,8 @@ public class GoalViewModel extends AndroidViewModel {
         super(application);
         goalRepository = goalRepository.getGoalRepository(application.getApplicationContext());
     }
-    public void insertGoal(String name, String date){
-        Goal newGoal = new Goal(name, date);
+    public void insertGoal(String type, String date, double goal){
+        Goal newGoal = new Goal(type, date, goal);
         try{
             goalRepository.insertGoal(newGoal);
 

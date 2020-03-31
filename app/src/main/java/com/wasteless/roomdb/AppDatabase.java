@@ -46,7 +46,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             new Wallet("wallet 2",500)
                     );
                     getAppDatabase(context).goalDao().insertAll(
-                            new Goal("name","dueTo")
+                            new Goal("month","31.3.2020", 123.4)
                     );
                     getAppDatabase(context).transactionDao().insertAll(
                             new Transaction("25/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
