@@ -234,24 +234,24 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/expense_pie_chart_title"
+                        android:id="@+id/income_pie_chart_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Expenses this month"
+                        android:text="Incomes this month"
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/expense_pie_chart"
+                        android:id="@+id/income_pie_chart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:src="@drawable/pie_chart_sample"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/expense_pie_chart_title" />
+                        app:layout_constraintTop_toBottomOf="@+id/income_pie_chart_title" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout

@@ -61,6 +61,9 @@ public interface TransactionDao {
     @Query("select * from transactions where wallet = :walletId and isIncome = 1")
     List<Transaction> getIncomesByWallet(Long walletId);
 
+    @Query("select * from transactions where isIncome = 1 and date regexp ':month$'")
+    List<Transaction> getIncomesByMonth(String month);
+
     // query expenses
     @Query("select * from transactions where isIncome = 0")
     List<Transaction> getAllExpenses();
