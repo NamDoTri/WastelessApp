@@ -1,37 +1,28 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 
-import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -110,7 +101,6 @@ public class HomeViewModel extends AndroidViewModel {
                                                         .filter(transaction -> transaction.type.equalsIgnoreCase(incomeType))
                                                         .mapToDouble(transaction -> transaction.amount)
                                                         .reduce(0, Double::sum);
-            // Log.i("chart", "Type: " + incomeType + "  Amount: " + String.valueOf(totalIncomeOfThisType));
             if(totalIncomeOfThisType != 0.0) pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, incomeType));
         }
         PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "");
@@ -181,13 +171,6 @@ public class HomeViewModel extends AndroidViewModel {
     public void changeWallet(String movement){
         int currentWallet = currentlyDisplayWalletIndex.getValue();
 
-        //TODO: remove this
-        List<Tag> tagAssoc = transactionRepository.getAllTags();
-        Log.i("tag", "even this get hit. tagAssoc: " + String.valueOf(tagAssoc));
-        for(Tag tag : tagAssoc){
-            Log.i("tag", "Tag name: " + tag);
-        }
-
         if(movement.equalsIgnoreCase("prev")){
             currentWallet = currentWallet == -1 ? (walletRepository.getAllWallets().size() - 1) : (currentWallet - 1);
             currentlyDisplayWalletIndex.setValue(currentWallet);
@@ -195,8 +178,6 @@ public class HomeViewModel extends AndroidViewModel {
         else if(movement.equalsIgnoreCase("next")){
             currentWallet = (currentWallet == walletRepository.getAllWallets().size() - 1) ? -1 : (currentWallet + 1);
             currentlyDisplayWalletIndex.setValue(currentWallet);
-        }else{
-
         }
     }
 }

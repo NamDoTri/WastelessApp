@@ -98,8 +98,4 @@ public interface TransactionDao {
 
     @Delete
     void delete(Transaction transaction);
-
-    //TODO: These queries are for testing. Remove them before production mode
-    @Query("select tag from tags")
-    List<String> getAllTagAssoc();
 }

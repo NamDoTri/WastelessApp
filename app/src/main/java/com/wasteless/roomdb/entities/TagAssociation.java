@@ -1,7 +1,5 @@
 package com.wasteless.roomdb.entities;
 
-import android.util.EventLogTags;
-
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;

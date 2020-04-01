@@ -163,9 +163,6 @@ public class TransactionRepository {
     }
 
     private void handleTags(Long rowId, ArrayList<String> tags){
-        Log.i("tag", "rowId: " + String.valueOf(rowId));
-        Log.i("tag", "tags: " + String.valueOf(tags));
-        //insert to tag table
         ArrayList<Tag> tagsToInsert = new ArrayList<>();
         ArrayList<TagAssociation> tagAssociationsToInsert = new ArrayList<>();
 
@@ -173,11 +170,8 @@ public class TransactionRepository {
             tagsToInsert.add(new Tag(tagName));
             tagAssociationsToInsert.add(new TagAssociation(rowId, tagName));
         }
-
-        List<Long> insertedTags = tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()]));
-        List<Long> insertedTagAssoc = tagDao.insertAllTagAssociation(tagAssociationsToInsert.toArray(new TagAssociation[tagAssociationsToInsert.size()]));
-        Log.i("tag", "inserted tags: " + String.valueOf(insertedTags));
-        Log.i("tag", "inserted tag assoc: " + String.valueOf(insertedTagAssoc));
+        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()]));
+        tagDao.insertAllTagAssociation(tagAssociationsToInsert.toArray(new TagAssociation[tagAssociationsToInsert.size()]));
     }
 
     public void delete(Transaction transaction){
@@ -187,10 +181,4 @@ public class TransactionRepository {
     public void update(Transaction transaction){
         transactionDao.updateAll(transaction);
     }
-
-    //TODO: remove these
-    public List<Tag> getAllTags(){
-        return tagDao.getAll();
-    }
-
 }

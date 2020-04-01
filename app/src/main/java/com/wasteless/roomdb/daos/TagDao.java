@@ -35,13 +35,6 @@ public interface TagDao {
     @Query("select transactionId from tag_assoc where tag =:tagName")
     List<Long> getAllTransactionIdsOf(String tagName);
 
-    //TODO: experiment with specifying different entities for insert and update
-//    @Query("insert into tag_assoc(transactionId, tag) values (:transactionId, :tagName)")
-//    void insertTagAssociation(Long transactionId, String tagName);
-//
-//    @Query("delete from tag_assoc where transactionId = :transactionId and tag = :tagName")
-//    void deleteTagAssociation(Long transactionId, String tagName);
-
     @Insert(entity = TagAssociation.class, onConflict = OnConflictStrategy.IGNORE)
     List<Long> insertAllTagAssociation(TagAssociation... tagAssociations);
 

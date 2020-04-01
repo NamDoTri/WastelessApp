@@ -70,8 +70,6 @@ public class AddTransactionFragment extends Fragment {
         inputType = root.findViewById(R.id.type);
         inputWallet = root.findViewById(R.id.wallet);
         inputSource = root.findViewById(R.id.source);
-
-        //TODO
         inputTags = root.findViewById(R.id.add_tags);
         chipGroup = root.findViewById(R.id.chipGroup);
 
@@ -133,7 +131,7 @@ public class AddTransactionFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                addTransactionViewModel.getDate().setValue(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy //TODO
+                                addTransactionViewModel.getDate().setValue(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy
                             }
                         }, year, month, day);
                 picker.show();
@@ -199,7 +197,7 @@ public class AddTransactionFragment extends Fragment {
                 }
                 else if(s.toString().indexOf(" ") != -1){
                     addTransactionViewModel.getTags().setValue(tags);
-                    addNewChip(root, inputTags.getText().toString()); //TODO
+                    addNewChip(root, inputTags.getText().toString());
                     inputTags.setText("");
                 }
             }
