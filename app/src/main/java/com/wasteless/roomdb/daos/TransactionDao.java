@@ -79,6 +79,9 @@ public interface TransactionDao {
     @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 0 and date = :date")
     Double getTotalExpenseByDate(String date);
 
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 0 and date like :month")
+    Double getTotalExpensesByMonth(String month);
+
     @Query("select * from transactions where type = :type")
     List<Transaction> getExpensesByCategory(String type);
 
@@ -98,4 +101,5 @@ public interface TransactionDao {
 
     @Delete
     void delete(Transaction transaction);
+
 }
