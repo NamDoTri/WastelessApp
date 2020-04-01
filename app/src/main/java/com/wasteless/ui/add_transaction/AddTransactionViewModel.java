@@ -86,9 +86,9 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return walletRepository.getAllWallets();
     }
 
-    public List<String> getAllCategories(){
-        return Arrays.asList(transactionRepository.getAllCategories());
-    }
+    public List<String> getAllCategories(){return Arrays.asList(transactionRepository.getAllCategories());}
+    public List<String> getAllIncomeTypes(){return Arrays.asList(transactionRepository.getAllIncomeTypes());}
+
 
     public boolean handleSubmitButtonPress(){
         boolean insertSuccess = true;

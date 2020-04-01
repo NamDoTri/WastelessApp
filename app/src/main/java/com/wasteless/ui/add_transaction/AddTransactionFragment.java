@@ -155,10 +155,7 @@ public class AddTransactionFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView){}
         });
         // category selection menu
-        List<String> categoryList = addTransactionViewModel.getAllCategories();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, categoryList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        inputType.setAdapter(dataAdapter);
+        inputType.setAdapter(this.renderTypeDropdownMenu());
 
         // handle wallet
         addTransactionViewModel.getWalletId().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -234,6 +231,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 toggleIncomeView(root);
+                inputType.setAdapter(renderTypeDropdownMenu());
             }
         });
         toggleIncomeView(root);
@@ -323,5 +321,13 @@ public class AddTransactionFragment extends Fragment {
                 }
             }
         });
+    }
+    private ArrayAdapter renderTypeDropdownMenu(){
+        boolean isIncome = addTransactionViewModel.getIsIncome().getValue();
+        List<String> categoryList = addTransactionViewModel.getAllCategories();
+        List<String> incomeTypeList = addTransactionViewModel.getAllIncomeTypes();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, isIncome ? incomeTypeList : categoryList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return dataAdapter;
     }
 }
