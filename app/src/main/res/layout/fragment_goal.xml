@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/day_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
@@ -28,13 +27,11 @@
                 android:textSize="30dp"
                 android:text="Daily goal"/>
             <EditText
-                android:id="@+id/daily_goal"
+                android:id="@+id/day_goal_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="How much do you want to save per day?"
                 android:ems="10"
-                app:layout_constraintTop_toBottomOf="@id/day_text"
-                app:layout_constraintRight_toRightOf="parent"
                 android:inputType="numberDecimal|numberSigned"
                 />
         </LinearLayout>
@@ -51,30 +48,45 @@
 </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/month_part"
+        android:id="@+id/month"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/day"
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="vertical"
         >
+        <LinearLayout
+            android:id="@+id/month_part"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:gravity="center"
+                android:textSize="30dp"
+                android:text="Monthly goal"/>
+            <EditText
+                android:id="@+id/month_goal_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="How much do you want to save per month?"
+                android:ems="10"
+                android:inputType="numberDecimal|numberSigned"
+                />
+        </LinearLayout>
         <TextView
-            android:id="@+id/month_text"
+            android:id="@+id/month_goal_text"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:gravity="center"
             android:textSize="30dp"
-            android:text="Monthly goal"/>
-        <EditText
-            android:id="@+id/monthly_goal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="How much do you want to save per month?"
-            android:ems="10"
-            android:inputType="numberDecimal|numberSigned"
-            />
+            android:text=""/>
     </LinearLayout>
 
 
@@ -90,7 +102,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/month_part" />
+        app:layout_constraintTop_toBottomOf="@+id/month" />
 
 
 

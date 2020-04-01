@@ -16,8 +16,8 @@ public class GoalViewModel extends AndroidViewModel {
         goalRepository = goalRepository.getGoalRepository(application.getApplicationContext());
     }
 
-    public void insertDailyGoal(String date, double goal){
-        Goal newGoal = new Goal("daily", date, goal);
+    public void insertGoalByType(String date, double goal, String type){
+        Goal newGoal = new Goal(type, date, goal);
         try{
             goalRepository.insertGoal(newGoal);
 
@@ -33,10 +33,10 @@ public class GoalViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
     }
-    public Goal getDailyGoal(){
+    public Goal getGoalByType(String type){
         Goal dailyGoal = null;
         try{
-            dailyGoal = goalRepository.getGoalByType("daily");
+            dailyGoal = goalRepository.getGoalByType(type);
            Log.i("goal", String.valueOf(dailyGoal.amountOfMoney));
 
         }catch(Exception e){
