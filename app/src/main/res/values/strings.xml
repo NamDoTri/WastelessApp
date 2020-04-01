@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <!--  Search strings  -->
     <string name="title_search">Search</string>
-    <string name="filter_name" > Name </string>
+    <string name="filter_description" > Description </string>
     <string name="filter_date" > Date </string>
     <string name="filter_category" > Category </string>
     <string name="filter_tag" > Tag </string>
