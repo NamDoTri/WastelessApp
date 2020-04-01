@@ -30,7 +30,7 @@ public class EditTransactionFragment extends Fragment {
 
         final EditText dateField = root.findViewById(R.id.date);
         //final Spinner categoryField = root.findViewById(R.id.category);
-        final EditText sumField = root.findViewById(R.id.sum);
+        final EditText sumField = root.findViewById(R.id.amount);
         final EditText tagsField = root.findViewById(R.id.add_tags);
         final EditText descriptionField = root.findViewById(R.id.description);
         final EditText sourceField = root.findViewById(R.id.source);
@@ -40,7 +40,7 @@ public class EditTransactionFragment extends Fragment {
         sumField.setText(String.valueOf(transaction.amount));
 
 
-        root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.submit_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

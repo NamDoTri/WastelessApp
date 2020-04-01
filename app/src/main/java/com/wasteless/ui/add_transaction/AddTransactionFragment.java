@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.chip.Chip;
@@ -46,40 +48,81 @@ public class AddTransactionFragment extends Fragment {
     ArrayList<String> tags = new ArrayList<String>();
     ArrayList<String> allWalletsNames = new ArrayList<String>();
 
+    private EditText inputDescription, inputAmount, inputSource;
+    private TextView inputDate;
+    private Spinner inputType;
+    private Spinner inputWallet;
+
+    private EditText inputTags;
+    private Button submitButton;
 
     private AddTransactionViewModel addTransactionViewModel;
-    private AppDatabase appDatabase;
 
-    public View onCreateView(@NonNull final LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
-        appDatabase = AppDatabase.getAppDatabase(getContext());
-        final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
-        final TextView tvw = root.findViewById(R.id.date);
 
-        // Tags
-        final EditText tagsInput = root.findViewById(R.id.add_tags);
+        final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
+
+        // assign view components to variables
+        inputDescription = root.findViewById(R.id.description);
+        inputAmount = root.findViewById(R.id.amount);
+        inputDate = root.findViewById(R.id.date);
+        inputType = root.findViewById(R.id.type);
+        inputWallet = root.findViewById(R.id.wallet);
+        inputSource = root.findViewById(R.id.source);
+
+        //TODO
+        inputTags = root.findViewById(R.id.add_tags);
         chipGroup = root.findViewById(R.id.chipGroup);
-        tagsInput.addTextChangedListener(new TextWatcher()
-        {
+
+        submitButton = root.findViewById(R.id.submit_button);
+
+        // handle description
+        addTransactionViewModel.getDescription().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //inputDescription.setText(s);
+            }
+        });
+        inputDescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                if (s.toString().length() == 1 && s.toString().contains(" ")){
-                    tagsInput.setText("");
-                }
-                else if(s.toString().indexOf(" ") != -1){
-                    addNewChip(root, tagsInput.getText().toString());
-                    tagsInput.setText("");
-                }
+                addTransactionViewModel.getDescription().setValue(String.valueOf(s));
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // Picking up the date
-        root.findViewById(R.id.date).setOnClickListener(new View.OnClickListener() {
+
+        // handle amount
+        addTransactionViewModel.getAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //inputAmount.setText(s);
+            }
+        });
+        inputAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                addTransactionViewModel.getAmount().setValue(String.valueOf(s));
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+
+        // handle date
+        addTransactionViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                inputDate.setText(s);
+            }
+        });
+        inputDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
@@ -90,75 +133,120 @@ public class AddTransactionFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                tvw.setText(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy
+                                addTransactionViewModel.getDate().setValue(((dayOfMonth<9)? "0" : "") + dayOfMonth + "/" + ((monthOfYear<9)? "0" : "") +  (monthOfYear + 1) + "/" + year); // dd/mm/yyy //TODO
                             }
                         }, year, month, day);
                 picker.show();
             }
         });
 
-        // category selection menu
-        Spinner spinner = root.findViewById(R.id.category);
-        List<String> categoryList = addTransactionViewModel.getAllCategories();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
-                R.layout.custom_spinner, categoryList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
 
+        // handle type
+        addTransactionViewModel.getType().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+            }
+        });
+        inputType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id){
+                addTransactionViewModel.getType().setValue(inputType.getSelectedItem().toString());
+            }
+            public void onNothingSelected(AdapterView<?> parentView){}
+        });
+        // category selection menu
+        List<String> categoryList = addTransactionViewModel.getAllCategories();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, categoryList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        inputType.setAdapter(dataAdapter);
+
+        // handle wallet
+        addTransactionViewModel.getWalletId().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+            }
+        });
         // wallet selection menu
-        Spinner walletSpinner = root.findViewById(R.id.wallet);
         List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
         for (int i = 0; i < allWallets.size(); i++) {
             allWalletsNames.add(i,allWallets.get(i).name);
             Log.i("array", allWallets.get(i).name);
         }
-        ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(),
-                R.layout.custom_spinner, allWalletsNames);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        walletSpinner.setAdapter(walletAdapter);
+        ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, allWalletsNames);
+        walletAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        inputWallet.setAdapter(walletAdapter);
 
-        checkTheExpense(root);
+        inputWallet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id){
+                addTransactionViewModel.getWalletId().setValue(inputWallet.getSelectedItem().toString());
+            }
+            public void onNothingSelected(AdapterView<?> parentView){}
+        });
 
-        // Gather all the input fields together
-        root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        // handle tags
+        addTransactionViewModel.getTags().observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+            @Override
+            public void onChanged(ArrayList<String> strings) {
+                //tags = addTransactionViewModel.getTags().getValue();
+            }
+        });
+        inputTags.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (s.toString().length() == 1 && s.toString().contains(" ")){
+                    inputTags.setText("");
+                }
+                else if(s.toString().indexOf(" ") != -1){
+                    addTransactionViewModel.getTags().setValue(tags);
+                    addNewChip(root, inputTags.getText().toString()); //TODO
+                    inputTags.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+
+        // handle source
+        addTransactionViewModel.getSource().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                //inputSource.setText(s);
+            }
+        });
+        inputSource.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                addTransactionViewModel.getSource().setValue(String.valueOf(s));
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // handle isIncome
+        addTransactionViewModel.getIsIncome().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                toggleIncomeView(root);
+            }
+        });
+        toggleIncomeView(root);
+
+        // handle submit
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String date        = ((EditText)root.findViewById(R.id.date)).getText().toString();
-                String category    = ((Spinner )root.findViewById(R.id.category)).getSelectedItem().toString();
-                String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
-                String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
-                String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
-                String wallet      = ((Spinner)root.findViewById(R.id.wallet)).getSelectedItem().toString();
-
-                //Validation of all the input fields
-                if(date.trim().length() > 0 &&
-                        category.trim().length() > 0 &&
-                        wallet.trim().length() > 0 &&
-                        sum.trim().length() > 0 &&
-                        description.trim().length() > 0) {
-                    Long id = null;
-                    List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
-                    for (int i = 0; i < allWallets.size(); i++) {
-                        if (allWallets.get(i).name.contains(wallet)){
-                            id = allWallets.get(i).walletId;
-                            Log.i("id", String.valueOf(id));
-                        }
-                    }
-                    if (isIncome == false) {
-                        addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, id, false, category, tags);
-                        successMessage();
-                    } else {
-                        if (source.trim().length() <= 0) {
-                            failedMessage();
-                        } else {
-                            addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, id, true, category, source, tags);
-                            successMessage();
-                        }
-                    }
-                } else {
+                if(addTransactionViewModel.handleSubmitButtonPress()){
+                    successMessage();
+                }else {
                     failedMessage();
-                    Log.i("transaction", "something is missed");
-                };
+                }
             }
 
             private void failedMessage() {
@@ -198,7 +286,7 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private void addNewChip(View root, final String text) {
-        tags.add(text.trim());
+        tags.add(text.trim()); //TODO: find a better way
         final Chip chip = new Chip(getContext());
         ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
                 null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
@@ -220,7 +308,7 @@ public class AddTransactionFragment extends Fragment {
         chipGroup.addView(chip);
     }
 
-    private void checkTheExpense(final View root) {
+    private void toggleIncomeView(final View root) {
         RadioGroup radioGroup = root.findViewById(R.id.radio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -228,10 +316,10 @@ public class AddTransactionFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (root.findViewById(R.id.expense).getId() == checkedId) {
                     root.findViewById(R.id.source).setVisibility(View.GONE);
-                    isIncome = false;
+                    addTransactionViewModel.getIsIncome().setValue(false);
                 } else {
                     root.findViewById(R.id.source).setVisibility(View.VISIBLE);
-                    isIncome = true;
+                    addTransactionViewModel.getIsIncome().setValue(true);
                 }
             }
         });
