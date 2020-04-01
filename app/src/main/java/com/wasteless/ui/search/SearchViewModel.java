@@ -33,7 +33,7 @@ public class SearchViewModel extends AndroidViewModel {
         super(application);
         searchLiveData = new MutableLiveData<>();
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
-        onOpenData = transactionRepository.getTransactionsByFilterAndDescription(activeFilter.getValue(), searchValue.getValue());
+        onOpenData = transactionRepository.getAllTransactions();
     }
 
 //    Getters
@@ -59,12 +59,28 @@ public class SearchViewModel extends AndroidViewModel {
         Log.d("SearchOutput", "SearchViewModel searchValue : " + searchValue.getValue());
         String currentActiveFilter = activeFilter.getValue();
         String currentSearchValue = searchValue.getValue();
+//        Searches by description if description filter was chosen
         if ( currentActiveFilter == "description" ) {
-            return transactionRepository.getTransactionsByDescription(searchValue.getValue());
+            return transactionRepository.getTransactionsByDescription(currentSearchValue);
+        }
+//        Searches by tag if tags filter was chosen
+        if ( currentActiveFilter == "tag" ) {
+            return transactionRepository.getTransactionsByTags(currentSearchValue);
+        }
+//        Searches by date if date filter was chosen
+        if ( currentActiveFilter == "date"  ) {
+            return transactionRepository.getTransactionsByDate(currentSearchValue);
+        }
+//        Searches by category/type if category filter was chose
+        if ( currentActiveFilter == "category"  ) {
+            return transactionRepository.getTransactionsByType(currentSearchValue);
+        } else {
+            return null;
         }
     }
 
     public LiveData<List<Transaction>> getOnOpenData() {
+        Log.d("start", "onOpenData: " + onOpenData);
         return onOpenData;
     }
 

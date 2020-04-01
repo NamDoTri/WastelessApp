@@ -59,18 +59,20 @@ public class TransactionRepository {
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
         String adaptedString = "%" + date + "%";
-        return transactionDao.getTransactionsByDate(date);
+        return transactionDao.getTransactionsByDate(adaptedString);
     }
 //    Get transactions by category
-    public LiveData<List<Transaction>> getTransactionsByCategory(String category) {
+    public LiveData<List<Transaction>> getTransactionsByType(String category) {
         String adaptedString = "%" + category + "%";
-        return transactionDao.getTranscationsByType(category);
+        return transactionDao.getTransactionsByType(adaptedString);
     }
 //    Get transactions by tags
     public LiveData<List<Transaction>> getTransactionsByTags(String tag) {
         String adaptedString = "%" + tag + "%";
-        return tagDao.getTagsByName(tag);
+        return transactionDao.getTransactionsByTagName(adaptedString);
     }
+
+//    Get all transactions sorted in order
     public LiveData<List<Transaction>> getAllTransactions(){
         return transactionDao.getAllOrderByDate();
     }

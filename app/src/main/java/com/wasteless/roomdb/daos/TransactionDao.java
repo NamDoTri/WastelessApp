@@ -27,24 +27,22 @@ public interface TransactionDao {
 // Query to get transactions with a specific string somewhere in description
     @Query("SELECT * FROM transactions WHERE description LIKE  :searchValue")
     LiveData<List<Transaction>> getTransactionsByDescription(String searchValue);
-//    Query to get transactions with a specific string somewhere in
-    @Query("SELECT * FROM transactions WHERE amount LIKE  :searchValue")
-    LiveData<List<Transaction>> getTransactionsByActiveFilterAndSearchValue(String activeFilter, String searchValue);
+
 //    Query to get transaction with specific date
-    @Query("select * from transactions order by date like :date")
-    LiveData<List<Transaction>> getTransactionsByDate(String date);
+    @Query("SELECT * FROM transactions ORDER BY date LIKE :searchValue")
+    LiveData<List<Transaction>> getTransactionsByDate(String searchValue);
+
 //    Query to get all transactions with a type
-    @Query("select * from transactions order by date desc")
-    LiveData<List<Transaction>> getTransactionsByType();
+    @Query("SELECT * FROM transactions WHERE type LIKE :searchValue")
+    LiveData<List<Transaction>> getTransactionsByType(String searchValue);
+
 //    Query to get all transactions with a tag
-    @Query("select * from transactions where transactionId in (select transactionId from tag_assoc where tag = :tagName)")
-    List<Transaction> getTransactionsByTagName(String tagName);
+    @Query("SELECT * FROM transactions WHERE transactionId IN (SELECT transactionId FROM tag_assoc WHERE tag LIKE :tagName)")
+    LiveData<List<Transaction>> getTransactionsByTagName(String tagName);
 
 // Query for getting the data to history view in order
     @Query("select * from transactions order by date desc")
     LiveData<List<Transaction>> getAllOrderByDate();
-
-
 
     // query incomes
     @Query("select * from transactions where isIncome = 1")
