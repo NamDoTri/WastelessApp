@@ -52,6 +52,9 @@ public interface TransactionDao {
     @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date = :date")
     Double getTotalIncomeByDate(String date);
 
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date like :month")
+    Double getTotalIncomeByMonth(String month);
+
     @Query("select * from transactions where type = :type")
     List<Transaction> getIncomesByType(String type);
 
@@ -79,6 +82,9 @@ public interface TransactionDao {
 
     @Query("select * from transactions where wallet = :walletId and isIncome = 0")
     List<Transaction> getExpensesByWallet(Long walletId);
+
+    @Query("select * from transactions where isIncome = 0 and date like :month order by date asc")
+    List<Transaction> getExpensesByMonth(String month);
 
     //TODO: get incomes and expenses before and after a date
 

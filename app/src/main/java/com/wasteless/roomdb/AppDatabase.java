@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {BankAccount.class, Wallet.class, Tag.class, TagAssociation.class, Transaction.class},
+@Database(entities = {BankAccount.class, Wallet.class, Tag.class, TagAssociation.class, Transaction.class, Goal.class},
           version=1)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance = null; //write to main memory, not to cache
@@ -22,6 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TagDao tagDao();
     public abstract WalletDao walletDao();
     public abstract TransactionDao transactionDao();
+    public abstract GoalDao goalDao();
 
     public static synchronized AppDatabase getAppDatabase(Context context){
         context = context;
@@ -43,6 +44,9 @@ public abstract class AppDatabase extends RoomDatabase {
                     getAppDatabase(context).walletDao().insertAll(
                             new Wallet("wallet 1", 400),
                             new Wallet("wallet 2",500)
+                    );
+                    getAppDatabase(context).goalDao().insertAll(
+                            new Goal("month","31.3.2020", 123.4)
                     );
                     getAppDatabase(context).transactionDao().insertAll(
                             new Transaction("25/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
