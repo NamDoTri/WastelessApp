@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
@@ -64,7 +65,10 @@ public class HomeFragment extends Fragment {
                 homeViewModel.changeWallet("next");
             }
         });
-
+        homeViewModel.getCurrentWalletName().observe(getViewLifecycleOwner(), new Observer<String>(){
+            @Override
+            public void onChanged(@Nullable String s) { walletTitle.setText(s); }
+        });
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -79,7 +83,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        homeViewModel.getExpensesAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getTotalExpenseToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 expensesAmount.setText(s);
@@ -129,6 +133,7 @@ public class HomeFragment extends Fragment {
             public void onChanged(Integer integer) {
                 Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
                 //TODO
+                homeViewModel.updateStats();
             }
         });
 
