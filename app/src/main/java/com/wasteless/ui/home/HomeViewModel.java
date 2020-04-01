@@ -1,7 +1,6 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -12,7 +11,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
@@ -26,9 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 
 public class HomeViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -40,10 +36,14 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
 
+    private MutableLiveData<Integer> currentlyDisplayWalletIndex;
+
     public HomeViewModel(Application application) {
         super(application);
         walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
+        currentlyDisplayWalletIndex = new MutableLiveData<>();
+        currentlyDisplayWalletIndex.setValue(0);
 
         budgetAmount = new MutableLiveData<>();
         //TODO: set budget
@@ -55,6 +55,8 @@ public class HomeViewModel extends AndroidViewModel {
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
     }
+
+    public MutableLiveData<Integer> getCurrentlyDisplayWalletIndex() {return currentlyDisplayWalletIndex;}
 
     public LiveData<String> getBudgetAmount() {
         return budgetAmount;
@@ -101,7 +103,6 @@ public class HomeViewModel extends AndroidViewModel {
                                                         .filter(transaction -> transaction.type.equalsIgnoreCase(incomeType))
                                                         .mapToDouble(transaction -> transaction.amount)
                                                         .reduce(0, Double::sum);
-            // Log.i("chart", "Type: " + incomeType + "  Amount: " + String.valueOf(totalIncomeOfThisType));
             if(totalIncomeOfThisType != 0.0) pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, incomeType));
         }
         PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "");
@@ -195,5 +196,18 @@ public class HomeViewModel extends AndroidViewModel {
         //TODO: ^^ hide value "0" from the empty bars
 
         return new BarData(expenseBarDataSet);
+    }
+
+    public void changeWallet(String movement){
+        int currentWallet = currentlyDisplayWalletIndex.getValue();
+
+        if(movement.equalsIgnoreCase("prev")){
+            currentWallet = currentWallet == -1 ? (walletRepository.getAllWallets().size() - 1) : (currentWallet - 1);
+            currentlyDisplayWalletIndex.setValue(currentWallet);
+        }
+        else if(movement.equalsIgnoreCase("next")){
+            currentWallet = (currentWallet == walletRepository.getAllWallets().size() - 1) ? -1 : (currentWallet + 1);
+            currentlyDisplayWalletIndex.setValue(currentWallet);
+        }
     }
 }

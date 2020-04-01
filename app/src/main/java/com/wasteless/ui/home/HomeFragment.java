@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,8 @@ public class HomeFragment extends Fragment {
     private GoalViewModel goalViewModel;
     private HomeViewModel homeViewModel;
 
+    private PieChart incomePieChart;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
@@ -42,9 +45,25 @@ public class HomeFragment extends Fragment {
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
 
-        final PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
+        incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
+
+        final Button prevWalletButton = root.findViewById(R.id.button_back);
+        final Button nextWalletButton = root.findViewById(R.id.button_next);
+
+        prevWalletButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                homeViewModel.changeWallet("prev");
+            }
+        });
+        nextWalletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.changeWallet("next");
+            }
+        });
 
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -93,6 +112,30 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        renderMonthlyIncomePieChart();
+
+        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
+        expensePieChart.getDescription().setEnabled(false);
+        expensePieChart.setData(expensePieChartData);
+
+        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+        expenseBarChart.setData(expenseBarChartData);
+
+
+
+        // keep track of currently displayed wallet
+        homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
+                //TODO
+            }
+        });
+
+        return root;
+    }
+
+    private void renderMonthlyIncomePieChart(){
         PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
         // value settings
         incomePieChartData.setValueTextSize(20f);
@@ -118,7 +161,6 @@ public class HomeFragment extends Fragment {
         incomePieChartLegend.setTextSize(15f);
 
         incomePieChart.setData(incomePieChartData);
-
 
         //EXPENSE PIE CHART
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();

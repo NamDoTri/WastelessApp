@@ -11,6 +11,7 @@ import com.wasteless.roomdb.daos.TagDao;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
@@ -162,15 +163,15 @@ public class TransactionRepository {
     }
 
     private void handleTags(Long rowId, ArrayList<String> tags){
-        //insert to tag table
         ArrayList<Tag> tagsToInsert = new ArrayList<>();
+        ArrayList<TagAssociation> tagAssociationsToInsert = new ArrayList<>();
+
         for(String tagName : tags){
             tagsToInsert.add(new Tag(tagName));
-
-            //insert to tag_assoc
-            tagDao.insertTagAssociation(rowId, tagName);
+            tagAssociationsToInsert.add(new TagAssociation(rowId, tagName));
         }
-        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()] ));
+        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()]));
+        tagDao.insertAllTagAssociation(tagAssociationsToInsert.toArray(new TagAssociation[tagAssociationsToInsert.size()]));
     }
 
     public void delete(Transaction transaction){

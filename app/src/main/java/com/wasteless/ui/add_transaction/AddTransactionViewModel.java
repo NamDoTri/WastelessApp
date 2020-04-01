@@ -2,16 +2,11 @@ package com.wasteless.ui.add_transaction;
 
 import android.app.Application;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.Spinner;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
-import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
@@ -106,7 +101,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
         for (int i = 0; i < allWallets.size(); i++) {
             if (allWallets.get(i).name.contains(insertWalletId)){
                 id = allWallets.get(i).walletId;
-                Log.i("id", String.valueOf(id));
             }
         }
 
@@ -122,7 +116,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return insertSuccess;
     }
 
-    //TODO: find the most optimal way to input wallet id
     public void insertExpense(String date, double amount, String description, Long walletId, boolean isIncome, String category, ArrayList<String> tags){
         Transaction newExpense = new Transaction(date, amount, description, walletId, isIncome, category);
         try{
