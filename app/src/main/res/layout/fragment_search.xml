@@ -38,11 +38,11 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/filter_name"
+                        android:id="@+id/filter_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/filter_button_background"
-                        android:text="@string/filter_name" />
+                        android:text="@string/filter_description" />
 
                     <RadioButton
                         android:id="@+id/filter_date"
