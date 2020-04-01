@@ -78,20 +78,20 @@ public class TransactionRepository {
         return transactionDao.getTotalIncomeByMonth("%" + month);
     }
 
-    public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
-        return transactionDao.getExpensesByMonth("%" + month);
-    }
-
-    public double getTotalExpenseByDate(String date){
-        return transactionDao.getTotalExpenseByDate(date);
-    }
-
     public double getTotalIncomeByDate(String date){
         return transactionDao.getTotalIncomeByDate(date);
     }
 
-    public List<Transaction> getAllExpenses(){
-        return transactionDao.getAllExpenses();
+    public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
+        return transactionDao.getExpensesByMonth("%" + month);
+    }
+
+    public double getTotalExpenseByMonth(String month) {
+        return transactionDao.getTotalExpensesByMonth("%" + month);
+    }
+
+    public double getTotalExpenseByDate(String date){
+        return transactionDao.getTotalExpenseByDate(date);
     }
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
@@ -168,5 +168,4 @@ public class TransactionRepository {
     public void update(Transaction transaction){
         transactionDao.updateAll(transaction);
     }
-
 }
