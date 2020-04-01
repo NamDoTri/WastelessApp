@@ -52,6 +52,9 @@ public interface TransactionDao {
     @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date = :date")
     Double getTotalIncomeByDate(String date);
 
+    @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date like :month")
+    Double getTotalIncomeByMonth(String month);
+
     @Query("select * from transactions where type = :type")
     List<Transaction> getIncomesByType(String type);
 
