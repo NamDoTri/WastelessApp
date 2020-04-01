@@ -57,7 +57,11 @@ public class SearchViewModel extends AndroidViewModel {
     public LiveData<List<Transaction>> globalSearchHandler() {
         Log.d("SearchOutput", "SearchViewModel activeFilter : " + activeFilter.getValue());
         Log.d("SearchOutput", "SearchViewModel searchValue : " + searchValue.getValue());
-        return transactionRepository.getTransactionsByFilterAndDescription(activeFilter.getValue(), searchValue.getValue());
+        String currentActiveFilter = activeFilter.getValue();
+        String currentSearchValue = searchValue.getValue();
+        if ( currentActiveFilter == "description" ) {
+            return transactionRepository.getTransactionsByDescription(searchValue.getValue());
+        }
     }
 
     public LiveData<List<Transaction>> getOnOpenData() {

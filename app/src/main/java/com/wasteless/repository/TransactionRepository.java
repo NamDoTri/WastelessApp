@@ -51,20 +51,26 @@ public class TransactionRepository {
 
 //    SEARCH TRANSACTION METHODS
 //    Get transactions by description
-    public LiveData<List<Transaction>> getTransactionsByFilterAndDescription(String activeFilter, String description) {
+    public LiveData<List<Transaction>> getTransactionsByDescription( String description) {
         String adaptedString = "%" + description + "%";
-        Log.d("TransactionRepository", "activeFilter: " + activeFilter);
-        Log.d("TransactionRepository", "description: " + description);
         Log.d("TransactionRepository", "adaptedString: " + adaptedString);
-        return transactionDao.getTransactionsByActiveFilterAndSearchValue(activeFilter, adaptedString);
+        return transactionDao.getTransactionsByDescription(adaptedString);
     }
-
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
-//        String adaptedString = "%" + description + "%";
-        return transactionDao.getTranscationsByDate(date);
+        String adaptedString = "%" + date + "%";
+        return transactionDao.getTransactionsByDate(date);
     }
-
+//    Get transactions by category
+    public LiveData<List<Transaction>> getTransactionsByCategory(String category) {
+        String adaptedString = "%" + category + "%";
+        return transactionDao.getTranscationsByType(category);
+    }
+//    Get transactions by tags
+    public LiveData<List<Transaction>> getTransactionsByTags(String tag) {
+        String adaptedString = "%" + tag + "%";
+        return tagDao.getTagsByName(tag);
+    }
     public LiveData<List<Transaction>> getAllTransactions(){
         return transactionDao.getAllOrderByDate();
     }
