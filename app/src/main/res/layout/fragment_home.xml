@@ -257,27 +257,47 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/transaction_bar_chart_title"
+                        android:id="@+id/expenses_pie_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Transaction this month"
+                        android:text="Expenses this month"
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/transaction_bar_chart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/bar_chart_sample"
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/expenses_pie_chart"
+                        android:layout_height="400dp"
+                        android:layout_width="match_parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/transaction_bar_chart_title" />
+                        app:layout_constraintTop_toBottomOf="@+id/expenses_pie_title"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@id/expenses_bar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total expenses per day"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/expenses_bar_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/expenses_bar_title" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

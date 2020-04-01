@@ -80,6 +80,9 @@ public interface TransactionDao {
     @Query("select * from transactions where wallet = :walletId and isIncome = 0")
     List<Transaction> getExpensesByWallet(Long walletId);
 
+    @Query("select * from transactions where isIncome = 0 and date like :month order by date asc")
+    List<Transaction> getExpensesByMonth(String month);
+
     //TODO: get incomes and expenses before and after a date
 
     @Insert(entity = Transaction.class)

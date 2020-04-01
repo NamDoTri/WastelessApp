@@ -13,7 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
 import com.wasteless.R;
 
@@ -31,6 +33,8 @@ public class HomeFragment extends Fragment {
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
+        final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
+        final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -39,23 +43,23 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
+        homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onChanged(@Nullable String s){
+            public void onChanged(@Nullable String s) {
                 balanceAmount.setText(s);
             }
         });
 
-        homeViewModel.getExpensesAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
-           @Override
-           public void onChanged(@Nullable String s){
-               expensesAmount.setText(s);
-           }
+        homeViewModel.getExpensesAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                expensesAmount.setText(s);
+            }
         });
 
-        homeViewModel.getIncomesAmount().observe(getViewLifecycleOwner(), new Observer<String>(){
+        homeViewModel.getIncomesAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onChanged(String s){
+            public void onChanged(String s) {
                 incomeAmount.setText(s);
             }
         });
@@ -72,9 +76,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
+        expensePieChart.getDescription().setEnabled(false);
+        expensePieChart.setData(expensePieChartData);
+        
         PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
         incomePieChart.setData(incomePieChartData);
+
+        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+        expenseBarChart.setData(expenseBarChartData);
 
         return root;
     }

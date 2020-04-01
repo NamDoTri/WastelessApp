@@ -69,8 +69,13 @@ public class TransactionRepository {
         return transactionDao.getTransactionById(transactionId);
     }
 
+    //GET METHODS FOR MONTHLY INCOMES & EXPENSES
     public List<Transaction> getIncomesByMonth(String month){ // mm/yyyy
         return transactionDao.getIncomesByMonth("%" + month);
+    }
+
+    public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
+        return transactionDao.getExpensesByMonth("%" + month);
     }
 
     public double getTotalExpenseByDate(String date){
@@ -79,6 +84,10 @@ public class TransactionRepository {
 
     public double getTotalIncomeByDate(String date){
         return transactionDao.getTotalIncomeByDate(date);
+    }
+
+    public List<Transaction> getAllExpenses(){
+        return transactionDao.getAllExpenses();
     }
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
