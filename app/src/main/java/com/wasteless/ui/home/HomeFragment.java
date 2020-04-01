@@ -1,5 +1,6 @@
 package com.wasteless.ui.home;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.wasteless.R;
 
 import com.wasteless.ui.home.goal.GoalFragment;
@@ -33,6 +36,8 @@ public class HomeFragment extends Fragment {
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
+
+        final PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
@@ -57,7 +62,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        homeViewModel.getIncomesAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getTotalIncomeToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 incomeAmount.setText(s);
@@ -76,13 +81,37 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
+        // value settings
+        incomePieChartData.setValueTextSize(20f);
+        incomePieChartData.setValueTextColor(Color.DKGRAY);
+        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
+
+        //// chart settings
+        incomePieChart.setUsePercentValues(true);
+        incomePieChart.setTransparentCircleRadius(35f);
+        incomePieChart.setHoleRadius(30f);
+        incomePieChart.getDescription().setEnabled(false);
+
+        // center text settings
+        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
+        incomePieChart.setCenterTextSize(27f);
+
+        // entry label settings
+        incomePieChart.setEntryLabelTextSize(17f);
+        incomePieChart.setEntryLabelColor(Color.DKGRAY);
+
+        // legends settings
+        Legend incomePieChartLegend = incomePieChart.getLegend();
+        incomePieChartLegend.setTextSize(15f);
+
+        incomePieChart.setData(incomePieChartData);
+
+
+
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
         expensePieChart.getDescription().setEnabled(false);
         expensePieChart.setData(expensePieChartData);
-        
-        PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
-        PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
-        incomePieChart.setData(incomePieChartData);
 
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
         expenseBarChart.setData(expenseBarChartData);
