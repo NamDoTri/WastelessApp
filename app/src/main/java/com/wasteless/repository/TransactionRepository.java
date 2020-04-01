@@ -53,6 +53,9 @@ public class TransactionRepository {
 //    Get transactions by description
     public LiveData<List<Transaction>> getTransactionsByFilterAndDescription(String activeFilter, String description) {
         String adaptedString = "%" + description + "%";
+        Log.d("TransactionRepository", "activeFilter: " + activeFilter);
+        Log.d("TransactionRepository", "description: " + description);
+        Log.d("TransactionRepository", "adaptedString: " + adaptedString);
         return transactionDao.getTransactionsByActiveFilterAndSearchValue(activeFilter, adaptedString);
     }
 
@@ -109,7 +112,7 @@ public class TransactionRepository {
         }
         return false;
     }
-    
+
     public boolean insertIncome(Transaction transaction, ArrayList<String> tags) throws Exception{
         if(!transaction.isIncome) throw new Exception("Transaction is not an income");
 

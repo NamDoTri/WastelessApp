@@ -10,6 +10,11 @@ import android.widget.RadioGroup;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
@@ -17,11 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.wasteless.R;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
@@ -45,7 +45,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-//        searchViewModel.getTestTransactionsList().observer().
         transactionAdapter = new TransactionAdapter();
         searchViewModel.getOnOpenData().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
@@ -54,6 +53,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             }
         });
         searchViewModel.setActiveFilter("date");
+        searchViewModel.setSearchValue("");
 
 
         View root = inflater.inflate(R.layout.fragment_search, container, false);
@@ -63,9 +63,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         RadioButton checkedRadioButton = filterButtons.findViewById(filterButtons.getCheckedRadioButtonId());
         Log.d("chosenFilter", "radio button" + checkedRadioButton.getText());
         searchResultView = root.findViewById(R.id.search_list);
-
-//        Assigning buttonIds
-//        filterButtons.findViewById(root.findIdById(R.id.filter_name))
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
@@ -77,16 +74,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             @Override
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
-//                Bundle transactionBundle = new Bundle();
-//                transactionBundle.putString("description", transaction.description);
-//                //transactionBundle.putString("category", transaction.category);
-//                transactionBundle.putString("amount", String.valueOf(transaction.amount));
-//                transactionFragment.setArguments(transactionBundle);
-//
-//                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.nav_host_fragment, transactionFragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
                 Bundle transactionBundle = new Bundle();
                 transactionBundle.putLong("id", transaction.transactionId);
                 transactionFragment.setArguments(transactionBundle);
@@ -129,16 +116,13 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "It works: " + query);
-//        LiveData<List<Transaction>> searchedData = searchViewModel.searchTransactionsByDescription(query);
-//        searchViewModel.searchTransactionsByDescription(query).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Transaction> transactions) {
-//                Log.d("onQueryTextSubmit", "" + transactions);
-//                transactionAdapter.setTransactions(transactions);
-//            }
-//        });
-//        transactionAdapter.setTransactions(searchedData);
-        searchViewModel.setSearchValue(query);
+        searchViewModel.setSearchValue(query).observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> transactions) {
+                Log.d("onQueryTextSubmit", "" + transactions);
+                transactionAdapter.setTransactions(transactions);
+            }
+        });
         return false;
     }
 
@@ -152,8 +136,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                 transactionAdapter.setTransactions(transactions);
             }
         });
-//        LiveData<List<Transaction>> transactions = searchViewModel.setSearchValue(newText);
-//        transactionAdapter.setTransactions(transactions);
         return false;
     }
 
@@ -174,7 +156,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             Log.d("RadioListener", "" + activeFilter);
         }
 
-        if (checkedId == R.id.filter_name) {
+        if (checkedId == R.id.filter_description) {
             Log.d("RadioListener", "description");
             searchViewModel.setActiveFilter("description");
             MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
