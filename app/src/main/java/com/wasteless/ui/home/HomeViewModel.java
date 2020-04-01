@@ -1,6 +1,7 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -95,9 +96,11 @@ public class HomeViewModel extends AndroidViewModel {
                                                         .filter(transaction -> transaction.type.equalsIgnoreCase(incomeType))
                                                         .mapToDouble(transaction -> transaction.amount)
                                                         .reduce(0, Double::sum);
-            pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, (float)i));
+            // Log.i("chart", "Type: " + incomeType + "  Amount: " + String.valueOf(totalIncomeOfThisType));
+            if(totalIncomeOfThisType != 0.0) pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, incomeType));
         }
         PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "Income this month");
+        incomeDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         return new PieData(incomeDataSet);
     }
 
