@@ -37,8 +37,6 @@ public class GoalViewModel extends AndroidViewModel {
         Goal dailyGoal = null;
         try{
             dailyGoal = goalRepository.getGoalByType(type);
-           Log.i("goal", String.valueOf(dailyGoal.amountOfMoney));
-
         }catch(Exception e){
             e.printStackTrace();
         }

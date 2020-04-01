@@ -26,6 +26,9 @@ import java.util.ArrayList;
 public class GoalFragment extends Fragment {
     private GoalViewModel goalViewModel;
     ArrayList<String> arrayToDeletePreviousGoals = new ArrayList<String>();
+    ArrayList<String> arrayToHideButton = new ArrayList<String>();
+    Integer amountOfGoals = 2;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View goalFragmentView = inflater.inflate(R.layout.fragment_goal, container, false);
@@ -47,16 +50,22 @@ public class GoalFragment extends Fragment {
         if(dailyGoal != null) {
             day_part.setVisibility(View.GONE);
             day_goal_text.setVisibility(View.VISIBLE);
+            arrayToHideButton.add("test");
             day_goal_text.setText("Your goal for today is "+ dailyGoal.amountOfMoney);
         }
         if(monthlyGoal != null) {
             month_part.setVisibility(View.GONE);
             month_goal_text.setVisibility(View.VISIBLE);
+            arrayToHideButton.add("test");
             month_goal_text.setText("Your goal for the month is "+ monthlyGoal.amountOfMoney);
+        }
+        if(arrayToHideButton.size() == amountOfGoals){
+            submit_goals_button.setVisibility(View.GONE);
         }
         day_goal_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                submit_goals_button.setVisibility(View.VISIBLE);
                 day_part.setVisibility(View.VISIBLE);
                 day_goal_text.setVisibility(View.GONE);
                 arrayToDeletePreviousGoals.add("daily");
@@ -66,6 +75,7 @@ public class GoalFragment extends Fragment {
         month_goal_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                submit_goals_button.setVisibility(View.VISIBLE);
                 month_part.setVisibility(View.VISIBLE);
                 month_goal_text.setVisibility(View.GONE);
                 arrayToDeletePreviousGoals.add("monthly");
