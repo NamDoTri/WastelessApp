@@ -49,10 +49,12 @@ public abstract class AppDatabase extends RoomDatabase {
                             new Goal("month","31.3.2020", 123.4)
                     );
                     getAppDatabase(context).transactionDao().insertAll(
-                            new Transaction("25/02/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
-                            new Transaction("27/02/2020", 45.0, "stolen", Long.valueOf(1), true, "salary", "friend"),
-                            new Transaction("21/02/2020", 34.0, "cheese", Long.valueOf(1), false, "Food"),
-                            new Transaction("23/02/2020", 34.0, "cheesecake", Long.valueOf(1), false, "Food")
+                            new Transaction("02/04/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
+                            new Transaction("07/04/2020", 45.0, "stolen", Long.valueOf(1), true, "salary", "friend"),
+                            new Transaction("07/04/2020", 10.0, "netflix", Long.valueOf(1), false, "Entertainment"),
+                            new Transaction("13/04/2020", 34.0, "cheese", Long.valueOf(1), false, "Groceries"),
+                            new Transaction("21/04/2020", 56.0, "beer", Long.valueOf(1), false, "Groceries"),
+                            new Transaction("26/04/2020", 34.0, "cheesecake", Long.valueOf(1), false, "Groceries")
                     );
                     getAppDatabase(context).tagDao().insertAll(
                             new Tag("default tag")

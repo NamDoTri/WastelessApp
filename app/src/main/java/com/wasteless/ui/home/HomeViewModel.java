@@ -17,9 +17,11 @@ import com.wasteless.repository.WalletRepository;
 
 import com.wasteless.roomdb.entities.Transaction;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.github.mikephil.charting.data.PieData;
@@ -108,6 +110,12 @@ public class HomeViewModel extends AndroidViewModel {
         return new PieData(incomeDataSet);
     }
 
+    public String getTotalExpensesByMonth(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+        double totalExpenses = transactionRepository.getTotalExpenseByMonth(thisMonth);
+        return String.valueOf(totalExpenses);
+    }
+
     public PieData getMonthlyExpensePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
@@ -123,10 +131,10 @@ public class HomeViewModel extends AndroidViewModel {
                     .mapToDouble(transaction -> transaction.amount)
                     .reduce(0, Double::sum);
 
-            entries.add(new PieEntry((float) totalAmountPerType, expenseCategories[i]));
+            if(totalAmountPerType != 0.0)entries.add(new PieEntry((float) totalAmountPerType, expenseCategories[i]));
         }
 
-        PieDataSet expensePieDataSet = new PieDataSet(entries, "Expenses");
+        PieDataSet expensePieDataSet = new PieDataSet(entries, "");
         expensePieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         return new PieData(expensePieDataSet);
@@ -137,33 +145,55 @@ public class HomeViewModel extends AndroidViewModel {
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
         ArrayList expenseDays = new ArrayList();
+        ArrayList allDays =  new ArrayList();
         ArrayList entries = new ArrayList<>();
-        ArrayList labels = new ArrayList<>();
+        //ArrayList labels = new ArrayList<>();
 
+        //Getting all days this month
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.set(Calendar.MONTH, currentMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        //Add all days this month to the list
+        for (int i=0; i<maxDay; i++) {
+            calendar.set(Calendar.DAY_OF_MONTH, i + 1);
+            allDays.add(simpleDateFormatter.format(calendar.getTime()));
+        }
+
+        //Add all days where there has been an expense to the list
         for (int i=0; i<expensesThisMonth.size(); i++){
-            if(expenseDays.contains(expensesThisMonth.get(i).date)){
-                //
-            }
-            else{
+            if(!expenseDays.contains(expensesThisMonth.get(i).date)){
                 String date = expensesThisMonth.get(i).date;
                 expenseDays.add(date);
             }
         }
-        
-        for (int i=0; i<expenseDays.size(); i++){
-            String expenseDay = (String) expenseDays.get(i);
+
+        //Group expenses by date and add all dates with their corresponding expense amounts to the entries
+        for (int i=0; i<allDays.size(); i++){
+            String expenseDay = (String) allDays.get(i);
 
             double totalAmountPerDay = expensesThisMonth.stream()
                     .filter(transaction -> transaction.date.equalsIgnoreCase(expenseDay))
                     .mapToDouble(transaction -> transaction.amount)
                     .reduce(0, Double::sum);
-
-            entries.add(new BarEntry(i, (float) totalAmountPerDay));
-            labels.add(expenseDay);
+            if(totalAmountPerDay == 0){
+                entries.add(new BarEntry(i, 0));
+            }
+            else{
+                entries.add(new BarEntry(i, (float) totalAmountPerDay));
+            }
+            //labels.add(expenseDay);
+            //TODO: ^^ (adding date labels)
         }
 
         BarDataSet expenseBarDataSet = new BarDataSet(entries, "Total expenses per day");
         expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        //expenseBarDataSet.setDrawValues(false);
+        //TODO: ^^ hide value "0" from the empty bars
 
         return new BarData(expenseBarDataSet);
     }

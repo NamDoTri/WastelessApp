@@ -161,6 +161,55 @@ public class HomeFragment extends Fragment {
         incomePieChartLegend.setTextSize(15f);
 
         incomePieChart.setData(incomePieChartData);
+
+        //EXPENSE PIE CHART
+        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
+
+        //Value settings
+        expensePieChartData.setValueTextSize(20f);
+        expensePieChartData.setValueTextColor(Color.DKGRAY);
+        expensePieChartData.setValueFormatter(new PercentFormatter(incomePieChart));
+
+        //Chart settings
+        expensePieChart.setUsePercentValues(true);
+        expensePieChart.setTransparentCircleRadius(35f);
+        expensePieChart.setHoleRadius(30f);
+        expensePieChart.getDescription().setEnabled(false);
+
+        //Center text settings
+        expensePieChart.setCenterText(String.valueOf(homeViewModel.getTotalExpensesByMonth()));
+        expensePieChart.setCenterTextSize(27f);
+
+        //Entry label settings --- Removing the labels for now since sometimes they seem to overlap
+        expensePieChart.setDrawEntryLabels(false);
+
+        //Legend settings
+        Legend expensePieChartLegend = expensePieChart.getLegend();
+        expensePieChartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        expensePieChartLegend.setTextSize(15f);
+
+        expensePieChart.setData(expensePieChartData);
+
+        //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
+        //TODO: get labels(dates) from viewmodel or just set them here somehow
+        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+
+        //Axis settings
+        expenseBarChart.getAxisLeft().setAxisMinimum(0);
+        expenseBarChart.getAxisRight().setAxisMinimum(0);
+
+        //Grid settings
+        expenseBarChart.getAxisLeft().setDrawGridLines(false);
+        expenseBarChart.getXAxis().setDrawGridLines(false);
+
+        //Description settings
+        expenseBarChart.getXAxis().setDrawLabels(false);
+        expenseBarChart.getLegend().setEnabled(false);
+        expenseBarChart.getDescription().setEnabled(false);
+
+        expenseBarChart.setData(expenseBarChartData);
+
+        return root;
     }
 
 }
