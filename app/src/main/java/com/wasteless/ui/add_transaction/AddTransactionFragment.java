@@ -81,7 +81,7 @@ public class AddTransactionFragment extends Fragment {
         addTransactionViewModel.getDescription().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                inputDescription.setText(s);
+                //inputDescription.setText(s);
             }
         });
         inputDescription.addTextChangedListener(new TextWatcher() {
@@ -100,7 +100,7 @@ public class AddTransactionFragment extends Fragment {
         addTransactionViewModel.getAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                inputAmount.setText(s);
+                //inputAmount.setText(s);
             }
         });
         inputAmount.addTextChangedListener(new TextWatcher() {
@@ -185,30 +185,37 @@ public class AddTransactionFragment extends Fragment {
         });
 
         // handle tags
-//        inputTags.addTextChangedListener(new TextWatcher()
-//        {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-//            public void onTextChanged(CharSequence s, int start, int before, int count)
-//            {
-//                if (s.toString().length() == 1 && s.toString().contains(" ")){
-//                    inputTags.setText("");
-//                }
-//                else if(s.toString().indexOf(" ") != -1){
-//                    addNewChip(root, inputTags.getText().toString()); //TODO
-//                    inputTags.setText("");
-//                }
-//            }
-//            @Override
-//            public void afterTextChanged(Editable s) {}
-//        });
+        addTransactionViewModel.getTags().observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+            @Override
+            public void onChanged(ArrayList<String> strings) {
+                //tags = addTransactionViewModel.getTags().getValue();
+            }
+        });
+        inputTags.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (s.toString().length() == 1 && s.toString().contains(" ")){
+                    inputTags.setText("");
+                }
+                else if(s.toString().indexOf(" ") != -1){
+                    addTransactionViewModel.getTags().setValue(tags);
+                    addNewChip(root, inputTags.getText().toString()); //TODO
+                    inputTags.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
 
         // handle source
         addTransactionViewModel.getSource().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                inputSource.setText(s);
+                //inputSource.setText(s);
             }
         });
         inputSource.addTextChangedListener(new TextWatcher() {
@@ -279,7 +286,7 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private void addNewChip(View root, final String text) {
-        tags.add(text.trim());
+        tags.add(text.trim()); //TODO: find a better way
         final Chip chip = new Chip(getContext());
         ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(),
                 null, 0 , R.style.Widget_MaterialComponents_Chip_Entry);
