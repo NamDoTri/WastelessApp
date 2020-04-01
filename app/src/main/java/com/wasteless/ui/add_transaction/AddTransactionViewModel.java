@@ -101,36 +101,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
         ArrayList<String> insertTags = tags.getValue();
         String insertSource = source.getValue();
 
-//        String date        = ((EditText)root.findViewById(R.id.date)).getText().toString();
-//        String category    = ((Spinner)root.findViewById(R.id.category)).getSelectedItem().toString();
-//        String sum         = ((EditText)root.findViewById(R.id.sum)).getText().toString().trim();
-//        String description = ((EditText)root.findViewById(R.id.description)).getText().toString();
-//        String source      = ((EditText)root.findViewById(R.id.source)).getText().toString();
-//        String wallet      = ((Spinner)root.findViewById(R.id.wallet)).getSelectedItem().toString();
-//
-//        //Validation of all the input fields
-//        if(date.trim().length() > 0 &&
-//                category.trim().length() > 0 &&
-//                wallet.trim().length() > 0 &&
-//                sum.trim().length() > 0 &&
-//                description.trim().length() > 0) {
-//
-//            if (isIncome == false) {
-//                addTransactionViewModel.insertExpense(date, Float.parseFloat(sum), description, id, false, category, tags);
-//                successMessage();
-//            } else {
-//                if (source.trim().length() <= 0) {
-//                    failedMessage();
-//                } else {
-//                    addTransactionViewModel.insertIncome(date, Float.parseFloat(sum), description, id, true, category, source, tags);
-//                    successMessage();
-//                }
-//            }
-//        } else {
-//            failedMessage();
-//            Log.i("transaction", "something is missed");
-//        };
-
         Long id = null;
         List<Wallet> allWallets = this.getAllWallets();
         for (int i = 0; i < allWallets.size(); i++) {

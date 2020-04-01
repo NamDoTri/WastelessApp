@@ -81,11 +81,11 @@ public class HomeViewModel extends AndroidViewModel {
         return incomesAmount;
     }
 
-    public PieData getMonthIncomePieChart(){
+    public PieData getMonthlyIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
 
-        String[] incomeTypes = transactionRepository.getAllCategories(); //TODO: change it to income type after refactoring add transaction viewmodel
+        String[] incomeTypes = transactionRepository.getAllIncomeTypes();
 
         ArrayList pieChartSegments = new ArrayList();
 

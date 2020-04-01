@@ -33,6 +33,8 @@ public class HomeFragment extends Fragment {
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
+
+        final PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
@@ -80,8 +82,7 @@ public class HomeFragment extends Fragment {
         expensePieChart.getDescription().setEnabled(false);
         expensePieChart.setData(expensePieChartData);
         
-        PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
-        PieData incomePieChartData = homeViewModel.getMonthIncomePieChart();
+        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
         incomePieChart.setData(incomePieChartData);
 
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
