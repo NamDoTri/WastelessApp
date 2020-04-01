@@ -18,6 +18,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 
+import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.time.LocalDateTime;
@@ -179,6 +180,14 @@ public class HomeViewModel extends AndroidViewModel {
 
     public void changeWallet(String movement){
         int currentWallet = currentlyDisplayWalletIndex.getValue();
+
+        //TODO: remove this
+        List<Tag> tagAssoc = transactionRepository.getAllTags();
+        Log.i("tag", "even this get hit. tagAssoc: " + String.valueOf(tagAssoc));
+        for(Tag tag : tagAssoc){
+            Log.i("tag", "Tag name: " + tag);
+        }
+
         if(movement.equalsIgnoreCase("prev")){
             currentWallet = currentWallet == -1 ? (walletRepository.getAllWallets().size() - 1) : (currentWallet - 1);
             currentlyDisplayWalletIndex.setValue(currentWallet);

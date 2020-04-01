@@ -11,6 +11,7 @@ import com.wasteless.roomdb.daos.TagDao;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
@@ -162,15 +163,21 @@ public class TransactionRepository {
     }
 
     private void handleTags(Long rowId, ArrayList<String> tags){
+        Log.i("tag", "rowId: " + String.valueOf(rowId));
+        Log.i("tag", "tags: " + String.valueOf(tags));
         //insert to tag table
         ArrayList<Tag> tagsToInsert = new ArrayList<>();
+        ArrayList<TagAssociation> tagAssociationsToInsert = new ArrayList<>();
+
         for(String tagName : tags){
             tagsToInsert.add(new Tag(tagName));
-
-            //insert to tag_assoc
-            tagDao.insertTagAssociation(rowId, tagName);
+            tagAssociationsToInsert.add(new TagAssociation(rowId, tagName));
         }
-        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()] ));
+
+        List<Long> insertedTags = tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()]));
+        List<Long> insertedTagAssoc = tagDao.insertAllTagAssociation(tagAssociationsToInsert.toArray(new TagAssociation[tagAssociationsToInsert.size()]));
+        Log.i("tag", "inserted tags: " + String.valueOf(insertedTags));
+        Log.i("tag", "inserted tag assoc: " + String.valueOf(insertedTagAssoc));
     }
 
     public void delete(Transaction transaction){
@@ -179,6 +186,11 @@ public class TransactionRepository {
 
     public void update(Transaction transaction){
         transactionDao.updateAll(transaction);
+    }
+
+    //TODO: remove these
+    public List<Tag> getAllTags(){
+        return tagDao.getAll();
     }
 
 }

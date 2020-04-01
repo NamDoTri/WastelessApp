@@ -54,6 +54,9 @@ public abstract class AppDatabase extends RoomDatabase {
                             new Transaction("21/02/2020", 34.0, "cheese", Long.valueOf(1), false, "Food"),
                             new Transaction("23/02/2020", 34.0, "cheesecake", Long.valueOf(1), false, "Food")
                     );
+                    getAppDatabase(context).tagDao().insertAll(
+                            new Tag("default tag")
+                    );
                 }
             });
         }
