@@ -20,25 +20,27 @@ public interface TransactionDao {
     @Query("select * from transactions where transactionId = :transactionId")
     Transaction getTransactionById(Long transactionId);
 
-    @Query("select * from transactions where date like :date")
-    List<Transaction> getTransactionsByDate(String date);
-
-    @Query("select * from transactions where transactionId in (select transactionId from tag_assoc where tag = :tagName)")
-    List<Transaction> getTransactionsByTagName(String tagName);
-
     @Query("select * from transactions where wallet = :walletId")
     List<Transaction> getTransactionsByWallet(Long walletId);
 
-    // QUIRIES FOR SEARCH FRAGMENT
-    // Query to get transactions with a specific string somewhere in description
-    @Query("SELECT * FROM transactions WHERE description LIKE  :description")
-    LiveData<List<Transaction>> getTransactionsByDescription(String description);
+// QUERIES FOR SEARCH FRAGMENT
+// Query to get transactions with a specific string somewhere in description
+    @Query("SELECT * FROM transactions WHERE description LIKE  :searchValue")
+    LiveData<List<Transaction>> getTransactionsByDescription(String searchValue);
 
 //    Query to get transaction with specific date
-    @Query("select * from transactions order by date like :date")
-    LiveData<List<Transaction>> getTranscationsByDate(String date);
+    @Query("SELECT * FROM transactions ORDER BY date LIKE :searchValue")
+    LiveData<List<Transaction>> getTransactionsByDate(String searchValue);
 
-    // Query for getting the data to history view in order
+//    Query to get all transactions with a type
+    @Query("SELECT * FROM transactions WHERE type LIKE :searchValue")
+    LiveData<List<Transaction>> getTransactionsByType(String searchValue);
+
+//    Query to get all transactions with a tag
+    @Query("SELECT * FROM transactions WHERE transactionId IN (SELECT transactionId FROM tag_assoc WHERE tag LIKE :tagName)")
+    LiveData<List<Transaction>> getTransactionsByTagName(String tagName);
+
+// Query for getting the data to history view in order
     @Query("select * from transactions order by date desc")
     LiveData<List<Transaction>> getAllOrderByDate();
 

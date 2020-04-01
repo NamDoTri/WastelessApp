@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TagDao;
@@ -50,17 +51,28 @@ public class TransactionRepository {
 
 //    SEARCH TRANSACTION METHODS
 //    Get transactions by description
-    public LiveData<List<Transaction>> getTransactionsByDescription(String description) {
+    public LiveData<List<Transaction>> getTransactionsByDescription( String description) {
         String adaptedString = "%" + description + "%";
+        Log.d("TransactionRepository", "adaptedString: " + adaptedString);
         return transactionDao.getTransactionsByDescription(adaptedString);
     }
-
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
-//        String adaptedString = "%" + description + "%";
-        return transactionDao.getTranscationsByDate(date);
+        String adaptedString = "%" + date + "%";
+        return transactionDao.getTransactionsByDate(adaptedString);
+    }
+//    Get transactions by category
+    public LiveData<List<Transaction>> getTransactionsByType(String category) {
+        String adaptedString = "%" + category + "%";
+        return transactionDao.getTransactionsByType(adaptedString);
+    }
+//    Get transactions by tags
+    public LiveData<List<Transaction>> getTransactionsByTags(String tag) {
+        String adaptedString = "%" + tag + "%";
+        return transactionDao.getTransactionsByTagName(adaptedString);
     }
 
+//    Get all transactions sorted in order
     public LiveData<List<Transaction>> getAllTransactions(){
         return transactionDao.getAllOrderByDate();
     }
@@ -121,7 +133,7 @@ public class TransactionRepository {
         }
         return false;
     }
-    
+
     public boolean insertIncome(Transaction transaction, ArrayList<String> tags) throws Exception{
         if(!transaction.isIncome) throw new Exception("Transaction is not an income");
 

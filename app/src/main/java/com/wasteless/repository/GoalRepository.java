@@ -27,9 +27,14 @@ public class GoalRepository {
     }
 
 
-//    public double getTotalBalance(){return walletDao.getTotalBalance();}
+    public Goal getGoalByType(String type){return goalDao.getGoaByType(type);}
+
 
     public void insertGoal(Goal goal){
         goalDao.insertAll(goal);
     }
+
+    public void deleteGoalByType(String type){goalDao.deleteGoalByType(type);}
+
+
 }
