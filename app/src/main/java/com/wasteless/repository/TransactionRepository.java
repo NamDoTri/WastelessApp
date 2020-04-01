@@ -74,6 +74,10 @@ public class TransactionRepository {
         return transactionDao.getIncomesByMonth("%" + month);
     }
 
+    public double getTotalIncomeByMonth(String month){
+        return transactionDao.getTotalIncomeByMonth("%" + month);
+    }
+
     public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
         return transactionDao.getExpensesByMonth("%" + month);
     }

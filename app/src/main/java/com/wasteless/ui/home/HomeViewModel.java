@@ -74,12 +74,18 @@ public class HomeViewModel extends AndroidViewModel {
         return expensesAmount;
     }
 
-    public LiveData<String> getIncomesAmount() {
+    public LiveData<String> getTotalIncomeToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
         Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today);
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
+    }
+
+    public String getTotalIncomeByMonth(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+        double totalIncome = transactionRepository.getTotalIncomeByMonth(thisMonth);
+        return String.valueOf(totalIncome);
     }
 
     public PieData getMonthlyIncomePieChart(){
@@ -99,7 +105,7 @@ public class HomeViewModel extends AndroidViewModel {
             // Log.i("chart", "Type: " + incomeType + "  Amount: " + String.valueOf(totalIncomeOfThisType));
             if(totalIncomeOfThisType != 0.0) pieChartSegments.add(new PieEntry((float)totalIncomeOfThisType, incomeType));
         }
-        PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "Income this month");
+        PieDataSet incomeDataSet = new PieDataSet(pieChartSegments, "");
         incomeDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         return new PieData(incomeDataSet);
     }
