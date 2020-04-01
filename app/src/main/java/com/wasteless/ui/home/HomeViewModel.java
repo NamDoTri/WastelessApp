@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -41,10 +42,14 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
 
+    private MutableLiveData<Integer> currentlyDisplayWalletIndex;
+
     public HomeViewModel(Application application) {
         super(application);
         walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
+        currentlyDisplayWalletIndex = new MutableLiveData<>();
+        currentlyDisplayWalletIndex.setValue(0);
 
         budgetAmount = new MutableLiveData<>();
         //TODO: set budget
@@ -56,6 +61,8 @@ public class HomeViewModel extends AndroidViewModel {
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
     }
+
+    public MutableLiveData<Integer> getCurrentlyDisplayWalletIndex() {return currentlyDisplayWalletIndex;}
 
     public LiveData<String> getBudgetAmount() {
         return budgetAmount;
@@ -168,5 +175,19 @@ public class HomeViewModel extends AndroidViewModel {
         expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         return new BarData(expenseBarDataSet);
+    }
+
+    public void changeWallet(String movement){
+        int currentWallet = currentlyDisplayWalletIndex.getValue();
+        if(movement.equalsIgnoreCase("prev")){
+            currentWallet = currentWallet == -1 ? (walletRepository.getAllWallets().size() - 1) : (currentWallet - 1);
+            currentlyDisplayWalletIndex.setValue(currentWallet);
+        }
+        else if(movement.equalsIgnoreCase("next")){
+            currentWallet = (currentWallet == walletRepository.getAllWallets().size() - 1) ? -1 : (currentWallet + 1);
+            currentlyDisplayWalletIndex.setValue(currentWallet);
+        }else{
+
+        }
     }
 }
