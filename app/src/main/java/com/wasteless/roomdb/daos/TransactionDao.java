@@ -17,6 +17,9 @@ public interface TransactionDao {
     @Query("select * from transactions")
     List<Transaction> getAll();
 
+    @Query("select * from transactions where transactionId in (select transactionId from tag_assoc where tag = :tagName)")
+    LiveData<List<Transaction>> getAllTransactionsByTagName(String tagName);
+
     @Query("select * from transactions where transactionId = :transactionId")
     Transaction getTransactionById(Long transactionId);
 

@@ -2,6 +2,7 @@ package com.wasteless.ui.transaction;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class TransactionFragment extends Fragment {
         final TextView description = root.findViewById(R.id.description);
         final TextView date = root.findViewById(R.id.date);
         final TextView wallet = root.findViewById(R.id.wallet);
+        Log.d("transaction", "date: " + transaction.date);
         //final TextView source = root.findViewById(R.id.source);
 
         //TO-DO ---> check if the transaction is either expense or income and modify data shown related to that
