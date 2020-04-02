@@ -20,8 +20,11 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
@@ -34,6 +37,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
 
     private PieChart incomePieChart;
+    private boolean usePercentage = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -124,7 +128,7 @@ public class HomeFragment extends Fragment {
         expensePieChartData.setValueFormatter(new PercentFormatter(incomePieChart));
 
         //Chart settings
-        expensePieChart.setUsePercentValues(true);
+        expensePieChart.setUsePercentValues(usePercentage);
         expensePieChart.setTransparentCircleRadius(35f);
         expensePieChart.setHoleRadius(30f);
         expensePieChart.getDescription().setEnabled(false);
@@ -207,5 +211,25 @@ public class HomeFragment extends Fragment {
         incomePieChart.notifyDataSetChanged();
         incomePieChart.invalidate();
         incomePieChart.setData(incomePieChartData);
+
+        incomePieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            private Entry prevSelectedEntry = null;
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                // only if user select the same value again
+                if(prevSelectedEntry == null){
+                    usePercentage = !usePercentage;
+                    incomePieChart.setUsePercentValues(usePercentage);
+                }
+                prevSelectedEntry = e;
+            }
+
+            @Override
+            public void onNothingSelected() {
+                usePercentage = !usePercentage;
+                incomePieChart.setUsePercentValues(usePercentage);
+                prevSelectedEntry = null;
+            }
+        });
     }
 }
