@@ -55,6 +55,8 @@ public class AddTransactionFragment extends Fragment {
 
     private EditText inputTags;
     private Button submitButton;
+    private Button openGalleryButton;
+    private Button openCameraButton;
 
     private AddTransactionViewModel addTransactionViewModel;
 
@@ -74,6 +76,8 @@ public class AddTransactionFragment extends Fragment {
         chipGroup = root.findViewById(R.id.chipGroup);
 
         submitButton = root.findViewById(R.id.submit_button);
+        openGalleryButton = root.findViewById(R.id.import_button);
+        openCameraButton = root.findViewById(R.id.camera_button);
 
         // handle description
         addTransactionViewModel.getDescription().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -244,7 +248,6 @@ public class AddTransactionFragment extends Fragment {
                     failedMessage();
                 }
             }
-
             private void failedMessage() {
                 //Pop-up message
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
@@ -276,6 +279,23 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
+            }
+        });
+
+        // handle gallery
+        openGalleryButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.i("receipt", "open gallery button clicked");
+                //TODO
+            }
+        });
+
+        openCameraButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.i("receipt", "open camera button clicked");
+                //TODO
             }
         });
         return root;
