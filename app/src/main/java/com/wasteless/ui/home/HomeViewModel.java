@@ -1,6 +1,7 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.mikephil.charting.data.PieData;
 import com.wasteless.roomdb.entities.Wallet;
@@ -74,9 +76,12 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getTotalExpenseToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        Double todayTotalExpense = transactionRepository.getTotalExpenseByDate(today);
+        Double todayTotalExpense = 0.0;
         if(currentlyDisplayWalletIndex.getValue() != -1){
-           Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, currentWallet.walletId);
+        }else{
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, Long.valueOf(-1));
         }
         expensesAmount.setValue(String.valueOf(todayTotalExpense));
 
@@ -86,20 +91,44 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getTotalIncomeToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        Double todayTotalIncome = transactionRepository.getTotalIncomeByDate(today);
+        double todayTotalIncome = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            todayTotalIncome = transactionRepository.getTotalIncomeByDate(today, currentWallet.walletId);
+        }else{
+            todayTotalIncome = transactionRepository.getTotalIncomeByDate(today, Long.valueOf(-1));
+        }
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
     }
 
     public String getTotalIncomeByMonth(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        double totalIncome = transactionRepository.getTotalIncomeByMonth(thisMonth);
+        double totalIncome = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() == -1){
+            totalIncome = transactionRepository.getTotalIncomeByMonth(thisMonth);
+        }else{
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            totalIncome = transactionRepository.getIncomesByMonth(thisMonth).stream()
+                                                            .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                                                            .mapToDouble(transaction -> transaction.amount)
+                                                            .sum();
+
+        }
         return String.valueOf(totalIncome);
     }
 
     public PieData getMonthlyIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
+
+        if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            incomesThisMonth = incomesThisMonth.stream()
+                                                .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                                                .collect(Collectors.toList());
+
+        }
 
         String[] incomeTypes = transactionRepository.getAllIncomeTypes();
 
@@ -229,7 +258,8 @@ public class HomeViewModel extends AndroidViewModel {
             currentWalletName.setValue("Overall");
             balanceAmount.setValue(String.valueOf(walletRepository.getTotalBalance()));
         }
-
-
+        getTotalIncomeToday();
+        getTotalExpenseToday();
+        //rerender income pie chart
     }
 }
