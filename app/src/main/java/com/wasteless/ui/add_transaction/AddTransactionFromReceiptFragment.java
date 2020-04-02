@@ -13,7 +13,7 @@ import com.wasteless.R;
 public class AddTransactionFromReceiptFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
 
-    public View AddTransactionFromReceipt(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
         final View AddTransactionFromReceiptFragmentView = inflater.inflate(R.layout.fragment_add_transaction_from_gallery, container, false);
 
