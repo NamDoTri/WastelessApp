@@ -21,6 +21,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
@@ -157,6 +158,8 @@ public class HomeFragment extends Fragment {
         //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
         XAxis xAxis = expenseBarChart.getXAxis();
+        YAxis yAxisLeft = expenseBarChart.getAxisLeft();
+        YAxis yAxisRight =  expenseBarChart.getAxisRight();
 
         //Label settings
         ArrayList dates = homeViewModel.getDateLabels();
@@ -164,14 +167,14 @@ public class HomeFragment extends Fragment {
         xAxis.setLabelCount(dates.size()/2);
 
         //Axis settings
-        expenseBarChart.getAxisLeft().setAxisMinimum(0);
-        expenseBarChart.getAxisRight().setAxisMinimum(0);
+        yAxisLeft.setAxisMinimum(0);
+        yAxisRight.setAxisMinimum(0);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         //Grid settings
-        expenseBarChart.getAxisLeft().setDrawGridLines(false);
+        yAxisLeft.setDrawGridLines(false);
         xAxis.setDrawGridLines(false);
-
+        
         //Descriptive settings
         expenseBarChart.getLegend().setEnabled(false);
         expenseBarChart.getDescription().setEnabled(false);
