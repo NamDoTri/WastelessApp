@@ -118,55 +118,6 @@ public class HomeFragment extends Fragment {
 
         renderMonthlyIncomePieChart();
 
-        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
-        expensePieChart.getDescription().setEnabled(false);
-        expensePieChart.setData(expensePieChartData);
-
-        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
-        expenseBarChart.setData(expenseBarChartData);
-
-
-
-        // keep track of currently displayed wallet
-        homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
-                //TODO
-                homeViewModel.updateStats();
-            }
-        });
-
-        return root;
-    }
-
-    private void renderMonthlyIncomePieChart(){
-        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
-        // value settings
-        incomePieChartData.setValueTextSize(20f);
-        incomePieChartData.setValueTextColor(Color.DKGRAY);
-        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
-
-        //// chart settings
-        incomePieChart.setUsePercentValues(true);
-        incomePieChart.setTransparentCircleRadius(35f);
-        incomePieChart.setHoleRadius(30f);
-        incomePieChart.getDescription().setEnabled(false);
-
-        // center text settings
-        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
-        incomePieChart.setCenterTextSize(27f);
-
-        // entry label settings
-        incomePieChart.setEntryLabelTextSize(17f);
-        incomePieChart.setEntryLabelColor(Color.DKGRAY);
-
-        // legends settings
-        Legend incomePieChartLegend = incomePieChart.getLegend();
-        incomePieChartLegend.setTextSize(15f);
-
-        incomePieChart.setData(incomePieChartData);
-
         //EXPENSE PIE CHART
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
 
@@ -214,7 +165,45 @@ public class HomeFragment extends Fragment {
 
         expenseBarChart.setData(expenseBarChartData);
 
+
+        // keep track of currently displayed wallet
+        homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
+                //TODO
+                homeViewModel.updateStats();
+            }
+        });
+
         return root;
     }
 
+    private void renderMonthlyIncomePieChart(){
+        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
+        // value settings
+        incomePieChartData.setValueTextSize(20f);
+        incomePieChartData.setValueTextColor(Color.DKGRAY);
+        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
+
+        //// chart settings
+        incomePieChart.setUsePercentValues(true);
+        incomePieChart.setTransparentCircleRadius(35f);
+        incomePieChart.setHoleRadius(30f);
+        incomePieChart.getDescription().setEnabled(false);
+
+        // center text settings
+        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
+        incomePieChart.setCenterTextSize(27f);
+
+        // entry label settings
+        incomePieChart.setEntryLabelTextSize(17f);
+        incomePieChart.setEntryLabelColor(Color.DKGRAY);
+
+        // legends settings
+        Legend incomePieChartLegend = incomePieChart.getLegend();
+        incomePieChartLegend.setTextSize(15f);
+
+        incomePieChart.setData(incomePieChartData);
+    }
 }
