@@ -267,7 +267,13 @@ public class HomeFragment extends Fragment {
         xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
         xAxis.setLabelCount(dates.size()/2);
 
-        //expenseBarChartData.getDataSetByIndex(0).setDrawValues(false);
+        //Testing scaling down
+        if (expenseBarChart.getYChartMax() > 500) {
+            expenseBarChart.setScaleMinima(1f,5f);
+        }
+        else if (expenseBarChart.getYChartMax() > 1000){
+            expenseBarChart.setScaleMinima(1f, 10f);
+        }
 
         //Axis settings
         yAxisLeft.setAxisMinimum(0);
