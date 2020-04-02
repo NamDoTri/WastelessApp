@@ -1,6 +1,7 @@
 package com.wasteless.ui.home;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.mikephil.charting.data.PieData;
 import com.wasteless.roomdb.entities.Wallet;
@@ -109,6 +111,14 @@ public class HomeViewModel extends AndroidViewModel {
     public PieData getMonthlyIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
+
+        if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            incomesThisMonth = incomesThisMonth.stream()
+                                                .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                                                .collect(Collectors.toList());
+
+        }
 
         String[] incomeTypes = transactionRepository.getAllIncomeTypes();
 
@@ -240,5 +250,6 @@ public class HomeViewModel extends AndroidViewModel {
         }
         getTotalIncomeToday();
         getTotalExpenseToday();
+        //rerender income pie chart
     }
 }

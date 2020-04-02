@@ -75,21 +75,18 @@ public class HomeFragment extends Fragment {
                 budgetAmount.setText(s);
             }
         });
-
         homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 balanceAmount.setText(s);
             }
         });
-
         homeViewModel.getTotalExpenseToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 expensesAmount.setText(s);
             }
         });
-
         homeViewModel.getTotalIncomeToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -173,6 +170,7 @@ public class HomeFragment extends Fragment {
                 Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
                 //TODO
                 homeViewModel.updateStats();
+                renderMonthlyIncomePieChart();
             }
         });
 
@@ -181,6 +179,7 @@ public class HomeFragment extends Fragment {
 
     private void renderMonthlyIncomePieChart(){
         PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
+        Log.i("chart", incomePieChartData.toString());
         // value settings
         incomePieChartData.setValueTextSize(20f);
         incomePieChartData.setValueTextColor(Color.DKGRAY);
@@ -193,6 +192,7 @@ public class HomeFragment extends Fragment {
         incomePieChart.getDescription().setEnabled(false);
 
         // center text settings
+        //TODO: update this when changing wallet
         incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
         incomePieChart.setCenterTextSize(27f);
 
@@ -204,6 +204,8 @@ public class HomeFragment extends Fragment {
         Legend incomePieChartLegend = incomePieChart.getLegend();
         incomePieChartLegend.setTextSize(15f);
 
+        incomePieChart.notifyDataSetChanged();
+        incomePieChart.invalidate();
         incomePieChart.setData(incomePieChartData);
     }
 }
