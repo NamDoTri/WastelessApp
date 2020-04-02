@@ -116,26 +116,32 @@ public class HomeFragment extends Fragment {
         Goal weeklyGoal = goalViewModel.getGoalByType("weekly");
         Goal monthlyGoal = goalViewModel.getGoalByType("monthly");
 
-
         if(dailyGoal != null) {
             Double sum = dailyGoal.amountOfMoney;
-            createCard("Daily goal", "You have saved nothing loser", sum.toString()+"€", root);
+            createCard("Daily goal", "You have saved nothing ",
+                    sum.toString(), R.drawable.ic_account_balance_wallet_black_24dp , root);
         } else {
-            createCard("Daily goal is not set up yet", "Press the button below", "0", root);
-        }
-        if(monthlyGoal != null) {
-            Double sum = monthlyGoal.amountOfMoney;
-            createCard("Monthly goal", "You have saved nothing loser", sum.toString()+"€", root);
-        } else {
-            createCard("Monthly goal is not set up yet", "Press the button below", "=(", root);
+            createCard("Daily goal is not set up yet", "Press the button below",
+                    "0",R.drawable.ic_account_balance_wallet_black_24dp , root);
         }
         if(weeklyGoal != null) {
             Log.i("goal", "asdasdad");
             Double sum = weeklyGoal.amountOfMoney;
-            createCard("Weekly goal", "You have saved nothing loser", sum.toString()+"€", root);
+            createCard("Weekly goal", "You have saved nothing ", sum.toString(),
+                    R.drawable.month , root);
         } else {
-            createCard("Weekly goal is not set up yet", "Press the button below", "=(", root);
+            createCard("Weekly goal is not set up yet", "Press the button below", "0",
+                    R.drawable.month , root);
         }
+        if(monthlyGoal != null) {
+            Double sum = monthlyGoal.amountOfMoney;
+            createCard("Monthly goal", "You have saved nothing ",
+                    sum.toString(),R.drawable.week_24dp , root);
+        } else {
+            createCard("Monthly goal is not set up yet", "Press the button below",
+                    "0",R.drawable.week_24dp , root);
+        }
+
         root.findViewById(R.id.go_to_goals_button).setOnClickListener(v -> {
             GoalFragment goalFragment = new GoalFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -208,8 +214,10 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void createCard(String title, String comment, String goal, View root) {
-        models.add(new SliderModel(title, comment, goal.toString() ));
+    private void createCard(String title, String comment, String goal, Integer image, View root) {
+        String mainChapterNumber = goal.split("\\.", 2)[0];
+        Integer goalF = Integer.parseInt(mainChapterNumber);
+        models.add(new SliderModel(image, title, comment, goalF.toString() + " €") );
         adapter = new SliderAdapter(models, getContext());
         viewPager = root.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
