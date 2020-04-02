@@ -288,6 +288,11 @@ public class AddTransactionFragment extends Fragment {
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
                 //TODO
+                AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
