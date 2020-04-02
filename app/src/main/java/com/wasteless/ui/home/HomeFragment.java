@@ -48,6 +48,8 @@ public class HomeFragment extends Fragment {
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View cardView = inflater.inflate(R.layout.item, container, false);
+        models = new ArrayList<>();
         final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
@@ -60,16 +62,7 @@ public class HomeFragment extends Fragment {
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
-        models = new ArrayList<>();
-        models.add(new SliderModel("Sosi"));
-        models.add(new SliderModel("Bibu"));
-        models.add(new SliderModel("Loh"));
 
-        adapter = new SliderAdapter(models, getContext());
-
-        viewPager = root.findViewById(R.id.viewPager);
-        viewPager.setAdapter(adapter);
-        viewPager.setPadding(130, 0 ,130, 0);
 
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -115,23 +108,40 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //
+        // Goals and their slider
+        //
+
         Goal dailyGoal = goalViewModel.getGoalByType("daily");
-        TextView goals = root.findViewById(R.id.goal_value);
+        Goal weeklyGoal = goalViewModel.getGoalByType("weekly");
+        Goal monthlyGoal = goalViewModel.getGoalByType("monthly");
+
+
         if(dailyGoal != null) {
-            Log.i("goal", "asdasdad");
-            goals.setText("Your daily goal \n"+dailyGoal.amountOfMoney);
+            Double sum = dailyGoal.amountOfMoney;
+            createCard("Daily goal", "You have saved nothing loser", sum.toString(), root);
+        } else {
+            createCard("Daily goal is not set up yet", "Press the button below", "0", root);
         }
-
-        root.findViewById(R.id.add_goal_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GoalFragment goalFragment = new GoalFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.nav_host_fragment, goalFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        if(monthlyGoal != null) {
+            Double sum = monthlyGoal.amountOfMoney;
+            createCard("Monthly goal", "You have saved nothing loser", sum.toString(), root);
+        } else {
+            createCard("Monthly goal is not set up yet", "Press the button below", "=(", root);
+        }
+        if(weeklyGoal != null) {
+            Log.i("goal", "asdasdad");
+            Double sum = weeklyGoal.amountOfMoney;
+            createCard("Weekly goal", "You have saved nothing loser", sum.toString(), root);
+        } else {
+            createCard("Weekly goal is not set up yet", "Press the button below", "=(", root);
+        }
+        root.findViewById(R.id.go_to_goals_button).setOnClickListener(v -> {
+            GoalFragment goalFragment = new GoalFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.nav_host_fragment, goalFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         renderMonthlyIncomePieChart();
@@ -194,7 +204,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
         return root;
+    }
+
+    private void createCard(String title, String comment, String goal, View root) {
+        models.add(new SliderModel(title, comment, goal.toString() ));
+        adapter = new SliderAdapter(models, getContext());
+        viewPager = root.findViewById(R.id.viewPager);
+        viewPager.setAdapter(adapter);
+        viewPager.setPadding(130, 0 ,130, 0);
     }
 
     private void renderMonthlyIncomePieChart(){

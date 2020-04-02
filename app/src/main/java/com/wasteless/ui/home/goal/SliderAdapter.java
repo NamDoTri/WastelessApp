@@ -41,8 +41,17 @@ public class SliderAdapter extends PagerAdapter {
         layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.item, container, false);
         TextView title;
+        TextView comment;
+        TextView goalValue;
         title = view.findViewById(R.id.title);
         title.setText(models.get(position).getTitle());
+
+        goalValue = view.findViewById(R.id.goal_value);
+        goalValue.setText(models.get(position).getGoal());
+
+        comment = view.findViewById(R.id.goal_comment);
+        comment.setText(models.get(position).getComment());
+
         container.addView(view, 0);
         return view;
     }
