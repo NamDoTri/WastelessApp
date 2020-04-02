@@ -191,4 +191,8 @@ public class TransactionRepository {
     public void update(Transaction transaction){
         transactionDao.updateAll(transaction);
     }
+
+    public List<String> getTags(Long transactionId){
+        return tagDao.getAllTagsOf(transactionId);
+    }
 }
