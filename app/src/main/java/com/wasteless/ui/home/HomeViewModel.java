@@ -74,9 +74,12 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<String> getTotalExpenseToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
-        Double todayTotalExpense = transactionRepository.getTotalExpenseByDate(today);
+        Double todayTotalExpense = 0.0;
         if(currentlyDisplayWalletIndex.getValue() != -1){
-           Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, currentWallet.walletId);
+        }else{
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, Long.valueOf(-1));
         }
         expensesAmount.setValue(String.valueOf(todayTotalExpense));
 

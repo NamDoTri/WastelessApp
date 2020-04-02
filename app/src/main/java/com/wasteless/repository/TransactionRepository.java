@@ -108,8 +108,13 @@ public class TransactionRepository {
         return transactionDao.getTotalExpensesByMonth("%" + month);
     }
 
-    public double getTotalExpenseByDate(String date){
-        return transactionDao.getTotalExpenseByDate(date);
+    public double getTotalExpenseByDate(String date, Long walletId){
+        return (walletId == -1) ?
+                transactionDao.getTotalExpenseByDate(date) :
+                transactionDao.getExpensesByDate(date).stream()
+                                .filter(transaction -> transaction.wallet == walletId)
+                                .mapToDouble(transaction -> transaction.amount)
+                                .sum();
     }
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
