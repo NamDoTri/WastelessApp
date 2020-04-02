@@ -119,20 +119,20 @@ public class HomeFragment extends Fragment {
 
         if(dailyGoal != null) {
             Double sum = dailyGoal.amountOfMoney;
-            createCard("Daily goal", "You have saved nothing loser", sum.toString(), root);
+            createCard("Daily goal", "You have saved nothing loser", sum.toString()+"€", root);
         } else {
             createCard("Daily goal is not set up yet", "Press the button below", "0", root);
         }
         if(monthlyGoal != null) {
             Double sum = monthlyGoal.amountOfMoney;
-            createCard("Monthly goal", "You have saved nothing loser", sum.toString(), root);
+            createCard("Monthly goal", "You have saved nothing loser", sum.toString()+"€", root);
         } else {
             createCard("Monthly goal is not set up yet", "Press the button below", "=(", root);
         }
         if(weeklyGoal != null) {
             Log.i("goal", "asdasdad");
             Double sum = weeklyGoal.amountOfMoney;
-            createCard("Weekly goal", "You have saved nothing loser", sum.toString(), root);
+            createCard("Weekly goal", "You have saved nothing loser", sum.toString()+"€", root);
         } else {
             createCard("Weekly goal is not set up yet", "Press the button below", "=(", root);
         }
@@ -213,7 +213,7 @@ public class HomeFragment extends Fragment {
         adapter = new SliderAdapter(models, getContext());
         viewPager = root.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
-        viewPager.setPadding(130, 0 ,130, 0);
+        viewPager.setPadding(100, 0 ,100, 0);
     }
 
     private void renderMonthlyIncomePieChart(){
