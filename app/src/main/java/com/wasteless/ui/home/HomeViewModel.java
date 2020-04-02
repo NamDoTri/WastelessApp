@@ -104,7 +104,17 @@ public class HomeViewModel extends AndroidViewModel {
 
     public String getTotalIncomeByMonth(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        double totalIncome = transactionRepository.getTotalIncomeByMonth(thisMonth);
+        double totalIncome = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() == -1){
+            totalIncome = transactionRepository.getTotalIncomeByMonth(thisMonth);
+        }else{
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            totalIncome = transactionRepository.getIncomesByMonth(thisMonth).stream()
+                                                            .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                                                            .mapToDouble(transaction -> transaction.amount)
+                                                            .sum();
+
+        }
         return String.valueOf(totalIncome);
     }
 
