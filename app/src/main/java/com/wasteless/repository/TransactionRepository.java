@@ -104,7 +104,7 @@ public class TransactionRepository {
         return transactionDao.getExpensesByMonth("%" + month);
     }
 
-    public double getTotalExpenseByMonth(String month) {
+    public double getTotalExpensesByMonth(String month) {
         return transactionDao.getTotalExpensesByMonth("%" + month);
     }
 

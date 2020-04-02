@@ -1,6 +1,5 @@
 package com.wasteless.ui.home;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +34,7 @@ import com.wasteless.roomdb.entities.Goal;
 import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
@@ -44,6 +43,8 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
 
     private PieChart incomePieChart;
+    private PieChart expensePieChart;
+    private BarChart expenseBarChart;
     private boolean usePercentage = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -58,8 +59,8 @@ public class HomeFragment extends Fragment {
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
 
         incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
-        final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
-        final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
+        expensePieChart = root.findViewById(R.id.expenses_pie_chart);
+        expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
@@ -125,61 +126,8 @@ public class HomeFragment extends Fragment {
         });
 
         renderMonthlyIncomePieChart();
-
-        //EXPENSE PIE CHART
-        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
-
-        //Value settings
-        expensePieChartData.setValueTextSize(20f);
-        expensePieChartData.setValueTextColor(Color.DKGRAY);
-        expensePieChartData.setValueFormatter(new PercentFormatter(incomePieChart));
-
-        //Chart settings
-        expensePieChart.setUsePercentValues(usePercentage);
-        expensePieChart.setTransparentCircleRadius(35f);
-        expensePieChart.setHoleRadius(30f);
-        expensePieChart.getDescription().setEnabled(false);
-
-        //Center text settings
-        expensePieChart.setCenterText(String.valueOf(homeViewModel.getTotalExpensesByMonth()));
-        expensePieChart.setCenterTextSize(27f);
-
-        //Entry label settings --- Removing the labels for now since sometimes they seem to overlap
-        expensePieChart.setDrawEntryLabels(false);
-
-        //Legend settings
-        Legend expensePieChartLegend = expensePieChart.getLegend();
-        expensePieChartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        expensePieChartLegend.setTextSize(15f);
-
-        expensePieChart.setData(expensePieChartData);
-
-        //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
-        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
-        XAxis xAxis = expenseBarChart.getXAxis();
-        YAxis yAxisLeft = expenseBarChart.getAxisLeft();
-        YAxis yAxisRight =  expenseBarChart.getAxisRight();
-
-        //Label settings
-        ArrayList dates = homeViewModel.getDateLabels();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
-        xAxis.setLabelCount(dates.size()/2);
-
-        //Axis settings
-        yAxisLeft.setAxisMinimum(0);
-        yAxisRight.setAxisMinimum(0);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        //Grid settings
-        yAxisLeft.setDrawGridLines(false);
-        xAxis.setDrawGridLines(false);
-        
-        //Descriptive settings
-        expenseBarChart.getLegend().setEnabled(false);
-        expenseBarChart.getDescription().setEnabled(false);
-
-        expenseBarChart.setData(expenseBarChartData);
-
+        renderMonthlyExpensesPieChart();
+        renderMonthlyExpenseBarChart();
 
         // keep track of currently displayed wallet
         homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
@@ -189,6 +137,8 @@ public class HomeFragment extends Fragment {
                 //TODO
                 homeViewModel.updateStats();
                 renderMonthlyIncomePieChart();
+                renderMonthlyExpensesPieChart();
+                renderMonthlyExpenseBarChart();
             }
         });
 
@@ -245,5 +195,117 @@ public class HomeFragment extends Fragment {
                 prevSelectedEntry = null;
             }
         });
+    }
+
+    private void renderMonthlyExpensesPieChart(){
+        //EXPENSE PIE CHART
+        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
+        //expensePieChartData.setHighlightEnabled(false);
+        //expensePieChart.setHighlightPerTapEnabled(false);
+
+        //Value settings
+        expensePieChartData.setValueTextSize(20f);
+        expensePieChartData.setValueTextColor(Color.DKGRAY);
+        expensePieChartData.setValueFormatter(new PercentFormatter(expensePieChart));
+
+
+        //Chart settings
+        expensePieChart.setUsePercentValues(usePercentage);
+        expensePieChart.setTransparentCircleRadius(35f);
+        expensePieChart.setHoleRadius(30f);
+        expensePieChart.getDescription().setEnabled(false);
+
+        //Center text settings
+        expensePieChart.setCenterText(homeViewModel.getTotalExpensesByMonth() +"€");
+        expensePieChart.setCenterTextSize(27f);
+
+        //Entry label settings --- Removing the labels for now since sometimes they seem to overlap
+        expensePieChart.setDrawEntryLabels(false);
+
+        //Legend settings
+        Legend expensePieChartLegend = expensePieChart.getLegend();
+        expensePieChartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        expensePieChartLegend.setTextSize(15f);
+
+        expensePieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            private Entry prevSelectedEntry = null;
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                // only if user select the same value again
+                if(prevSelectedEntry == null){
+                    usePercentage = !usePercentage;
+                    expensePieChart.setUsePercentValues(usePercentage);
+                    //expensePieChart.getData().setValueFormatter(new EuroFormatter());
+                }
+                prevSelectedEntry = e;
+            }
+
+            @Override
+            public void onNothingSelected() {
+                usePercentage = !usePercentage;
+                expensePieChart.setUsePercentValues(usePercentage);
+                prevSelectedEntry = null;
+            }
+        });
+
+        expensePieChart.setData(expensePieChartData);
+        expensePieChart.notifyDataSetChanged();
+        expensePieChart.invalidate();
+    }
+
+    private void renderMonthlyExpenseBarChart(){
+        //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
+        //TODO: scale the chart if there is a huge amount of expenses on one day
+        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+        expenseBarChartData.setValueFormatter(new ZeroFormatter());
+        XAxis xAxis = expenseBarChart.getXAxis();
+        YAxis yAxisLeft = expenseBarChart.getAxisLeft();
+        YAxis yAxisRight =  expenseBarChart.getAxisRight();
+
+        //Label settings
+        ArrayList dates = homeViewModel.getDateLabels();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
+        xAxis.setLabelCount(dates.size()/2);
+
+        //expenseBarChartData.getDataSetByIndex(0).setDrawValues(false);
+
+        //Axis settings
+        yAxisLeft.setAxisMinimum(0);
+        yAxisRight.setAxisMinimum(0);
+        yAxisLeft.setValueFormatter(new EuroFormatter());
+        yAxisRight.setValueFormatter(new EuroFormatter());
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        //Grid settings
+        yAxisLeft.setDrawGridLines(false);
+        xAxis.setDrawGridLines(false);
+
+        //Descriptive settings
+        expenseBarChart.getLegend().setEnabled(false);
+        expenseBarChart.getDescription().setEnabled(false);
+
+        expenseBarChart.setData(expenseBarChartData);
+        expenseBarChart.notifyDataSetChanged();
+        expenseBarChart.invalidate();
+    }
+
+    //Testing out these formatters
+    private static class EuroFormatter extends IndexAxisValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            return new DecimalFormat("#").format(value) + "€";
+        }
+    }
+
+    private static class ZeroFormatter extends IndexAxisValueFormatter{
+        @Override
+        public String getFormattedValue(float value) {
+            if(value > 0){
+                return new DecimalFormat("#").format(value);
+            }
+            else{
+                return "";
+            }
+        }
     }
 }
