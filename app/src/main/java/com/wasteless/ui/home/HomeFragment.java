@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,12 +28,19 @@ import com.wasteless.R;
 import com.wasteless.roomdb.entities.Goal;
 import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
+import com.wasteless.ui.home.goal.SliderAdapter;
+import com.wasteless.ui.home.goal.SliderModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private GoalViewModel goalViewModel;
     private HomeViewModel homeViewModel;
-
+    ViewPager viewPager;
+    SliderAdapter adapter;
+    List<SliderModel> models;
     private PieChart incomePieChart;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,6 +60,16 @@ public class HomeFragment extends Fragment {
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
+        models = new ArrayList<>();
+        models.add(new SliderModel("Sosi"));
+        models.add(new SliderModel("Bibu"));
+        models.add(new SliderModel("Loh"));
+
+        adapter = new SliderAdapter(models, getContext());
+
+        viewPager = root.findViewById(R.id.viewPager);
+        viewPager.setAdapter(adapter);
+        viewPager.setPadding(130, 0 ,130, 0);
 
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
             @Override

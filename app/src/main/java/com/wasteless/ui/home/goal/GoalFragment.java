@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.wasteless.R;
 
@@ -22,6 +24,7 @@ import com.wasteless.ui.home.HomeViewModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GoalFragment extends Fragment {
     private GoalViewModel goalViewModel;
@@ -30,10 +33,10 @@ public class GoalFragment extends Fragment {
     Integer amountOfGoals = 3;
 
 
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View goalFragmentView = inflater.inflate(R.layout.fragment_goal, container, false);
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
-
         Button submit_goals_button = goalFragmentView.findViewById(R.id.submit_goals);
 
         final LinearLayout day_part = goalFragmentView.findViewById(R.id.day_part);
