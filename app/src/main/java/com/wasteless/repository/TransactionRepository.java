@@ -11,6 +11,7 @@ import com.wasteless.roomdb.daos.TagDao;
 import com.wasteless.roomdb.daos.TransactionDao;
 import com.wasteless.roomdb.daos.WalletDao;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
@@ -90,8 +91,13 @@ public class TransactionRepository {
         return transactionDao.getTotalIncomeByMonth("%" + month);
     }
 
-    public double getTotalIncomeByDate(String date){
-        return transactionDao.getTotalIncomeByDate(date);
+    public double getTotalIncomeByDate(String date, Long walletId){
+            return (walletId == -1) ?
+                    transactionDao.getTotalIncomeByDate(date) :
+                    transactionDao.getIncomesByDate(date).stream()
+                                                        .filter(transaction -> transaction.wallet == walletId)
+                                                        .mapToDouble(transaction -> transaction.amount)
+                                                        .sum();
     }
 
     public List<Transaction> getExpensesByMonth(String month){ // mm/yyyy
@@ -102,8 +108,13 @@ public class TransactionRepository {
         return transactionDao.getTotalExpensesByMonth("%" + month);
     }
 
-    public double getTotalExpenseByDate(String date){
-        return transactionDao.getTotalExpenseByDate(date);
+    public double getTotalExpenseByDate(String date, Long walletId){
+        return (walletId == -1) ?
+                transactionDao.getTotalExpenseByDate(date) :
+                transactionDao.getExpensesByDate(date).stream()
+                                .filter(transaction -> transaction.wallet == walletId)
+                                .mapToDouble(transaction -> transaction.amount)
+                                .sum();
     }
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
@@ -162,15 +173,15 @@ public class TransactionRepository {
     }
 
     private void handleTags(Long rowId, ArrayList<String> tags){
-        //insert to tag table
         ArrayList<Tag> tagsToInsert = new ArrayList<>();
+        ArrayList<TagAssociation> tagAssociationsToInsert = new ArrayList<>();
+
         for(String tagName : tags){
             tagsToInsert.add(new Tag(tagName));
-
-            //insert to tag_assoc
-            tagDao.insertTagAssociation(rowId, tagName);
+            tagAssociationsToInsert.add(new TagAssociation(rowId, tagName));
         }
-        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()] ));
+        tagDao.insertAll(tagsToInsert.toArray(new Tag[tagsToInsert.size()]));
+        tagDao.insertAllTagAssociation(tagAssociationsToInsert.toArray(new TagAssociation[tagAssociationsToInsert.size()]));
     }
 
     public void delete(Transaction transaction){

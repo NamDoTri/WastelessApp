@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +24,12 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
@@ -39,41 +43,61 @@ public class HomeFragment extends Fragment {
     private GoalViewModel goalViewModel;
     private HomeViewModel homeViewModel;
 
+    private PieChart incomePieChart;
+    private boolean usePercentage = true;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
 
-        final PieChart incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
+        incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
         final PieChart expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         final BarChart expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
+        final Button prevWalletButton = root.findViewById(R.id.button_back);
+        final Button nextWalletButton = root.findViewById(R.id.button_next);
+
+        prevWalletButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                homeViewModel.changeWallet("prev");
+            }
+        });
+        nextWalletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.changeWallet("next");
+            }
+        });
+        homeViewModel.getCurrentWalletName().observe(getViewLifecycleOwner(), new Observer<String>(){
+            @Override
+            public void onChanged(@Nullable String s) { walletTitle.setText(s); }
+        });
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 budgetAmount.setText(s);
             }
         });
-
         homeViewModel.getBalanceAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 balanceAmount.setText(s);
             }
         });
-
-        homeViewModel.getExpensesAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getTotalExpenseToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 expensesAmount.setText(s);
             }
         });
-
         homeViewModel.getTotalIncomeToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -100,32 +124,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
-        // value settings
-        incomePieChartData.setValueTextSize(20f);
-        incomePieChartData.setValueTextColor(Color.DKGRAY);
-        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
-
-        //// chart settings
-        incomePieChart.setUsePercentValues(true);
-        incomePieChart.setTransparentCircleRadius(35f);
-        incomePieChart.setHoleRadius(30f);
-        incomePieChart.getDescription().setEnabled(false);
-
-        // center text settings
-        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
-        incomePieChart.setCenterTextSize(27f);
-
-        // entry label settings
-        incomePieChart.setEntryLabelTextSize(17f);
-        incomePieChart.setEntryLabelColor(Color.DKGRAY);
-
-        // legends settings
-        Legend incomePieChartLegend = incomePieChart.getLegend();
-        incomePieChartLegend.setTextSize(15f);
-
-        incomePieChart.setData(incomePieChartData);
-
+        renderMonthlyIncomePieChart();
 
         //EXPENSE PIE CHART
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
@@ -136,7 +135,7 @@ public class HomeFragment extends Fragment {
         expensePieChartData.setValueFormatter(new PercentFormatter(incomePieChart));
 
         //Chart settings
-        expensePieChart.setUsePercentValues(true);
+        expensePieChart.setUsePercentValues(usePercentage);
         expensePieChart.setTransparentCircleRadius(35f);
         expensePieChart.setHoleRadius(30f);
         expensePieChart.getDescription().setEnabled(false);
@@ -181,6 +180,70 @@ public class HomeFragment extends Fragment {
 
         expenseBarChart.setData(expenseBarChartData);
 
+
+        // keep track of currently displayed wallet
+        homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
+                //TODO
+                homeViewModel.updateStats();
+                renderMonthlyIncomePieChart();
+            }
+        });
+
         return root;
+    }
+
+    private void renderMonthlyIncomePieChart(){
+        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
+        Log.i("chart", incomePieChartData.toString());
+        // value settings
+        incomePieChartData.setValueTextSize(20f);
+        incomePieChartData.setValueTextColor(Color.DKGRAY);
+        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
+
+        //// chart settings
+        incomePieChart.setUsePercentValues(true);
+        incomePieChart.setTransparentCircleRadius(35f);
+        incomePieChart.setHoleRadius(30f);
+        incomePieChart.getDescription().setEnabled(false);
+
+        // center text settings
+        //TODO: update this when changing wallet
+        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
+        incomePieChart.setCenterTextSize(27f);
+
+        // entry label settings
+        incomePieChart.setEntryLabelTextSize(17f);
+        incomePieChart.setEntryLabelColor(Color.DKGRAY);
+
+        // legends settings
+        Legend incomePieChartLegend = incomePieChart.getLegend();
+        incomePieChartLegend.setTextSize(15f);
+
+        incomePieChart.notifyDataSetChanged();
+        incomePieChart.invalidate();
+        incomePieChart.setData(incomePieChartData);
+
+        incomePieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            private Entry prevSelectedEntry = null;
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                // only if user select the same value again
+                if(prevSelectedEntry == null){
+                    usePercentage = !usePercentage;
+                    incomePieChart.setUsePercentValues(usePercentage);
+                }
+                prevSelectedEntry = e;
+            }
+
+            @Override
+            public void onNothingSelected() {
+                usePercentage = !usePercentage;
+                incomePieChart.setUsePercentValues(usePercentage);
+                prevSelectedEntry = null;
+            }
+        });
     }
 }
