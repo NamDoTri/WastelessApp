@@ -25,7 +25,7 @@ public class Goal
         this.goalType = goalType;
         this.timeOfCreation = timeOfCreation;
         this.amountOfMoney = amountOfMoney;
-        Log.i("Database", "Goal created");
+        Log.i("Database", "Goal "+ goalType +". Sum " + amountOfMoney);
     }
 
 
