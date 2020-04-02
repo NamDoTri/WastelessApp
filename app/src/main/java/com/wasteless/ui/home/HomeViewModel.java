@@ -146,7 +146,7 @@ public class HomeViewModel extends AndroidViewModel {
         ArrayList expenseDays = new ArrayList();
         ArrayList allDays =  new ArrayList();
         ArrayList entries = new ArrayList<>();
-        //ArrayList labels = new ArrayList<>();
+        ArrayList labels = new ArrayList<>();
 
         //Getting all days this month
         Calendar calendar = Calendar.getInstance();
@@ -184,16 +184,36 @@ public class HomeViewModel extends AndroidViewModel {
             else{
                 entries.add(new BarEntry(i, (float) totalAmountPerDay));
             }
-            //labels.add(expenseDay);
+            labels.add(expenseDay);
             //TODO: ^^ (adding date labels)
         }
 
         BarDataSet expenseBarDataSet = new BarDataSet(entries, "Total expenses per day");
         expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
+        //BarData barData = new BarData(labels, expenseBarDataSet);
+
         //expenseBarDataSet.setDrawValues(false);
         //TODO: ^^ hide value "0" from the empty bars
 
         return new BarData(expenseBarDataSet);
+    }
+
+    public ArrayList<String> getDateLabels() {
+        ArrayList allDates = new ArrayList();
+
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.set(Calendar.MONTH, currentMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd");
+
+        for (int i=0; i<maxDay; i++) {
+            calendar.set(Calendar.DAY_OF_MONTH, i + 1);
+            allDates.add(simpleDateFormatter.format(calendar.getTime()));
+        }
+
+        return allDates;
     }
 }

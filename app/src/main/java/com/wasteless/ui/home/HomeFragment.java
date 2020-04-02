@@ -1,5 +1,6 @@
 package com.wasteless.ui.home;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,14 +20,18 @@ import androidx.lifecycle.ViewModelProviders;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
 import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -149,19 +155,24 @@ public class HomeFragment extends Fragment {
         expensePieChart.setData(expensePieChartData);
 
         //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
-        //TODO: get labels(dates) from viewmodel or just set them here somehow
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
+        XAxis xAxis = expenseBarChart.getXAxis();
+
+        //Label settings
+        ArrayList dates = homeViewModel.getDateLabels();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
+        xAxis.setLabelCount(dates.size()/2);
 
         //Axis settings
         expenseBarChart.getAxisLeft().setAxisMinimum(0);
         expenseBarChart.getAxisRight().setAxisMinimum(0);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         //Grid settings
         expenseBarChart.getAxisLeft().setDrawGridLines(false);
-        expenseBarChart.getXAxis().setDrawGridLines(false);
+        xAxis.setDrawGridLines(false);
 
-        //Description settings
-        expenseBarChart.getXAxis().setDrawLabels(false);
+        //Descriptive settings
         expenseBarChart.getLegend().setEnabled(false);
         expenseBarChart.getDescription().setEnabled(false);
 
@@ -169,5 +180,4 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
-
 }
