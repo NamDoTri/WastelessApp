@@ -1,11 +1,25 @@
 package com.wasteless.ui.add_transaction;
 
 import android.app.Application;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
@@ -18,6 +32,7 @@ import java.util.List;
 public class AddTransactionViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
+    private Context appContext;
 
     private MutableLiveData<String> description, amount, date, type, walletId, source;
     private MutableLiveData<Boolean> isIncome;
@@ -27,6 +42,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         super(application);
         walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
+        appContext = application.getApplicationContext();
 
         description = new MutableLiveData<>();
         amount = new MutableLiveData<>();
@@ -146,6 +162,53 @@ public class AddTransactionViewModel extends AndroidViewModel {
         }
         if(isIncome.getValue() && source.length() == 0) return false;
         return true;
+    }
+
+    public String recognizeText(Uri inputReceiptUri){
+//        ImageDecoder.Source sourceContainer = ImageDecoder.createSource(appContext.getContentResolver(), inputReceiptUri);
+//        Bitmap inputReceiptBitmap;
+//        try{
+//            inputReceiptBitmap = ImageDecoder.decodeBitmap(sourceContainer);
+//            FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+//            FirebaseVisionImage inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputReceiptBitmap);
+//
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+
+        // set up recognizer
+        FirebaseApp.initializeApp(appContext);
+        FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+        String[] resultText = {"Something's wrong"};
+
+        FirebaseVisionImage inputReceiptFVI;
+        try{
+            inputReceiptFVI = FirebaseVisionImage.fromFilePath(appContext, inputReceiptUri);
+            textRecognizer.processImage(inputReceiptFVI)
+                    .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                        @Override
+                        public void onSuccess(FirebaseVisionText result) {
+                            Log.i("receipt", "Result: " + result.getText());
+                            resultText[0] = result.getText();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            FirebaseMLException mlException = (FirebaseMLException)e;
+                            Log.i("FA", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
+                            if(mlException.getCode() == 14) { // model unavailable
+                                //TODO
+                            }
+
+                            e.printStackTrace();
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return resultText[0];
     }
 
 }
