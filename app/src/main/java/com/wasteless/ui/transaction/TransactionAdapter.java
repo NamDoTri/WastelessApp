@@ -3,6 +3,7 @@ package com.wasteless.ui.transaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,12 +50,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         private TextView description;
         private TextView type;
         private TextView amount;
+        private LinearLayout tags;
 
         public TransactionHolder(View itemView) {
             super(itemView);
             description = itemView.findViewById(R.id.transaction_description);
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
+//            tags = itemView.findViewById(R.id.transaction_tags);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
