@@ -15,6 +15,7 @@ import com.wasteless.repository.WalletRepository;
 
 import com.wasteless.roomdb.entities.Transaction;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
@@ -85,7 +86,7 @@ public class HomeViewModel extends AndroidViewModel {
         return expensesAmount;
     }
 
-    public LiveData<String> getTotalExpensesByMonth(){
+    public String getTotalExpensesByMonth(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
 
         double totalExpenses = 0.0;
@@ -98,6 +99,11 @@ public class HomeViewModel extends AndroidViewModel {
                     .mapToDouble(transaction -> transaction.amount)
                     .sum();
         }
+        return String.valueOf(totalExpenses);
+    }
+
+    public LiveData<String> getLiveExpensesByMonth(){
+        String totalExpenses = getTotalExpensesByMonth();
         monthlyExpensesAmount.setValue(String.valueOf(totalExpenses));
 
         return monthlyExpensesAmount;
@@ -222,7 +228,7 @@ public class HomeViewModel extends AndroidViewModel {
         }
         getTotalIncomeToday();
         getTotalExpenseToday();
-        getTotalExpensesByMonth();
+        getLiveExpensesByMonth();
         //rerender income pie chart
     }
 }

@@ -88,7 +88,6 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -129,8 +128,7 @@ public class HomeFragment extends Fragment {
                 incomeTodayAmount.setText(s);
             }
         });
-
-        homeViewModel.getTotalExpensesByMonth().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getLiveExpensesByMonth().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 expensesMonthlyAmount.setText(s);
