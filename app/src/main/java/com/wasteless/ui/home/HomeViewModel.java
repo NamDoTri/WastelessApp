@@ -7,9 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -18,11 +15,9 @@ import com.wasteless.repository.WalletRepository;
 
 import com.wasteless.roomdb.entities.Transaction;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +34,8 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> balanceAmount;
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
+    private MutableLiveData<String> monthlyExpensesAmount;
+    //private MutableLiveData<String> monthlyIncomesAmount;
 
     public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
@@ -60,6 +57,9 @@ public class HomeViewModel extends AndroidViewModel {
 
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
+        monthlyExpensesAmount = new MutableLiveData<>();
+        //monthlyIncomesAmount= new MutableLiveData<>();
+
     }
 
     public MutableLiveData<Integer> getCurrentlyDisplayWalletIndex() { return currentlyDisplayWalletIndex; }
@@ -80,6 +80,24 @@ public class HomeViewModel extends AndroidViewModel {
         expensesAmount.setValue(String.valueOf(todayTotalExpense));
 
         return expensesAmount;
+    }
+
+    public LiveData<String> getTotalExpensesByMonth(){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+
+        double totalExpenses = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() == -1){
+            totalExpenses = transactionRepository.getTotalExpensesByMonth(thisMonth);
+        }else{
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            totalExpenses = transactionRepository.getExpensesByMonth(thisMonth).stream()
+                    .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                    .mapToDouble(transaction -> transaction.amount)
+                    .sum();
+        }
+        monthlyExpensesAmount.setValue(String.valueOf(totalExpenses));
+
+        return monthlyExpensesAmount;
     }
 
     public LiveData<String> getTotalIncomeToday() {
@@ -141,100 +159,6 @@ public class HomeViewModel extends AndroidViewModel {
         return new PieData(incomeDataSet);
     }
 
-    public String getTotalExpensesByMonth(){
-        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        double totalExpenses = 0.0;
-        if(currentlyDisplayWalletIndex.getValue() == -1){
-            totalExpenses = transactionRepository.getTotalExpensesByMonth(thisMonth);
-        }else{
-            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
-            totalExpenses = transactionRepository.getExpensesByMonth(thisMonth).stream()
-                        .filter(transaction -> transaction.wallet == currentWallet.walletId)
-                        .mapToDouble(transaction -> transaction.amount)
-                        .sum();
-        }
-
-        return String.valueOf(totalExpenses);
-    }
-
-    /*public BarData getExpenseBarChart(){
-        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
-
-        ArrayList expenseDays = new ArrayList();
-        ArrayList allDays =  new ArrayList();
-        ArrayList entries = new ArrayList<>();
-
-        //Getting all days this month
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        calendar.set(Calendar.MONTH, currentMonth);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        if(currentlyDisplayWalletIndex.getValue() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
-            expensesThisMonth = expensesThisMonth.stream()
-                            .filter(transaction -> transaction.wallet == currentWallet.walletId)
-                            .collect(Collectors.toList());
-        }
-
-        //Add all days this month to the list
-        for (int i=0; i<maxDay; i++) {
-            calendar.set(Calendar.DAY_OF_MONTH, i + 1);
-            allDays.add(simpleDateFormatter.format(calendar.getTime()));
-        }
-
-        //Add all days where there has been an expense to the list
-        for (int i=0; i<expensesThisMonth.size(); i++){
-            if(!expenseDays.contains(expensesThisMonth.get(i).date)){
-                String date = expensesThisMonth.get(i).date;
-                expenseDays.add(date);
-            }
-        }
-
-        //Group expenses by date and add all dates with their corresponding expense amounts to the entries
-        for (int i=0; i<allDays.size(); i++) {
-            String expenseDay = (String) allDays.get(i);
-
-            double totalAmountPerDay = expensesThisMonth.stream()
-                    .filter(transaction -> transaction.date.equalsIgnoreCase(expenseDay))
-                    .mapToDouble(transaction -> transaction.amount)
-                    .reduce(0, Double::sum);
-            if (totalAmountPerDay == 0) {
-                entries.add(new BarEntry(i, 0, "hide"));
-            } else {
-                entries.add(new BarEntry(i, (float) totalAmountPerDay));
-            }
-        }
-        BarDataSet expenseBarDataSet = new BarDataSet(entries, "Total expenses per day");
-        expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
-        //expenseBarDataSet.setDrawValues(true);
-        //TODO: ^^ hide value "0" from the empty bar
-
-        return new BarData(expenseBarDataSet);
-    }*/
-
-    /*public ArrayList<String> getDateLabels() {
-        ArrayList allDates = new ArrayList();
-
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        calendar.set(Calendar.MONTH, currentMonth);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd");
-
-        for (int i=0; i<maxDay; i++) {
-            calendar.set(Calendar.DAY_OF_MONTH, i + 1);
-            allDates.add(simpleDateFormatter.format(calendar.getTime()));
-        }
-
-        return allDates;
-    }*/
-
     public void changeWallet(String movement){
         int currentWallet = currentlyDisplayWalletIndex.getValue();
 
@@ -260,6 +184,7 @@ public class HomeViewModel extends AndroidViewModel {
         }
         getTotalIncomeToday();
         getTotalExpenseToday();
+        getTotalExpensesByMonth();
         //rerender income pie chart
     }
 }

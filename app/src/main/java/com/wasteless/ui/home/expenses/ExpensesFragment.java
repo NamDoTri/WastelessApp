@@ -1,12 +1,10 @@
 package com.wasteless.ui.home.expenses;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
 
@@ -26,16 +24,14 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
-import com.wasteless.roomdb.entities.Wallet;
-import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.ui.transaction.TransactionViewModel;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ExpensesFragment extends Fragment {
     private ExpensesViewModel expensesViewModel;
-    private HomeViewModel homeViewModel;
+    private TransactionViewModel transactionViewModel;
 
     private PieChart expensePieChart;
     private BarChart expenseBarChart;
@@ -45,19 +41,12 @@ public class ExpensesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_expenses, container, false);
         expensesViewModel = ViewModelProviders.of(this).get(ExpensesViewModel.class);
+        transactionViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
+
+        final Bundle expensesBundle = this.getArguments();
 
         expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
-
-        final Bundle expensesBundle = this.getArguments();
-        //final int walletIndex = expensesBundle.getInt("walletIndex");
-
-        /*Context context = getContext();
-        CharSequence text = String.valueOf(walletIndex);
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();*/
 
         renderMonthlyExpensesPieChart();
         renderMonthlyExpenseBarChart();

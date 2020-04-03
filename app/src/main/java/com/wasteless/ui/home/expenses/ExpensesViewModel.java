@@ -5,7 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -17,7 +16,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Transaction;
-import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeViewModel;
 
 import java.text.SimpleDateFormat;
@@ -26,16 +24,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ExpensesViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
 
-    public MutableLiveData<Integer> currentlyDisplayWalletIndex;
+    //public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    HomeViewModel homeViewModel;
 
     public ExpensesViewModel(@NonNull Application application) {
         super(application);
@@ -50,12 +46,12 @@ public class ExpensesViewModel extends AndroidViewModel {
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        if(1 != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(1);
+        /*if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(-1);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }
+        }*/
 
         for (int i=0; i<expenseCategories.length; i++){
             String expenseCategory = expenseCategories[i];
@@ -91,12 +87,12 @@ public class ExpensesViewModel extends AndroidViewModel {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        if(1 != -1){
+        /*if(currentlyDisplayWalletIndex.getValue() != -1){
             Wallet currentWallet = walletRepository.getAllWallets().get(1);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }
+        }*/
 
         //Add all days this month to the list
         for (int i=0; i<maxDay; i++) {
