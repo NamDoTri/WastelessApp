@@ -77,10 +77,9 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 ExpensesFragment expensesFragment = new ExpensesFragment();
 
-                String currentWallet = String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex());
-
                 Bundle expensesBundle = new Bundle();
-                expensesBundle.putString("walletIndex", currentWallet);
+                expensesBundle.putLong("walletId", homeViewModel.getCurrentWalletId());
+                expensesFragment.setArguments(expensesBundle);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.nav_host_fragment, expensesFragment);

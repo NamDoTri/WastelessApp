@@ -71,7 +71,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
-        //CREATE A CONFIRMATION FOR THIS!1!1!!!!1!1
+        //TODO: confirmation screen & make the swipe animation red
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -85,18 +85,6 @@ public class HistoryFragment extends Fragment{
                 Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
-
-        /*root.findViewById(R.id.history_transaction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TransactionFragment transactionFragment = new TransactionFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.nav_host_fragment, transactionFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });*/
 
         return root;
     }

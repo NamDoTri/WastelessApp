@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -16,7 +15,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Transaction;
-import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.roomdb.entities.Wallet;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -24,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExpensesViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
@@ -52,6 +52,7 @@ public class ExpensesViewModel extends AndroidViewModel {
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
         }*/
+        //TODO for both charts: check that which wallet was selected in the home view
 
         for (int i=0; i<expenseCategories.length; i++){
             String expenseCategory = expenseCategories[i];
@@ -87,7 +88,7 @@ public class ExpensesViewModel extends AndroidViewModel {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        /*if(currentlyDisplayWalletIndex.getValue() != -1){
+        /*if(homeViewModel.getCurrentWalletId() != -1){
             Wallet currentWallet = walletRepository.getAllWallets().get(1);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)

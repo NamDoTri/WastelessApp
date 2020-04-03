@@ -203,6 +203,17 @@ public class HomeViewModel extends AndroidViewModel {
         return new PieData(incomeDataSet);
     }
 
+    public long getCurrentWalletId(){
+            Wallet currentWallet;
+        if(currentlyDisplayWalletIndex.getValue() != -1) {
+            currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            return currentWallet.walletId;
+        }
+        else{
+            return -1;
+        }
+    }
+
     public void changeWallet(String movement){
         int currentWallet = currentlyDisplayWalletIndex.getValue();
 

@@ -1,10 +1,12 @@
 package com.wasteless.ui.home.expenses;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
 
@@ -50,6 +52,13 @@ public class ExpensesFragment extends Fragment {
 
         renderMonthlyExpensesPieChart();
         renderMonthlyExpenseBarChart();
+
+        Context context = getContext();
+        CharSequence text = String.valueOf(expensesBundle.getLong("walletId"));
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
         return root;
     }
