@@ -20,6 +20,8 @@ import com.wasteless.R;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.edit_transaction.EditTransactionFragment;
 
+import java.util.List;
+
 public class TransactionFragment extends Fragment {
 
     private TransactionViewModel transactionViewModel;
@@ -38,6 +40,9 @@ public class TransactionFragment extends Fragment {
         final TextView description = root.findViewById(R.id.description);
         final TextView date = root.findViewById(R.id.date);
         final TextView wallet = root.findViewById(R.id.wallet);
+        final TextView tag1 = root.findViewById(R.id.tag1);
+        final TextView tag2 = root.findViewById(R.id.tag2);
+        final TextView tag3 = root.findViewById(R.id.tag3);
         //final TextView source = root.findViewById(R.id.source);
 
         //TO-DO ---> check if the transaction is either expense or income and modify data shown related to that
@@ -53,6 +58,7 @@ public class TransactionFragment extends Fragment {
         toast.show();
 
         transactionViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            List<String> tagList = transactionViewModel.getTags(transaction.transactionId);
             @Override
             public void onChanged(@Nullable String s) {
                 header.setText(s);
@@ -60,7 +66,30 @@ public class TransactionFragment extends Fragment {
                 description.setText(transaction.description);
                 type.setText(transaction.type);
                 date.setText(transaction.date);
-                wallet.setText(String.valueOf(transaction.wallet));
+                wallet.setText(transactionViewModel.getWalletById(transaction.wallet).name);
+                if(!tagList.isEmpty()) {
+                    int tagListSize = tagList.size();
+                    if (tagListSize == 3) {
+                        tag1.setText(tagList.get(0));
+                        tag2.setText(tagList.get(1));
+                        tag3.setText(tagList.get(2));
+                    }
+                    if (tagListSize == 2) {
+                        tag1.setText(tagList.get(0));
+                        tag2.setText(tagList.get(1));
+                        tag3.setText("");
+                    }
+                    if (tagListSize == 1) {
+                        tag1.setText(tagList.get(0));
+                        tag2.setText("");
+                        tag3.setText("");
+                    }
+                }
+                else {
+                    tag1.setText("");
+                    tag2.setText("");
+                    tag3.setText("");
+                }
             }
         });
 
