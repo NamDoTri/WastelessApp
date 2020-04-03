@@ -150,8 +150,11 @@ public class HomeFragment extends Fragment {
         }
         if(monthlyGoal != null) {
             Double sum = monthlyGoal.amountOfMoney;
-            createCard("Monthly goal", "You have saved nothing ",
-                    sum.toString(),R.drawable.week_24dp , root, 0);
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpensesByMonth());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Integer progress = (spendings * 100) / goalF;
+            createCard("Monthly goal", "You have spent "+ progress +"% already",
+                    sum.toString(),R.drawable.week_24dp , root, progress);
         } else {
             createCard("Monthly goal is not set up yet", "Press the button below",
                     "0",R.drawable.week_24dp , root, 0);

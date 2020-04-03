@@ -167,7 +167,6 @@ public class HomeViewModel extends AndroidViewModel {
                         .mapToDouble(transaction -> transaction.amount)
                         .sum();
         }
-
         return String.valueOf(totalExpenses);
     }
 
