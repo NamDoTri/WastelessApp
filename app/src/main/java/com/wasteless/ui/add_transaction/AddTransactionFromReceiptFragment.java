@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +23,7 @@ public class AddTransactionFromReceiptFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
 
     private ImageView previewReceiptImage;
+    private TextView tempTextview;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
@@ -33,6 +35,7 @@ public class AddTransactionFromReceiptFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         previewReceiptImage = (ImageView)getView().findViewById(R.id.preview_receipt);
+        tempTextview = getView().findViewById(R.id.temp_text_view);
 
         ActivityResultLauncher<String> getReceiptImage = prepareCall(new GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -40,6 +43,8 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                     public void onActivityResult(Uri result) {
                         Log.i("receipt", "Image uri: " + result.toString());
                         previewReceiptImage.setImageURI(result);
+                        String text = addTransactionViewModel.recognizeText(result);
+                        tempTextview.setText(text);
                     }
                 });
 
