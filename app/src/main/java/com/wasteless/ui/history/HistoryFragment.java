@@ -60,10 +60,6 @@ public class HistoryFragment extends Fragment{
             public void onTransactionClick(Transaction transaction) {
                 TransactionFragment transactionFragment = new TransactionFragment();
 
-                //I think that in the end I only need to transfer the ID of the item that was clicked
-                //since we should pull more data from the db in the transaction details-fragment (like actual date, wallet etc).
-
-                //So this is just to test out the process of changing fragments and to design the details
                 Bundle transactionBundle = new Bundle();
                 transactionBundle.putLong("id", transaction.transactionId);
                 transactionFragment.setArguments(transactionBundle);
