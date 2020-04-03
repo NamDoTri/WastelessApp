@@ -30,4 +30,5 @@ public class TagAssociation {
         this.transactionId = transactionId;
         this.tag = tag;
     }
+
 }
