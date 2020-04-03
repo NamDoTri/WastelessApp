@@ -40,7 +40,7 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
 
-    private MutableLiveData<Integer> currentlyDisplayWalletIndex;
+    public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -157,39 +157,7 @@ public class HomeViewModel extends AndroidViewModel {
         return String.valueOf(totalExpenses);
     }
 
-    public PieData getMonthlyExpensePieChart(){
-        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
-        List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
-        String[] expenseCategories = transactionRepository.getAllCategories();
-
-        ArrayList<PieEntry> entries = new ArrayList<>();
-
-        if(currentlyDisplayWalletIndex.getValue() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
-            expensesThisMonth = expensesThisMonth.stream()
-                            .filter(transaction -> transaction.wallet == currentWallet.walletId)
-                            .collect(Collectors.toList());
-        }
-
-        for (int i=0; i<expenseCategories.length; i++){
-            String expenseCategory = expenseCategories[i];
-
-            double totalAmountPerType = expensesThisMonth.stream()
-                                    .filter(transaction -> transaction.type.equalsIgnoreCase(expenseCategory))
-                                    .mapToDouble(transaction -> transaction.amount)
-                                    .reduce(0, Double::sum);
-
-            if(totalAmountPerType != 0.0)entries.add(new PieEntry((float) totalAmountPerType, expenseCategories[i]));
-        }
-
-        PieDataSet expensePieDataSet = new PieDataSet(entries, "");
-        expensePieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        expensePieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
-        return new PieData(expensePieDataSet);
-    }
-
-    public BarData getExpenseBarChart(){
+    /*public BarData getExpenseBarChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
@@ -227,31 +195,29 @@ public class HomeViewModel extends AndroidViewModel {
         }
 
         //Group expenses by date and add all dates with their corresponding expense amounts to the entries
-        for (int i=0; i<allDays.size(); i++){
+        for (int i=0; i<allDays.size(); i++) {
             String expenseDay = (String) allDays.get(i);
 
             double totalAmountPerDay = expensesThisMonth.stream()
-                                    .filter(transaction -> transaction.date.equalsIgnoreCase(expenseDay))
-                                    .mapToDouble(transaction -> transaction.amount)
-                                    .reduce(0, Double::sum);
-            if(totalAmountPerDay == 0){
+                    .filter(transaction -> transaction.date.equalsIgnoreCase(expenseDay))
+                    .mapToDouble(transaction -> transaction.amount)
+                    .reduce(0, Double::sum);
+            if (totalAmountPerDay == 0) {
                 entries.add(new BarEntry(i, 0, "hide"));
-            }
-            else{
+            } else {
                 entries.add(new BarEntry(i, (float) totalAmountPerDay));
             }
         }
-
         BarDataSet expenseBarDataSet = new BarDataSet(entries, "Total expenses per day");
         expenseBarDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         //expenseBarDataSet.setDrawValues(true);
-        //TODO: ^^ hide value "0" from the empty bars
+        //TODO: ^^ hide value "0" from the empty bar
 
         return new BarData(expenseBarDataSet);
-    }
+    }*/
 
-    public ArrayList<String> getDateLabels() {
+    /*public ArrayList<String> getDateLabels() {
         ArrayList allDates = new ArrayList();
 
         Calendar calendar = Calendar.getInstance();
@@ -267,7 +233,7 @@ public class HomeViewModel extends AndroidViewModel {
         }
 
         return allDates;
-    }
+    }*/
 
     public void changeWallet(String movement){
         int currentWallet = currentlyDisplayWalletIndex.getValue();

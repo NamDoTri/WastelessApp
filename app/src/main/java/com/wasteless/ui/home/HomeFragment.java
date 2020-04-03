@@ -32,6 +32,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
+import com.wasteless.ui.home.expenses.ExpensesFragment;
 import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
 import com.wasteless.ui.home.goal.SliderAdapter;
@@ -69,11 +70,26 @@ public class HomeFragment extends Fragment {
         final TextView incomeAmount = root.findViewById(R.id.income_amount);
 
         incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
-        expensePieChart = root.findViewById(R.id.expenses_pie_chart);
-        expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
+        /*expensePieChart = root.findViewById(R.id.expenses_pie_chart);
+        expenseBarChart = root.findViewById(R.id.expenses_bar_chart);*/
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
+
+        expensesAmount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExpensesFragment expensesFragment = new ExpensesFragment();
+
+                Bundle expensesBundle = new Bundle();
+                expensesBundle.putInt("walletIndex", homeViewModel.getCurrentlyDisplayWalletIndex().getValue());
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, expensesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
 
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
@@ -160,8 +176,8 @@ public class HomeFragment extends Fragment {
         });
 
         renderMonthlyIncomePieChart();
-        renderMonthlyExpensesPieChart();
-        renderMonthlyExpenseBarChart();
+        /*renderMonthlyExpensesPieChart();
+        renderMonthlyExpenseBarChart();*/
 
         // keep track of currently displayed wallet
         homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
@@ -171,8 +187,8 @@ public class HomeFragment extends Fragment {
                 //TODO
                 homeViewModel.updateStats();
                 renderMonthlyIncomePieChart();
-                renderMonthlyExpensesPieChart();
-                renderMonthlyExpenseBarChart();
+                //renderMonthlyExpensesPieChart();
+                //renderMonthlyExpenseBarChart();
             }
         });
 
@@ -242,7 +258,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void renderMonthlyExpensesPieChart(){
+    /*private void renderMonthlyExpensesPieChart(){
         //EXPENSE PIE CHART
         PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
         //expensePieChartData.setHighlightEnabled(false);
@@ -298,7 +314,7 @@ public class HomeFragment extends Fragment {
         expensePieChart.invalidate();
     }
 
-    private void renderMonthlyExpenseBarChart(){
+    /*private void renderMonthlyExpenseBarChart(){
         //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
         //TODO: scale the chart if there is a huge amount of expenses on one day
         BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
@@ -313,12 +329,15 @@ public class HomeFragment extends Fragment {
         xAxis.setLabelCount(dates.size()/2);
 
         //Testing scaling down
-        if (expenseBarChart.getYChartMax() > 500) {
+        /*if (expenseBarChart.getYChartMax() > 500) {
             expenseBarChart.setScaleMinima(1f,5f);
         }
         else if (expenseBarChart.getYChartMax() > 1000){
             expenseBarChart.setScaleMinima(1f, 10f);
         }
+
+        float maxVal = expenseBarChart.getYChartMax();
+        //expenseBarChart.set
 
         //Axis settings
         yAxisLeft.setAxisMinimum(0);
@@ -338,7 +357,7 @@ public class HomeFragment extends Fragment {
         expenseBarChart.setData(expenseBarChartData);
         expenseBarChart.notifyDataSetChanged();
         expenseBarChart.invalidate();
-    }
+    }*/
 
     //Testing out these formatters
     private static class EuroFormatter extends IndexAxisValueFormatter {
