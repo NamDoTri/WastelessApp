@@ -82,6 +82,7 @@ public class HomeViewModel extends AndroidViewModel {
         return expensesAmount;
     }
 
+
     public LiveData<String> getTotalIncomeToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
@@ -94,6 +95,19 @@ public class HomeViewModel extends AndroidViewModel {
         }
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
+    }
+    public String getTotalExpenseTodayBar() {
+        String today = dateFormatter.format(LocalDateTime.now());
+
+        Double todayTotalExpense = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, currentWallet.walletId);
+        }else{
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, Long.valueOf(-1));
+        }
+
+        return String.valueOf(todayTotalExpense);
     }
 
     public String getTotalIncomeByMonth(){

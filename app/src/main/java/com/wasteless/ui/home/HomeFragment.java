@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment {
     ViewPager viewPager;
     SliderAdapter adapter;
     List<SliderModel> models;
+    String daySpendings;
     private PieChart incomePieChart;
     private PieChart expensePieChart;
     private BarChart expenseBarChart;
@@ -126,8 +128,13 @@ public class HomeFragment extends Fragment {
 
         if(dailyGoal != null) {
             Double sum = dailyGoal.amountOfMoney;
-            createCard("Daily goal", "You have saved nothing ",
-                    sum.toString(), R.drawable.ic_account_balance_wallet_black_24dp , root, 50);
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpenseTodayBar());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Log.i("progress", String.valueOf(spendings));
+            Integer progress = (spendings * 100) / goalF;
+
+            createCard("Daily goal", "You have spent "+ progress +"% already",
+                    sum.toString(), R.drawable.ic_account_balance_wallet_black_24dp , root, progress);
         } else {
             createCard("Daily goal is not set up yet", "Press the button below",
                     "0",R.drawable.ic_account_balance_wallet_black_24dp , root, 0);
@@ -135,7 +142,7 @@ public class HomeFragment extends Fragment {
         if(weeklyGoal != null) {
             Log.i("goal", "asdasdad");
             Double sum = weeklyGoal.amountOfMoney;
-            createCard("Weekly goal", "You have saved nothing ", sum.toString(),
+            createCard("Weekly goal", "You have spent ", sum.toString(),
                     R.drawable.month , root, 5);
         } else {
             createCard("Weekly goal is not set up yet", "Press the button below", "0",
@@ -179,10 +186,14 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void createCard(String title, String comment, String goal, Integer image, View root, Integer spendingsPer) {
-        String mainChapterNumber = goal.split("\\.", 2)[0];
+    Integer doubleStringToInteger(String value) {
+        String mainChapterNumber = value.split("\\.", 2)[0];
         Integer goalF = Integer.parseInt(mainChapterNumber);
-        Integer progress = (spendingsPer * 100) / goalF;
+        return goalF;
+    };
+
+    private void createCard(String title, String comment, String goal, Integer image, View root, Integer progress) {
+        Integer goalF = doubleStringToInteger(goal);
 
         Log.i("progress", String.valueOf(progress));
         models.add(new SliderModel(image, title, comment, goalF.toString() + " €", progress));
