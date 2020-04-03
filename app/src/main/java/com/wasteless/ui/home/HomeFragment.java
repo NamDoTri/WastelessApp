@@ -140,10 +140,12 @@ public class HomeFragment extends Fragment {
                     "0",R.drawable.ic_account_balance_wallet_black_24dp , root, 0);
         }
         if(weeklyGoal != null) {
-            Log.i("goal", "asdasdad");
-            Double sum = weeklyGoal.amountOfMoney;
-            createCard("Weekly goal", "You have spent ", sum.toString(),
-                    R.drawable.month , root, 5);
+            Double sum = dailyGoal.amountOfMoney;
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpenseWeek());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Integer progress = (spendings * 100) / goalF;
+            createCard("Weekly goal", "You have spent "+ progress+"%", sum.toString(),
+                    R.drawable.month , root, progress);
         } else {
             createCard("Weekly goal is not set up yet", "Press the button below", "0",
                     R.drawable.month , root, 0);
