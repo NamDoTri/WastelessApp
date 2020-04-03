@@ -32,7 +32,7 @@ public interface TransactionDao {
     LiveData<List<Transaction>> getTransactionsByDescription(String searchValue);
 
 //    Query to get transaction with specific date
-    @Query("SELECT * FROM transactions ORDER BY date LIKE :searchValue")
+    @Query("SELECT * FROM transactions WHERE date LIKE :searchValue")
     LiveData<List<Transaction>> getTransactionsByDate(String searchValue);
 
 //    Query to get all transactions with a type

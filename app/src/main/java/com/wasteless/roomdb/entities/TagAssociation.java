@@ -21,8 +21,14 @@ public class TagAssociation {
     public Long index;
 
     @ColumnInfo(name = "transactionId")
-    public Long transaction;
+    public Long transactionId;
 
     @ColumnInfo(name = "tag")
     public String tag;
+
+    public TagAssociation(Long transactionId, String tag){
+        this.transactionId = transactionId;
+        this.tag = tag;
+    }
+
 }
