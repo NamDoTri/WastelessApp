@@ -7,12 +7,23 @@ private Integer image;
 private String title;
 private String comment;
 private String goal;
+private Integer progress;
 
-    public SliderModel(Integer image, String title, String comment, String goal) {
+
+    public SliderModel(Integer image, String title, String comment, String goal, Integer progress) {
         this.image = image;
         this.title = title;
         this.comment = comment;
         this.goal = goal;
+        this.progress = progress;
+    }
+
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
     }
 
     public int getImage() {
