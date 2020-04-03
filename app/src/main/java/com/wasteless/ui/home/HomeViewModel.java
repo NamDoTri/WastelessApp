@@ -19,11 +19,15 @@ import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.github.mikephil.charting.data.PieData;
@@ -82,6 +86,7 @@ public class HomeViewModel extends AndroidViewModel {
         return expensesAmount;
     }
 
+
     public LiveData<String> getTotalIncomeToday() {
         String today = dateFormatter.format(LocalDateTime.now());
 
@@ -94,6 +99,41 @@ public class HomeViewModel extends AndroidViewModel {
         }
         incomesAmount.setValue(String.valueOf(todayTotalIncome));
         return incomesAmount;
+    }
+    public String getTotalExpenseTodayBar() {
+        String today = dateFormatter.format(LocalDateTime.now());
+
+        Double todayTotalExpense = 0.0;
+        if(currentlyDisplayWalletIndex.getValue() != -1){
+            Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, currentWallet.walletId);
+        }else{
+            todayTotalExpense = transactionRepository.getTotalExpenseByDate(today, Long.valueOf(-1));
+        }
+
+        return String.valueOf(todayTotalExpense);
+    }
+    public String getTotalExpenseWeek() {
+
+
+        Double todayTotalExpense = 0.0;
+        for (int i = 1; i < 8; i++){
+            LocalDate now = LocalDate.now();
+            TemporalField fieldISO = WeekFields.of(Locale.GERMANY).dayOfWeek();
+            String today = dateFormatter.format(now.with(fieldISO, i));
+            if(currentlyDisplayWalletIndex.getValue() != -1){
+                Wallet currentWallet = walletRepository.getAllWallets().get(currentlyDisplayWalletIndex.getValue());
+                todayTotalExpense += transactionRepository.getTotalExpenseByDate(today, currentWallet.walletId);
+                Log.i("progress", String.valueOf(todayTotalExpense));
+            }else{
+                todayTotalExpense += transactionRepository.getTotalExpenseByDate(today, Long.valueOf(-1));
+                Log.i("progress", String.valueOf(todayTotalExpense));
+
+            }
+
+        }
+
+        return String.valueOf(todayTotalExpense);
     }
 
     public String getTotalIncomeByMonth(){
@@ -153,7 +193,6 @@ public class HomeViewModel extends AndroidViewModel {
                         .mapToDouble(transaction -> transaction.amount)
                         .sum();
         }
-
         return String.valueOf(totalExpenses);
     }
 

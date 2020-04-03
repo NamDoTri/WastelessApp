@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ public class SliderAdapter extends PagerAdapter {
         TextView title;
         TextView comment;
         TextView goalValue;
+        ProgressBar progress;
 
         image = view.findViewById(R.id.image);
         image.setImageResource(models.get(position).getImage());
@@ -57,6 +59,9 @@ public class SliderAdapter extends PagerAdapter {
 
         comment = view.findViewById(R.id.goal_comment);
         comment.setText(models.get(position).getComment());
+
+        progress = view.findViewById(R.id.progress_bar);
+        progress.setProgress(models.get(position).getProgress());
 
         container.addView(view, 0);
         return view;

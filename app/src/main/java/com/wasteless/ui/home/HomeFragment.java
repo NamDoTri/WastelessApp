@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -50,6 +50,7 @@ public class HomeFragment extends Fragment {
     ViewPager viewPager;
     SliderAdapter adapter;
     List<SliderModel> models;
+    String daySpendings;
     private PieChart incomePieChart;
     private PieChart expensePieChart;
     private BarChart expenseBarChart;
@@ -127,28 +128,38 @@ public class HomeFragment extends Fragment {
 
         if(dailyGoal != null) {
             Double sum = dailyGoal.amountOfMoney;
-            createCard("Daily goal", "You have saved nothing ",
-                    sum.toString(), R.drawable.ic_account_balance_wallet_black_24dp , root);
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpenseTodayBar());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Log.i("progress", String.valueOf(spendings));
+            Integer progress = (spendings * 100) / goalF;
+
+            createCard("Daily goal", "You have spent "+ progress +"% already",
+                    sum.toString(), R.drawable.ic_account_balance_wallet_black_24dp , root, progress);
         } else {
             createCard("Daily goal is not set up yet", "Press the button below",
-                    "0",R.drawable.ic_account_balance_wallet_black_24dp , root);
+                    "0",R.drawable.ic_account_balance_wallet_black_24dp , root, 0);
         }
         if(weeklyGoal != null) {
-            Log.i("goal", "asdasdad");
-            Double sum = weeklyGoal.amountOfMoney;
-            createCard("Weekly goal", "You have saved nothing ", sum.toString(),
-                    R.drawable.month , root);
+            Double sum = dailyGoal.amountOfMoney;
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpenseWeek());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Integer progress = (spendings * 100) / goalF;
+            createCard("Weekly goal", "You have spent "+ progress+"%", sum.toString(),
+                    R.drawable.month , root, progress);
         } else {
             createCard("Weekly goal is not set up yet", "Press the button below", "0",
-                    R.drawable.month , root);
+                    R.drawable.month , root, 0);
         }
         if(monthlyGoal != null) {
             Double sum = monthlyGoal.amountOfMoney;
-            createCard("Monthly goal", "You have saved nothing ",
-                    sum.toString(),R.drawable.week_24dp , root);
+            Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpensesByMonth());
+            Integer goalF = doubleStringToInteger(sum.toString());
+            Integer progress = (spendings * 100) / goalF;
+            createCard("Monthly goal", "You have spent "+ progress +"% already",
+                    sum.toString(),R.drawable.week_24dp , root, progress);
         } else {
             createCard("Monthly goal is not set up yet", "Press the button below",
-                    "0",R.drawable.week_24dp , root);
+                    "0",R.drawable.week_24dp , root, 0);
         }
 
         root.findViewById(R.id.go_to_goals_button).setOnClickListener(v -> {
@@ -180,10 +191,17 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void createCard(String title, String comment, String goal, Integer image, View root) {
-        String mainChapterNumber = goal.split("\\.", 2)[0];
+    Integer doubleStringToInteger(String value) {
+        String mainChapterNumber = value.split("\\.", 2)[0];
         Integer goalF = Integer.parseInt(mainChapterNumber);
-        models.add(new SliderModel(image, title, comment, goalF.toString() + " €") );
+        return goalF;
+    };
+
+    private void createCard(String title, String comment, String goal, Integer image, View root, Integer progress) {
+        Integer goalF = doubleStringToInteger(goal);
+
+        Log.i("progress", String.valueOf(progress));
+        models.add(new SliderModel(image, title, comment, goalF.toString() + " €", progress));
         adapter = new SliderAdapter(models, getContext());
         viewPager = root.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
