@@ -69,7 +69,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
-        searchResultView.addItemDecoration(new TransactionItemDecorator(20));
+        searchResultView.addItemDecoration(new TransactionItemDecorator(getActivity(), R.drawable.transaction_divider));
         searchResultView.setAdapter(transactionAdapter);
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);

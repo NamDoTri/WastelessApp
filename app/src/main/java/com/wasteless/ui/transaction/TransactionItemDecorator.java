@@ -1,83 +1,61 @@
 package com.wasteless.ui.transaction;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TransactionItemDecorator extends RecyclerView.ItemDecoration {
-    private int offset;
-    private HeaderAdapter adapter;
-    private SparseArray<View> headers;
 
-    public interface HeaderAdapter {
-        boolean hasHeader(int position);
-        View getHeaderView(int position);
+    private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
+
+    private Drawable divider;
+
+    /**
+     * Default divider will be used
+     */
+    public TransactionItemDecorator(Context context) {
+        final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
+        divider = styledAttributes.getDrawable(0);
+        styledAttributes.recycle();
     }
 
-    public  TransactionItemDecorator(int offset, HeaderAdapter adapter) {
-        this.offset = offset;
-        this.adapter = adapter;
-        this.headers = new SparseArray();
-    }
-
-    @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, parent, state);
-
-        int position = parent.getChildLayoutPosition(view);
-
-        if (position != RecyclerView.NO_POSITION && adapter.hasHeader(position)) {
-            View headerView = adapter.getHeaderView(position);
-            headers.put(position, headerView);
-
-            measureHeaderView(headerView, parent);
-            outRect.top = headerView.getHeight();
-        } else {
-            headers.remove(position);
-        }
-
+    /**
+     * Custom divider will be used
+     */
+    public TransactionItemDecorator(Context context, int resId) {
+        divider = ContextCompat.getDrawable(context, resId);
     }
 
     @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-        for (int i = 0; i < parent.getChildCount(); i++) {
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        int left = parent.getPaddingLeft();
+        int right = parent.getWidth() - parent.getPaddingRight();
+
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
-            int position = parent.getChildAdapterPosition(child);
-            if (position != RecyclerView.NO_POSITION && adapter.hasHeader(position)) {
-                canvas.save();
-                View headerView = headers.get(position);
-                canvas.translate(0, child.getY() - headerView.getHeight());
-                headerView.draw(canvas);
-                canvas.restore();
-            }
+
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+            int top = child.getBottom() + params.bottomMargin;
+            int bottom = top + divider.getIntrinsicHeight();
+
+            divider.setBounds(left, top, right, bottom);
+            divider.draw(c);
         }
     }
 
-    protected void measureHeaderView(View view, ViewGroup parent) {
-        if (view.getLayoutParams() == null) {
-            view.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-        final DisplayMetrics displayMetrics = parent.getContext().getResources().getDisplayMetrics();
 
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.EXACTLY);
-
-        int childWidth = ViewGroup.getChildMeasureSpec(widthSpec,
-                parent.getPaddingLeft() + parent.getPaddingRight(), view.getLayoutParams().width);
-        int childHeight = ViewGroup.getChildMeasureSpec(heightSpec,
-                parent.getPaddingTop() + parent.getPaddingBottom(), view.getLayoutParams().height);
-
-        view.measure(childWidth, childHeight);
-
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-    }
 
 
 }
