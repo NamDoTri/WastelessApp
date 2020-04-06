@@ -28,6 +28,7 @@ import com.wasteless.R;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
+import com.wasteless.ui.transaction.TransactionItemDecorator;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
+        searchResultView.addItemDecoration(new TransactionItemDecorator(20));
         searchResultView.setAdapter(transactionAdapter);
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
