@@ -24,4 +24,7 @@ public class TransactionItemDecorator extends RecyclerView.ItemDecoration {
             outRect.bottom = offset;
 //        }
     }
+
+
+
 }

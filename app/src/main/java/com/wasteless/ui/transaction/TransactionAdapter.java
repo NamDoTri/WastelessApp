@@ -17,34 +17,8 @@ import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
-    private static final int TYPE_FOOTER = 2;
     private List<Transaction> transactions = new ArrayList<>();
     private OnTransactionClickListener listener;
-
-    public TransactionAdapter(List<Transaction> transactions ) {
-        this.transactions = transactions;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isPositionHeader(position)) {
-            return TYPE_HEADER;
-        } else if (isPositionFooter(position)) {
-            return TYPE_FOOTER;
-        }
-
-        return TYPE_ITEM;
-    }
-
-    private boolean isPositionHeader(int position) {
-        return position == 0;
-    }
-
-    private boolean isPositionFooter(int position) {
-        return position > transactions.size();
-    }
 
     public void setTransactions(List<Transaction> transactions){
         this.transactions = transactions;
@@ -55,44 +29,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 
-        if (viewType == TYPE_ITEM) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_history_row, parent,false);
             return new TransactionHolder(itemView);
-
-        } else if (viewType == TYPE_HEADER) {
-            View headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_transaction_list_header, parent, false);
-            return new HeaderViewHolder(headerView);
-
-        } else {
-            return null;
-        }
-//        } else if (viewType == TYPE_FOOTER) {
-//
-//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_transaction_list_footer,
-//                    parent, false);
-//            return new FooterViewHolder(view);
-//
-//        }
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
 
-        if (holder instanceof HeaderViewHolder) {
-
-            //Установите значение из списка в соответствующий компонент пользовательского интерфейса, как показано ниже.
-            ((HeaderViewHolder) holder).txtName.setText(transaction.toString());
-
-            //Аналогично можно связывать другие компоненты пользовательского интерфейса
-
-        }
-        if (holder instanceof TransactionHolder) {
             ((TransactionHolder) holder).description.setText(transaction.description);
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
-
-        }
 
     }
 
@@ -124,36 +71,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
         }
-
     }
-
-
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
-        public View View;
-        private final TextView txtName;
-
-        public HeaderViewHolder(View itemView) {
-            super(itemView);
-            View = itemView;
-
-            // Добавьте свои компоненты ui здесь, как показано ниже
-            txtName = (TextView) View.findViewById(R.id.transaction_item_header);
-
-        }
-    }
-
-//    public class FooterViewHolder extends RecyclerView.ViewHolder {
-//        public View View;
-//        public ViewHolder(View v) {
-//            super(v);
-//            View = v;
-//            // Добавьте компоненты пользовательского интерфейса здесь.
-//        }
-//
-//        public FooterViewHolder(@NonNull android.view.View itemView) {
-//            super(itemView);
-//        }
-//    }
 
     public interface OnTransactionClickListener{
         void onTransactionClick(Transaction transaction);
