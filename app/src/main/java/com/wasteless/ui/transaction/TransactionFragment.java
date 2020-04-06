@@ -1,6 +1,9 @@
 package com.wasteless.ui.transaction;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,20 +112,34 @@ public class TransactionFragment extends Fragment {
         root.findViewById(R.id.transaction_delete_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: confirmation screen so that there wont be any accidental deletions
+                AlertDialog.Builder deleteAlert = new AlertDialog.Builder(getActivity());
+                deleteAlert.setTitle("Delete");
+                deleteAlert.setMessage("Are you sure you want to delete this transaction?");
+                deleteAlert.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                deleteAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Delete transaction
+                        transactionViewModel.delete(transaction);
 
-                //Delete transaction
-                transactionViewModel.delete(transaction);
+                        Context context = getContext();
+                        CharSequence text = "Transaction deleted";
+                        int duration = Toast.LENGTH_SHORT;
 
-                Context context = getContext();
-                CharSequence text = "Transaction deleted";
-                int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
 
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                    }
+                });
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.popBackStack();
+                deleteAlert.show();
             }
         });
 
