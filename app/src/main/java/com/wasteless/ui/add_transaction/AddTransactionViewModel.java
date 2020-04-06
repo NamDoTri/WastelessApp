@@ -33,6 +33,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
+    private FirebaseVisionTextRecognizer textRecognizer;
 
     private MutableLiveData<String> description, amount, date, type, walletId, source;
     private MutableLiveData<Boolean> isIncome;
@@ -61,6 +62,13 @@ public class AddTransactionViewModel extends AndroidViewModel {
         source.setValue("");
         isIncome.setValue(false);
         tags.setValue(new ArrayList<>());
+
+        // set up recognizer
+        FirebaseApp.initializeApp(appContext);
+        FirebaseVision instance = FirebaseVision.getInstance();
+        Log.i("receipt", "Firebase instance: " + instance.toString());
+        textRecognizer = instance.getOnDeviceTextRecognizer();
+        Log.i("receipt", textRecognizer.toString());
     }
 
     public MutableLiveData<String> getDescription() {
@@ -176,9 +184,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
 //            e.printStackTrace();
 //        }
 
-        // set up recognizer
-        FirebaseApp.initializeApp(appContext);
-        FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+
         String[] resultText = {"Something's wrong"};
 
         FirebaseVisionImage inputReceiptFVI;
@@ -196,9 +202,10 @@ public class AddTransactionViewModel extends AndroidViewModel {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             FirebaseMLException mlException = (FirebaseMLException)e;
-                            Log.i("FA", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
+                            Log.i("receipt", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
                             if(mlException.getCode() == 14) { // model unavailable
                                 //TODO
+                                textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
                             }
 
                             e.printStackTrace();
@@ -210,5 +217,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
         return resultText[0];
     }
+
+    //private LoadModelTask extends AsyncTask<Void, >
 
 }
