@@ -29,8 +29,6 @@ public class ExpensesViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
 
-    //public MutableLiveData<Integer> currentlyDisplayWalletIndex;
-
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public ExpensesViewModel(@NonNull Application application) {
@@ -39,20 +37,36 @@ public class ExpensesViewModel extends AndroidViewModel {
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
     }
 
-    public PieData getMonthlyExpensePieChart(){
+    public String getMonthlyExpenses(Long walletId){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+
+        double totalExpenses = 0.0;
+        if(walletId == -1){
+            totalExpenses = transactionRepository.getTotalExpensesByMonth(thisMonth);
+        }else{
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
+            totalExpenses = transactionRepository.getExpensesByMonth(thisMonth).stream()
+                    .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                    .mapToDouble(transaction -> transaction.amount)
+                    .sum();
+        }
+        return String.valueOf(totalExpenses);
+
+    }
+
+    public PieData getMonthlyExpensePieChart(Long walletId){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
         String[] expenseCategories = transactionRepository.getAllCategories();
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        /*if(currentlyDisplayWalletIndex.getValue() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(-1);
+        if(walletId != -1){
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }*/
-        //TODO for both charts: check that which wallet was selected in the home view
+        }
 
         for (int i=0; i<expenseCategories.length; i++){
             String expenseCategory = expenseCategories[i];
@@ -72,7 +86,7 @@ public class ExpensesViewModel extends AndroidViewModel {
         return new PieData(expensePieDataSet);
     }
 
-    public BarData getExpenseBarChart(){
+    public BarData getExpenseBarChart(Long walletId){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
@@ -88,12 +102,12 @@ public class ExpensesViewModel extends AndroidViewModel {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        /*if(homeViewModel.getCurrentWalletId() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(1);
+        if(walletId != -1){
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }*/
+        }
 
         //Add all days this month to the list
         for (int i=0; i<maxDay; i++) {
