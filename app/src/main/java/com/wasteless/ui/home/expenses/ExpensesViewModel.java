@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -16,7 +15,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Transaction;
-import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.roomdb.entities.Wallet;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -24,12 +23,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExpensesViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
-
-    //public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -39,19 +37,36 @@ public class ExpensesViewModel extends AndroidViewModel {
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
     }
 
-    public PieData getMonthlyExpensePieChart(){
+    public String getMonthlyExpenses(Long walletId){
+        String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
+
+        double totalExpenses = 0.0;
+        if(walletId == -1){
+            totalExpenses = transactionRepository.getTotalExpensesByMonth(thisMonth);
+        }else{
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
+            totalExpenses = transactionRepository.getExpensesByMonth(thisMonth).stream()
+                    .filter(transaction -> transaction.wallet == currentWallet.walletId)
+                    .mapToDouble(transaction -> transaction.amount)
+                    .sum();
+        }
+        return String.valueOf(totalExpenses);
+
+    }
+
+    public PieData getMonthlyExpensePieChart(Long walletId){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
         String[] expenseCategories = transactionRepository.getAllCategories();
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        /*if(currentlyDisplayWalletIndex.getValue() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(-1);
+        if(walletId != -1){
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }*/
+        }
 
         for (int i=0; i<expenseCategories.length; i++){
             String expenseCategory = expenseCategories[i];
@@ -71,7 +86,7 @@ public class ExpensesViewModel extends AndroidViewModel {
         return new PieData(expensePieDataSet);
     }
 
-    public BarData getExpenseBarChart(){
+    public BarData getExpenseBarChart(Long walletId){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> expensesThisMonth = transactionRepository.getExpensesByMonth(thisMonth);
 
@@ -87,12 +102,12 @@ public class ExpensesViewModel extends AndroidViewModel {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        /*if(currentlyDisplayWalletIndex.getValue() != -1){
-            Wallet currentWallet = walletRepository.getAllWallets().get(1);
+        if(walletId != -1){
+            Wallet currentWallet = walletRepository.getWalletById(walletId);
             expensesThisMonth = expensesThisMonth.stream()
                     .filter(transaction -> transaction.wallet == currentWallet.walletId)
                     .collect(Collectors.toList());
-        }*/
+        }
 
         //Add all days this month to the list
         for (int i=0; i<maxDay; i++) {

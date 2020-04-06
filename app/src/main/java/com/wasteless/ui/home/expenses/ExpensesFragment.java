@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.lifecycle.ViewModelProviders;
 
 import androidx.annotation.NonNull;
@@ -24,26 +23,24 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
-import com.wasteless.ui.transaction.TransactionViewModel;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ExpensesFragment extends Fragment {
     private ExpensesViewModel expensesViewModel;
-    private TransactionViewModel transactionViewModel;
 
     private PieChart expensePieChart;
     private BarChart expenseBarChart;
 
     private boolean usePercentage = true;
+    private Bundle expensesBundle;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_expenses, container, false);
         expensesViewModel = ViewModelProviders.of(this).get(ExpensesViewModel.class);
-        transactionViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
 
-        final Bundle expensesBundle = this.getArguments();
+        expensesBundle = this.getArguments();
 
         expensePieChart = root.findViewById(R.id.expenses_pie_chart);
         expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
@@ -56,7 +53,7 @@ public class ExpensesFragment extends Fragment {
 
     private void renderMonthlyExpensesPieChart(){
         //EXPENSE PIE CHART
-        PieData expensePieChartData = expensesViewModel.getMonthlyExpensePieChart();
+        PieData expensePieChartData = expensesViewModel.getMonthlyExpensePieChart(expensesBundle.getLong("walletId"));
         //expensePieChartData.setHighlightEnabled(false);
         //expensePieChart.setHighlightPerTapEnabled(false);
 
@@ -73,8 +70,9 @@ public class ExpensesFragment extends Fragment {
         expensePieChart.getDescription().setEnabled(false);
 
         //Center text settings
-        //expensePieChart.setCenterText(homeViewModel.getTotalExpensesByMonth() +"€");
+        expensePieChart.setCenterText(expensesViewModel.getMonthlyExpenses(expensesBundle.getLong("walletId")) + "€");
         expensePieChart.setCenterTextSize(27f);
+        expensePieChart.setCenterTextColor(Color.RED);
 
         //Entry label settings --- Removing the labels for now since sometimes they seem to overlap
         expensePieChart.setDrawEntryLabels(false);
@@ -115,7 +113,7 @@ public class ExpensesFragment extends Fragment {
     private void renderMonthlyExpenseBarChart(){
         //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
         //TODO: scale the chart if there is a huge amount of expenses on one day
-        BarData expenseBarChartData = expensesViewModel.getExpenseBarChart();
+        BarData expenseBarChartData = expensesViewModel.getExpenseBarChart(expensesBundle.getLong("walletId"));
         expenseBarChartData.setValueFormatter(new ZeroFormatter());
         XAxis xAxis = expenseBarChart.getXAxis();
         YAxis yAxisLeft = expenseBarChart.getAxisLeft();

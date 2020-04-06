@@ -1,5 +1,8 @@
 package com.wasteless.ui.history;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -71,7 +75,7 @@ public class HistoryFragment extends Fragment{
             }
         });
 
-        //CREATE A CONFIRMATION FOR THIS!1!1!!!!1!1
+        //TODO: confirmation screen & make the swipe animation red
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -81,22 +85,33 @@ public class HistoryFragment extends Fragment{
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                historyViewModel.delete(transactionAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder deleteAlert = new AlertDialog.Builder(getActivity());
+                deleteAlert.setTitle("Delete");
+                deleteAlert.setMessage("Are you sure you want to delete this transaction?");
+                deleteAlert.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        transactionAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    }
+                });
+                deleteAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Delete transaction
+                        historyViewModel.delete(transactionAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
+
+                        Context context = getContext();
+                        CharSequence text = "Transaction deleted";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }
+                });
+                deleteAlert.show();
             }
         }).attachToRecyclerView(recyclerView);
-
-        /*root.findViewById(R.id.history_transaction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TransactionFragment transactionFragment = new TransactionFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.nav_host_fragment, transactionFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });*/
 
         return root;
     }
