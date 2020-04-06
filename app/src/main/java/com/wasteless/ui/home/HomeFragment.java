@@ -21,9 +21,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
@@ -33,6 +30,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
+import com.wasteless.ui.home.expenses.ExpensesFragment;
 import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
 import com.wasteless.ui.home.goal.SliderAdapter;
@@ -52,8 +50,6 @@ public class HomeFragment extends Fragment {
     List<SliderModel> models;
     String daySpendings;
     private PieChart incomePieChart;
-    private PieChart expensePieChart;
-    private BarChart expenseBarChart;
     private boolean usePercentage = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,17 +62,32 @@ public class HomeFragment extends Fragment {
         final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
-        final TextView expensesAmount = root.findViewById(R.id.expenses_amount);
-        final TextView incomeAmount = root.findViewById(R.id.income_amount);
+        final TextView expensesTodayAmount = root.findViewById(R.id.expenses_today_amount);
+        final TextView incomeTodayAmount = root.findViewById(R.id.income_today_amount);
+        final TextView expensesMonthlyAmount = root.findViewById(R.id.expenses_monthly_amount);
+        //final TextView incomeMonthlyAmount = root.findViewById(R.id.income_monthly_amount);
 
         incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
-        expensePieChart = root.findViewById(R.id.expenses_pie_chart);
-        expenseBarChart = root.findViewById(R.id.expenses_bar_chart);
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
 
+        expensesMonthlyAmount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExpensesFragment expensesFragment = new ExpensesFragment();
 
+                String currentWallet = String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex());
+
+                Bundle expensesBundle = new Bundle();
+                expensesBundle.putString("walletIndex", currentWallet);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, expensesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -108,13 +119,19 @@ public class HomeFragment extends Fragment {
         homeViewModel.getTotalExpenseToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                expensesAmount.setText(s);
+                expensesTodayAmount.setText(s);
             }
         });
         homeViewModel.getTotalIncomeToday().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                incomeAmount.setText(s);
+                incomeTodayAmount.setText(s);
+            }
+        });
+        homeViewModel.getLiveExpensesByMonth().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                expensesMonthlyAmount.setText(s);
             }
         });
 
@@ -171,8 +188,6 @@ public class HomeFragment extends Fragment {
         });
 
         renderMonthlyIncomePieChart();
-        renderMonthlyExpensesPieChart();
-        renderMonthlyExpenseBarChart();
 
         // keep track of currently displayed wallet
         homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
@@ -182,8 +197,6 @@ public class HomeFragment extends Fragment {
                 //TODO
                 homeViewModel.updateStats();
                 renderMonthlyIncomePieChart();
-                renderMonthlyExpensesPieChart();
-                renderMonthlyExpenseBarChart();
             }
         });
 
@@ -258,123 +271,5 @@ public class HomeFragment extends Fragment {
                 prevSelectedEntry = null;
             }
         });
-    }
-
-    private void renderMonthlyExpensesPieChart(){
-        //EXPENSE PIE CHART
-        PieData expensePieChartData = homeViewModel.getMonthlyExpensePieChart();
-        //expensePieChartData.setHighlightEnabled(false);
-        //expensePieChart.setHighlightPerTapEnabled(false);
-
-        //Value settings
-        expensePieChartData.setValueTextSize(20f);
-        expensePieChartData.setValueTextColor(Color.DKGRAY);
-        expensePieChartData.setValueFormatter(new PercentFormatter(expensePieChart));
-
-
-        //Chart settings
-        expensePieChart.setUsePercentValues(usePercentage);
-        expensePieChart.setTransparentCircleRadius(35f);
-        expensePieChart.setHoleRadius(30f);
-        expensePieChart.getDescription().setEnabled(false);
-
-        //Center text settings
-        expensePieChart.setCenterText(homeViewModel.getTotalExpensesByMonth() +"€");
-        expensePieChart.setCenterTextSize(27f);
-
-        //Entry label settings --- Removing the labels for now since sometimes they seem to overlap
-        expensePieChart.setDrawEntryLabels(false);
-
-        //Legend settings
-        Legend expensePieChartLegend = expensePieChart.getLegend();
-        expensePieChartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        expensePieChartLegend.setTextSize(15f);
-
-        expensePieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            private Entry prevSelectedEntry = null;
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                // only if user select the same value again
-                if(prevSelectedEntry == null){
-                    usePercentage = !usePercentage;
-                    expensePieChart.setUsePercentValues(usePercentage);
-                    //expensePieChart.getData().setValueFormatter(new EuroFormatter());
-                }
-                prevSelectedEntry = e;
-            }
-
-            @Override
-            public void onNothingSelected() {
-                usePercentage = !usePercentage;
-                expensePieChart.setUsePercentValues(usePercentage);
-                prevSelectedEntry = null;
-            }
-        });
-
-        expensePieChart.setData(expensePieChartData);
-        expensePieChart.notifyDataSetChanged();
-        expensePieChart.invalidate();
-    }
-
-    private void renderMonthlyExpenseBarChart(){
-        //EXPENSE BAR CHART --- idea: stack expenses per category in different colors for each day
-        //TODO: scale the chart if there is a huge amount of expenses on one day
-        BarData expenseBarChartData = homeViewModel.getExpenseBarChart();
-        expenseBarChartData.setValueFormatter(new ZeroFormatter());
-        XAxis xAxis = expenseBarChart.getXAxis();
-        YAxis yAxisLeft = expenseBarChart.getAxisLeft();
-        YAxis yAxisRight =  expenseBarChart.getAxisRight();
-
-        //Label settings
-        ArrayList dates = homeViewModel.getDateLabels();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
-        xAxis.setLabelCount(dates.size()/2);
-
-        //Testing scaling down
-        if (expenseBarChart.getYChartMax() > 500) {
-            expenseBarChart.setScaleMinima(1f,5f);
-        }
-        else if (expenseBarChart.getYChartMax() > 1000){
-            expenseBarChart.setScaleMinima(1f, 10f);
-        }
-
-        //Axis settings
-        yAxisLeft.setAxisMinimum(0);
-        yAxisRight.setAxisMinimum(0);
-        yAxisLeft.setValueFormatter(new EuroFormatter());
-        yAxisRight.setValueFormatter(new EuroFormatter());
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        //Grid settings
-        yAxisLeft.setDrawGridLines(false);
-        xAxis.setDrawGridLines(false);
-
-        //Descriptive settings
-        expenseBarChart.getLegend().setEnabled(false);
-        expenseBarChart.getDescription().setEnabled(false);
-
-        expenseBarChart.setData(expenseBarChartData);
-        expenseBarChart.notifyDataSetChanged();
-        expenseBarChart.invalidate();
-    }
-
-    //Testing out these formatters
-    private static class EuroFormatter extends IndexAxisValueFormatter {
-        @Override
-        public String getFormattedValue(float value) {
-            return new DecimalFormat("#").format(value) + "€";
-        }
-    }
-
-    private static class ZeroFormatter extends IndexAxisValueFormatter{
-        @Override
-        public String getFormattedValue(float value) {
-            if(value > 0){
-                return new DecimalFormat("#").format(value);
-            }
-            else{
-                return "";
-            }
-        }
     }
 }
