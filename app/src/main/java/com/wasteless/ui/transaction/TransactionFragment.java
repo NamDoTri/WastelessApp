@@ -1,6 +1,9 @@
 package com.wasteless.ui.transaction;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,17 +48,8 @@ public class TransactionFragment extends Fragment {
         final TextView tag3 = root.findViewById(R.id.tag3);
         //final TextView source = root.findViewById(R.id.source);
 
-        //TO-DO ---> check if the transaction is either expense or income and modify data shown related to that
-        //for example show the source and make the amount red/green
-
-        //TO-DO pt.2 ---> check that how many tags the transaction has and show only the correct amount
-
-        Context context = getContext();
-        CharSequence text = "TransactionID is " + transaction.transactionId;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        //TODO: check if the transaction is either expense or income and modify data shown related to that
+        //for example to show the source and make the amount red/green
 
         transactionViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             List<String> tagList = transactionViewModel.getTags(transaction.transactionId);
@@ -67,6 +61,7 @@ public class TransactionFragment extends Fragment {
                 type.setText(transaction.type);
                 date.setText(transaction.date);
                 wallet.setText(transactionViewModel.getWalletById(transaction.wallet).name);
+                //TODO: move these conditions to the view model
                 if(!tagList.isEmpty()) {
                     int tagListSize = tagList.size();
                     if (tagListSize == 3) {
@@ -103,9 +98,7 @@ public class TransactionFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
 
-                //Edit fragment with a form goes here ---> sending a bundle filled with transaction
-                //data to pre-fill the form?
-
+                //TODO: send complete information to the edit fragment
 
                 Context context = getContext();
                 CharSequence text = "Edit clicked";
@@ -119,20 +112,34 @@ public class TransactionFragment extends Fragment {
         root.findViewById(R.id.transaction_delete_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //CONFIRMATION SCREEN HEREEEEEEEEEEEEEEE SO THERE WONT BE ACCIDENTAL DELETIONS
+                AlertDialog.Builder deleteAlert = new AlertDialog.Builder(getActivity());
+                deleteAlert.setTitle("Delete");
+                deleteAlert.setMessage("Are you sure you want to delete this transaction?");
+                deleteAlert.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                deleteAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Delete transaction
+                        transactionViewModel.delete(transaction);
 
-                //Delete transaction
-                transactionViewModel.delete(transaction);
+                        Context context = getContext();
+                        CharSequence text = "Transaction deleted";
+                        int duration = Toast.LENGTH_SHORT;
 
-                Context context = getContext();
-                CharSequence text = "Transaction deleted";
-                int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
 
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                    }
+                });
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.popBackStack();
+                deleteAlert.show();
             }
         });
 
