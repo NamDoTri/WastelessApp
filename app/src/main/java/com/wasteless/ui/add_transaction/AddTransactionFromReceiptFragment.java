@@ -45,14 +45,16 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        Log.i("receipt", "Image uri: " + result.toString());
-                        previewReceiptImage.setImageURI(result);
-                        addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
-                            @Override
-                            public void onChanged(String text) {
-                                tempTextview.setText(text);
-                            }
-                        });
+                        if(result != null){
+                            Log.i("receipt", "Image uri: " + result.toString());
+                            previewReceiptImage.setImageURI(result);
+                            addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
+                                @Override
+                                public void onChanged(String text) {
+                                    tempTextview.setText(text);
+                                }
+                            });
+                        }
                     }
                 });
 
