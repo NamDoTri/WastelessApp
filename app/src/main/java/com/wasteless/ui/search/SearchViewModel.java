@@ -79,6 +79,10 @@ public class SearchViewModel extends AndroidViewModel {
         }
     }
 
+    public void delete(Transaction transaction) {
+        transactionRepository.delete(transaction);
+    }
+
     public LiveData<List<Transaction>> getOnOpenData() {
         Log.d("start", "onOpenData: " + onOpenData);
         return onOpenData;
@@ -88,16 +92,4 @@ public class SearchViewModel extends AndroidViewModel {
     public LiveData<List<Transaction>> getDataByDate(String date) {
         return transactionRepository.getTransactionsByDate(date);
     }
-
-//    Search transactions by a string in description
-//    public LiveData<List<Transaction>> getSearchLiveData(String description) {
-//        return transactionRepository.getTransactionsByDescription(description);
-//    }
-
-//    searchValue
-
-//    TODO add a search by description functionality here
-//    public LiveData<List<Transaction>> searchTransactionsByDescription(searchValue) {
-//        return transactionRepository.getTransactionsByDescription(description);
-//    }
 }
