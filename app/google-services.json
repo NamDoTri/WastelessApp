@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "572008891326",
+    "firebase_url": "https://wastelessapp-4080c.firebaseio.com",
+    "project_id": "wastelessapp-4080c",
+    "storage_bucket": "wastelessapp-4080c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572008891326:android:f1b14b686eb678bbcdafef",
+        "android_client_info": {
+          "package_name": "com.wasteless"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572008891326-2hk1fht5n4iqsvl9l07bapg0la8go2jc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNoO-vS45MQz0IXZLmmoDgdTTUeP85bhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572008891326-2hk1fht5n4iqsvl9l07bapg0la8go2jc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
