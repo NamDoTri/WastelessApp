@@ -191,26 +191,28 @@ public class AddTransactionViewModel extends AndroidViewModel {
                         public void onSuccess(FirebaseVisionText result) {
                             String extractedText = result.getText();
                             extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
-                            extractedText = extractedText;
                             List<String> tokens = Arrays.asList(extractedText.split(" "));
+                            // TODO: NLP generate tag
+
+                            // TODO: NLP select category
+
+                            // extracting data
+                            Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
+                            String amountFormat = "\\d+\\.\\d+|\\d+,\\d+";
 
                             for(String token : tokens){
-                                if(isDate(token)){
-                                    Log.i("Receipt", "Date: " + token);
-                                }else if(isDecimalNumber(token)){
-                                    Log.i("receipt", "Decimal number: " + token);
-                                    String entry = token.replace(",", ".");
-                                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                                try{
+                                    if(dateFormat.matcher(token).find()){
+                                        date.setValue(dateFormat.matcher(token).group(1));
+                                    }else if(Pattern.matches(amountFormat, token)){
+                                        Log.i("receipt", "Decimal number: " + token);
+                                        String entry = token.replace(",", ".");
+                                        if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                                    }
+                                }catch(Exception e){
+                                    continue;
                                 }
                             }
-
-                                //generate tag
-
-                                //select category
-
-
-                            Log.i("receipt", "Total: " + amount.getValue() );
-
 
                                 //TODO: train a model to extract total (if data is available)
                             resultText.setValue(result.getText());
@@ -235,15 +237,5 @@ public class AddTransactionViewModel extends AndroidViewModel {
         }
 
         return resultText;
-    }
-
-    private boolean isDate(String token){
-        String dateFormat = "(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)";
-        return Pattern.matches(dateFormat, token);
-    }
-
-    private boolean isDecimalNumber(String token){
-        String p = "\\d+\\.\\d+|\\d+,\\d+";
-        return Pattern.matches(p, token);
     }
 }
