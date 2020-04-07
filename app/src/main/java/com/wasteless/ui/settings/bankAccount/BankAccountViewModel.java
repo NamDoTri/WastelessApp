@@ -38,7 +38,13 @@ public class BankAccountViewModel extends AndroidViewModel {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray value = response.getJSONArray("accounts");
+                    JSONArray jsonArray = response.getJSONArray("accounts");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject account = jsonArray.getJSONObject(i);
+                        String name = account.getString("name");
+                        Double balance = account.getDouble("balance");
+                        Log.i("bankInfo", name +" "+ balance);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
