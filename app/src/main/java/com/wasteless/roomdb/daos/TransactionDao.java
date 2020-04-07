@@ -4,6 +4,7 @@ import com.wasteless.roomdb.entities.Transaction;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Insert;
 import androidx.room.Delete;
@@ -96,10 +97,10 @@ public interface TransactionDao {
 
     //TODO: get incomes and expenses before and after a date
 
-    @Insert(entity = Transaction.class)
+    @Insert(entity = Transaction.class, onConflict = OnConflictStrategy.IGNORE)
     List<Long> insertAll(Transaction... transactions);
 
-    @Update(entity = Transaction.class)
+    @Update(entity = Transaction.class, onConflict = OnConflictStrategy.IGNORE)
     int updateAll(Transaction... transactions);
 
     @Delete

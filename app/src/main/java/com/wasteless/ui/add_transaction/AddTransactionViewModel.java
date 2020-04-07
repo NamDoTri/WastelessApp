@@ -25,15 +25,21 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
     private FirebaseVisionTextRecognizer textRecognizer;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private MutableLiveData<String> description, amount, date, type, walletId, source;
     private MutableLiveData<Boolean> isIncome;
@@ -55,7 +61,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         tags = new MutableLiveData<>();
 
         description.setValue("");
-        amount.setValue("");
+        amount.setValue("0.0");
         date.setValue("");
         type.setValue("");
         walletId.setValue("");
@@ -173,18 +179,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<String> recognizeText(Uri inputReceiptUri){
-//        ImageDecoder.Source sourceContainer = ImageDecoder.createSource(appContext.getContentResolver(), inputReceiptUri);
-//        Bitmap inputReceiptBitmap;
-//        try{
-//            inputReceiptBitmap = ImageDecoder.decodeBitmap(sourceContainer);
-//            FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-//            FirebaseVisionImage inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputReceiptBitmap);
-//
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-
-
         MutableLiveData<String> resultText = new MutableLiveData<>();
         resultText.setValue("Text recognition is processing...");
 
@@ -195,7 +189,32 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                         @Override
                         public void onSuccess(FirebaseVisionText result) {
-                            Log.i("receipt", "Result: " + result.getText());
+                            String extractedText = result.getText();
+                            extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
+                            List<String> tokens = Arrays.asList(extractedText.split(" "));
+                            // TODO: NLP generate tag
+
+                            // TODO: NLP select category
+
+                            // extracting data
+                            Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
+                            String amountFormat = "\\d+\\.\\d+|\\d+,\\d+";
+
+                            for(String token : tokens){
+                                try{
+                                    if(dateFormat.matcher(token).find()){
+                                        date.setValue(dateFormat.matcher(token).group(1));
+                                    }else if(Pattern.matches(amountFormat, token)){
+                                        Log.i("receipt", "Decimal number: " + token);
+                                        String entry = token.replace(",", ".");
+                                        if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                                    }
+                                }catch(Exception e){
+                                    continue;
+                                }
+                            }
+
+                                //TODO: train a model to extract total (if data is available)
                             resultText.setValue(result.getText());
                         }
                     })
@@ -207,6 +226,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                             if(mlException.getCode() == 14) { // model unavailable
                                 //TODO
                                 textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+                                resultText.setValue("Text recognition model is downloading, please wait...");
                             }
 
                             e.printStackTrace();
@@ -218,7 +238,4 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
         return resultText;
     }
-
-    //private LoadModelTask extends AsyncTask<Void, >
-
 }

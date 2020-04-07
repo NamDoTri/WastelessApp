@@ -99,6 +99,7 @@ public class AddTransactionFragment extends Fragment {
 
 
         // handle amount
+        inputAmount.setText(addTransactionViewModel.getAmount().getValue());
         addTransactionViewModel.getAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -118,6 +119,7 @@ public class AddTransactionFragment extends Fragment {
 
 
         // handle date
+        inputDate.setText(addTransactionViewModel.getDate().getValue());
         addTransactionViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {

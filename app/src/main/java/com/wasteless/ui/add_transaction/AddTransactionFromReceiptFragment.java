@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -30,6 +31,8 @@ public class AddTransactionFromReceiptFragment extends Fragment {
         addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
         final View AddTransactionFromReceiptFragmentView = inflater.inflate(R.layout.fragment_add_transaction_from_gallery, container, false);
 
+
+
         return AddTransactionFromReceiptFragmentView;
     }
 
@@ -42,18 +45,30 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        Log.i("receipt", "Image uri: " + result.toString());
-                        previewReceiptImage.setImageURI(result);
-                        addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
-                            @Override
-                            public void onChanged(String text) {
-                                Log.i("receipt", text);
-                                tempTextview.setText(text);
-                            }
-                        });
+                        if(result != null){
+                            Log.i("receipt", "Image uri: " + result.toString());
+                            previewReceiptImage.setImageURI(result);
+                            addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
+                                @Override
+                                public void onChanged(String text) {
+                                    tempTextview.setText(text);
+                                }
+                            });
+                        }
                     }
                 });
 
         getReceiptImage.launch("image/*");
+
+        getView().findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddTransactionFragment addTransactionFragment = new AddTransactionFragment();
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction(); //TODO: find a new way to do this because this is deprecated
+                fragmentTransaction.replace(R.id.nav_host_fragment, addTransactionFragment);
+                //fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
     }
 }
