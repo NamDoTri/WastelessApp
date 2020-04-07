@@ -61,7 +61,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         tags = new MutableLiveData<>();
 
         description.setValue("");
-        amount.setValue("");
+        amount.setValue("0.0");
         date.setValue("");
         type.setValue("");
         walletId.setValue("");
@@ -194,23 +194,22 @@ public class AddTransactionViewModel extends AndroidViewModel {
                             extractedText = extractedText;
                             List<String> tokens = Arrays.asList(extractedText.split(" "));
 
-                            double totalAmount = 0.0;
-
                             for(String token : tokens){
-                                Log.i("receipt", "Token: " + token);
                                 if(isDate(token)){
                                     Log.i("Receipt", "Date: " + token);
+                                }else if(isDecimalNumber(token)){
+                                    Log.i("receipt", "Decimal number: " + token);
+                                    String entry = token.replace(",", ".");
+                                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
                                 }
                             }
-
-                                // check if is the amount
 
                                 //generate tag
 
                                 //select category
 
 
-                            Log.i("receipt", "Total: " + String.valueOf(totalAmount) );
+                            Log.i("receipt", "Total: " + amount.getValue() );
 
 
                                 //TODO: train a model to extract total (if data is available)
@@ -243,4 +242,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return Pattern.matches(dateFormat, token);
     }
 
+    private boolean isDecimalNumber(String token){
+        String p = "\\d+\\.\\d+|\\d+,\\d+";
+        return Pattern.matches(p, token);
+    }
 }
