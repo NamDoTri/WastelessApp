@@ -240,6 +240,5 @@ public class HomeViewModel extends AndroidViewModel {
         getTotalIncomeToday();
         getTotalExpenseToday();
         getLiveExpensesByMonth();
-        //rerender income pie chart
     }
 }
