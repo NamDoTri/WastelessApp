@@ -32,18 +32,27 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
+    private AddTransactionViewModel instance = null;
+
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
     private FirebaseVisionTextRecognizer textRecognizer;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private MutableLiveData<String> description, amount, date, type, walletId, source;
-    private MutableLiveData<Boolean> isIncome;
-    private MutableLiveData<ArrayList<String>> tags;
+    private MutableLiveData<String> description = new MutableLiveData<>();
+    private MutableLiveData<String> amount = new MutableLiveData<>();
+    private MutableLiveData<String> date = new MutableLiveData<>();
+    private MutableLiveData<String> type = new MutableLiveData<>();
+    private MutableLiveData<String> walletId = new MutableLiveData<>();
+    private MutableLiveData<String> source = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();;
+    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();;
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -51,30 +60,22 @@ public class AddTransactionViewModel extends AndroidViewModel {
         transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
         appContext = application.getApplicationContext();
 
-        description = new MutableLiveData<>();
-        amount = new MutableLiveData<>();
-        date = new MutableLiveData<>();
-        type = new MutableLiveData<>();
-        walletId = new MutableLiveData<>();
-        source = new MutableLiveData<>();
-        isIncome = new MutableLiveData<>();
-        tags = new MutableLiveData<>();
-
-        description.setValue("");
-        amount.setValue("0.0");
-        date.setValue("");
-        type.setValue("");
-        walletId.setValue("");
-        source.setValue("");
-        isIncome.setValue(false);
-        tags.setValue(new ArrayList<>());
+        if(description.getValue() == null){
+            Log.i("receipt", "values are reset");
+            description.setValue("");
+            amount.setValue("0.0");
+            date.setValue("");
+            type.setValue("");
+            walletId.setValue("");
+            source.setValue("");
+            isIncome.setValue(false);
+            tags.setValue(new ArrayList<>());
+        }
 
         // set up recognizer
         FirebaseApp.initializeApp(appContext);
         FirebaseVision instance = FirebaseVision.getInstance();
-        Log.i("receipt", "Firebase instance: " + instance.toString());
         textRecognizer = instance.getOnDeviceTextRecognizer();
-        Log.i("receipt", textRecognizer.toString());
     }
 
     public MutableLiveData<String> getDescription() {
@@ -202,18 +203,18 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
                             for(String token : tokens){
                                 try{
-                                    if(dateFormat.matcher(token).find()){
-                                        date.setValue(dateFormat.matcher(token).group(1));
+                                    Matcher matcher = dateFormat.matcher(token);
+                                    if(matcher.find()){
+                                        date.setValue(matcher.group());
                                     }else if(Pattern.matches(amountFormat, token)){
-                                        Log.i("receipt", "Decimal number: " + token);
                                         String entry = token.replace(",", ".");
                                         if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
                                     }
                                 }catch(Exception e){
+                                    e.printStackTrace();
                                     continue;
                                 }
                             }
-
                                 //TODO: train a model to extract total (if data is available)
                             resultText.setValue(result.getText());
                         }
