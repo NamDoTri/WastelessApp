@@ -2,6 +2,7 @@ package com.wasteless.ui.settings.bankAccount;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -29,7 +30,7 @@ public class BankAccountViewModel extends AndroidViewModel {
         super(application);
     }
 //    private BankAccountFragment bankAccountFragment = new BankAccountFragment();
-    public void requestWithSomeHttpHeaders() {
+    public void requestToOP(TextView result) {
         RequestQueue queue = Volley.newRequestQueue(getApplication());
         String url = "https://sandbox.apis.op-palvelut.fi/accounts/v3/accounts";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -44,6 +45,7 @@ public class BankAccountViewModel extends AndroidViewModel {
                         String name = account.getString("name");
                         Double balance = account.getDouble("balance");
                         Log.i("bankInfo", name +" "+ balance);
+                        result.append(name + " " +balance+"\n\n");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
