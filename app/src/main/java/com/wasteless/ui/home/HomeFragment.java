@@ -156,7 +156,7 @@ public class HomeFragment extends Fragment {
                     "0",R.drawable.ic_account_balance_wallet_black_24dp , root, 0);
         }
         if(weeklyGoal != null) {
-            Double sum = dailyGoal.amountOfMoney;
+            Double sum = weeklyGoal.amountOfMoney;
             Integer spendings = doubleStringToInteger(homeViewModel.getTotalExpenseWeek());
             Integer goalF = doubleStringToInteger(sum.toString());
             Integer progress = (spendings * 100) / goalF;
