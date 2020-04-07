@@ -3,6 +3,7 @@ package com.wasteless.ui.transaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,7 @@ import com.wasteless.roomdb.entities.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
+public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Transaction> transactions = new ArrayList<>();
     private OnTransactionClickListener listener;
@@ -26,18 +27,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @NonNull
     @Override
-    public TransactionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_history_row, parent,false);
-        return new TransactionHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_history_row, parent,false);
+            return new TransactionHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
 
-        holder.description.setText(transaction.description);
-        holder.type.setText(transaction.type);
-        holder.amount.setText(String.valueOf(transaction.amount));
+            ((TransactionHolder) holder).description.setText(transaction.description);
+            ((TransactionHolder) holder).type.setText(transaction.type);
+            ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
+
     }
 
     @Override
@@ -49,12 +52,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         private TextView description;
         private TextView type;
         private TextView amount;
+        private LinearLayout tags;
 
         public TransactionHolder(View itemView) {
             super(itemView);
             description = itemView.findViewById(R.id.transaction_description);
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
+//            tags = itemView.findViewById(R.id.transaction_tags);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,6 +84,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public Transaction getTransactionAt(int position){
         return transactions.get(position);
     }
+
+
 
     /*Probably gonna need these later on when implementing transactions as separate expenses and incomes
 

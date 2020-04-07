@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +28,7 @@ import com.wasteless.R;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
+import com.wasteless.ui.transaction.TransactionItemDecorator;
 
 import java.util.List;
 
@@ -66,6 +69,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
 //    RecyclerView.Adapter
         layoutManager = new LinearLayoutManager(getActivity());
+        searchResultView.addItemDecoration(new TransactionItemDecorator(getActivity(), R.drawable.transaction_divider));
         searchResultView.setAdapter(transactionAdapter);
         searchResultView.setLayoutManager(layoutManager );
         searchResultView.setHasFixedSize(true);
@@ -84,6 +88,21 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                 fragmentTransaction.commit();
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                searchViewModel.delete(transactionAdapter.getTransactionAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Transaction deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(searchResultView);
+
 
         searchField.setOnQueryTextListener(this);
         filterButtons.setOnCheckedChangeListener(this);
