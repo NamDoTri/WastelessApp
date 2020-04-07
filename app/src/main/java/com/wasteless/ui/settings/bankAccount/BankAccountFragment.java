@@ -13,10 +13,19 @@ import com.wasteless.ui.settings.SettingsViewModel;
 
 public class BankAccountFragment extends Fragment {
     private com.wasteless.ui.settings.SettingsViewModel SettingsViewModel;
+    private com.wasteless.ui.settings.bankAccount.BankAccountViewModel BankAccountViewModel;
+    private View bankButton;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         SettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
-        View BankAccountFragment = inflater.inflate(R.layout.bank_account_fragent, container, false);
+        BankAccountViewModel = ViewModelProviders.of(this).get(BankAccountViewModel.class);
+        View BankAccountFragment = inflater.inflate(R.layout.bank_account_fragment, container, false);
+
+        bankButton = BankAccountFragment.findViewById(R.id.connect_button);
+        bankButton.setOnClickListener(v -> {
+            BankAccountViewModel.requestWithSomeHttpHeaders();
+        });
         return BankAccountFragment;
     };
 }
