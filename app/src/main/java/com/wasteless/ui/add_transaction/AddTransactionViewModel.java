@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
@@ -202,17 +203,18 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
                             for(String token : tokens){
                                 try{
-                                    if(dateFormat.matcher(token).find()){
-                                        date.setValue(dateFormat.matcher(token).group(1));
+                                    Matcher matcher = dateFormat.matcher(token);
+                                    if(matcher.find()){
+                                        date.setValue(matcher.group());
                                     }else if(Pattern.matches(amountFormat, token)){
                                         String entry = token.replace(",", ".");
                                         if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
                                     }
                                 }catch(Exception e){
+                                    e.printStackTrace();
                                     continue;
                                 }
                             }
-                            Log.i("receipt", "amount from vm: " + amount.getValue());
                                 //TODO: train a model to extract total (if data is available)
                             resultText.setValue(result.getText());
                         }
