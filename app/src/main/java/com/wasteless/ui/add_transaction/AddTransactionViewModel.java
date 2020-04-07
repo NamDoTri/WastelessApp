@@ -172,7 +172,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return true;
     }
 
-    public String recognizeText(Uri inputReceiptUri){
+    public MutableLiveData<String> recognizeText(Uri inputReceiptUri){
 //        ImageDecoder.Source sourceContainer = ImageDecoder.createSource(appContext.getContentResolver(), inputReceiptUri);
 //        Bitmap inputReceiptBitmap;
 //        try{
@@ -185,7 +185,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
 //        }
 
 
-        String[] resultText = {"Something's wrong"};
+        MutableLiveData<String> resultText = new MutableLiveData<>();
+        resultText.setValue("Text recognition is processing...");
 
         FirebaseVisionImage inputReceiptFVI;
         try{
@@ -195,7 +196,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                         @Override
                         public void onSuccess(FirebaseVisionText result) {
                             Log.i("receipt", "Result: " + result.getText());
-                            resultText[0] = result.getText();
+                            resultText.setValue(result.getText());
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -215,7 +216,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
 
-        return resultText[0];
+        return resultText;
     }
 
     //private LoadModelTask extends AsyncTask<Void, >

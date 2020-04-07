@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.R;
@@ -43,8 +44,13 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                     public void onActivityResult(Uri result) {
                         Log.i("receipt", "Image uri: " + result.toString());
                         previewReceiptImage.setImageURI(result);
-                        String text = addTransactionViewModel.recognizeText(result);
-                        tempTextview.setText(text);
+                        addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
+                            @Override
+                            public void onChanged(String text) {
+                                Log.i("receipt", text);
+                                tempTextview.setText(text);
+                            }
+                        });
                     }
                 });
 
