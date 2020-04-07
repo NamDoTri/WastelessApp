@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.wasteless.R;
 
@@ -28,7 +28,7 @@ public class AddTransactionFromReceiptFragment extends Fragment {
     private TextView tempTextview;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
+        addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
         final View AddTransactionFromReceiptFragmentView = inflater.inflate(R.layout.fragment_add_transaction_from_gallery, container, false);
 
 
