@@ -25,15 +25,21 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
     private FirebaseVisionTextRecognizer textRecognizer;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private MutableLiveData<String> description, amount, date, type, walletId, source;
     private MutableLiveData<Boolean> isIncome;
@@ -173,18 +179,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<String> recognizeText(Uri inputReceiptUri){
-//        ImageDecoder.Source sourceContainer = ImageDecoder.createSource(appContext.getContentResolver(), inputReceiptUri);
-//        Bitmap inputReceiptBitmap;
-//        try{
-//            inputReceiptBitmap = ImageDecoder.decodeBitmap(sourceContainer);
-//            FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-//            FirebaseVisionImage inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputReceiptBitmap);
-//
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-
-
         MutableLiveData<String> resultText = new MutableLiveData<>();
         resultText.setValue("Text recognition is processing...");
 
@@ -195,7 +189,31 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                         @Override
                         public void onSuccess(FirebaseVisionText result) {
-                            Log.i("receipt", "Result: " + result.getText());
+                            String extractedText = result.getText();
+                            extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
+                            extractedText = extractedText;
+                            List<String> tokens = Arrays.asList(extractedText.split(" "));
+
+                            double totalAmount = 0.0;
+
+                            for(String token : tokens){
+                                Log.i("receipt", "Token: " + token);
+                                if(isDate(token)){
+                                    Log.i("Receipt", "Date: " + token);
+                                }
+                            }
+
+                                // check if is the amount
+
+                                //generate tag
+
+                                //select category
+
+
+                            Log.i("receipt", "Total: " + String.valueOf(totalAmount) );
+
+
+                                //TODO: train a model to extract total (if data is available)
                             resultText.setValue(result.getText());
                         }
                     })
@@ -207,6 +225,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                             if(mlException.getCode() == 14) { // model unavailable
                                 //TODO
                                 textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+                                resultText.setValue("Text recognition model is downloading, please wait...");
                             }
 
                             e.printStackTrace();
@@ -219,6 +238,9 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return resultText;
     }
 
-    //private LoadModelTask extends AsyncTask<Void, >
+    private boolean isDate(String token){
+        String dateFormat = "(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)";
+        return Pattern.matches(dateFormat, token);
+    }
 
 }
