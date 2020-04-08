@@ -164,6 +164,8 @@ public class SettingsFragment extends Fragment{
     }
 
     public void exportDataBaseIntoCSV(){
+        //TODO: move these to the view model!!
+        
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
         File exportDir = new File(getActivity().getFilesDir().getAbsolutePath(), "");
 
