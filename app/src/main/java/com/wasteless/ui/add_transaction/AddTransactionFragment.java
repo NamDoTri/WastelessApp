@@ -26,7 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -61,8 +61,7 @@ public class AddTransactionFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
 
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        addTransactionViewModel = ViewModelProviders.of(this).get(AddTransactionViewModel.class);
-
+        addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
 
         // assign view components to variables
@@ -99,6 +98,8 @@ public class AddTransactionFragment extends Fragment {
 
 
         // handle amount
+        Log.i("receipt", "amount: " + addTransactionViewModel.getAmount().getValue());
+        inputAmount.setText(addTransactionViewModel.getAmount().getValue());
         addTransactionViewModel.getAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -118,6 +119,8 @@ public class AddTransactionFragment extends Fragment {
 
 
         // handle date
+        Log.i("receipt", "Date: " + addTransactionViewModel.getDate().getValue());
+        inputDate.setText(addTransactionViewModel.getDate().getValue());
         addTransactionViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -168,7 +171,9 @@ public class AddTransactionFragment extends Fragment {
         // wallet selection menu
         List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
         for (int i = 0; i < allWallets.size(); i++) {
-            allWalletsNames.add(i,allWallets.get(i).name);
+            if(allWallets.get(i).isBankAccount == false){
+                allWalletsNames.add(i,allWallets.get(i).name);
+            }
             Log.i("array", allWallets.get(i).name);
         }
         ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, allWalletsNames);

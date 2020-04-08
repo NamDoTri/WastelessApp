@@ -21,6 +21,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.opencsv.CSVWriter;
 import com.wasteless.R;
 import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.ui.settings.bankAccount.BankAccountFragment;
 import com.wasteless.ui.settings.block.BlockFragment;
 import com.wasteless.ui.settings.help.HelpFragment;
 import com.wasteless.ui.settings.newWallet.GeneralFragment;
@@ -57,6 +58,22 @@ public class SettingsFragment extends Fragment{
                 return false;
             }
         });
+        root.findViewById(R.id.bank_account_button).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent motionEvent) {
+                switch (motionEvent.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().alpha(0.3f).setDuration(200).start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().alpha(1f).setDuration(200).start();
+                    default :
+                        v.setAlpha(1f);
+                }
+                return false;
+            }
+        });
         root.findViewById(R.id.add_wallet_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +81,16 @@ public class SettingsFragment extends Fragment{
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.nav_host_fragment, newWalletFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        root.findViewById(R.id.bank_account_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BankAccountFragment bankAccountFragment = new BankAccountFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, bankAccountFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

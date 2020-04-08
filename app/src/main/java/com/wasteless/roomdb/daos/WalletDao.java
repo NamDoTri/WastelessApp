@@ -3,6 +3,7 @@ package com.wasteless.roomdb.daos;
 import com.wasteless.roomdb.entities.Wallet;
 
 import androidx.room.Dao;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Insert;
 import androidx.room.Delete;
@@ -18,13 +19,16 @@ public interface WalletDao {
     @Query("select * from wallets where walletId = :walletId")
     Wallet getWalletById(Long walletId);
 
+    @Query("select * from wallets where name = :name")
+    Wallet getWalletByName(String name);
+
     @Query("select coalesce(sum(balance), 0) from wallets")
     Double getTotalBalance();
 
-    @Insert(entity = Wallet.class)
+    @Insert(entity = Wallet.class, onConflict = OnConflictStrategy.IGNORE)
     void insertAll(Wallet... wallets);
 
-    @Update(entity = Wallet.class)
+    @Update(entity = Wallet.class, onConflict = OnConflictStrategy.IGNORE)
     void updateAll(Wallet... wallet);
 
     @Delete

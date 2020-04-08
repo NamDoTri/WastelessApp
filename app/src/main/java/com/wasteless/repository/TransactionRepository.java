@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TagDao;
@@ -16,7 +15,6 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TransactionRepository {
@@ -57,6 +55,11 @@ public class TransactionRepository {
         Log.d("TransactionRepository", "adaptedString: " + adaptedString);
         return transactionDao.getTransactionsByDescription(adaptedString);
     }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByDescription() {
+        Log.d("search", "it is here" );
+        return transactionDao.orderTransactionsByDescription();
+    }
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
         String adaptedString = "%" + date + "%";
@@ -67,10 +70,18 @@ public class TransactionRepository {
         String adaptedString = "%" + category + "%";
         return transactionDao.getTransactionsByType(adaptedString);
     }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByType() {
+        return transactionDao.orderTransactionsByType();
+    }
 //    Get transactions by tags
     public LiveData<List<Transaction>> getTransactionsByTags(String tag) {
         String adaptedString = "%" + tag + "%";
         return transactionDao.getTransactionsByTagName(adaptedString);
+    }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByTags() {
+        return transactionDao.orderTransactionsByTagName();
     }
 
 //    Get all transactions sorted in order
@@ -119,7 +130,6 @@ public class TransactionRepository {
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
         if(transaction.isIncome) throw new Exception("Transaction is not an expense");
-
         try{
             try{
                 //TODO: find a better solution to this because the parameter takes in only 1 transaction at a time

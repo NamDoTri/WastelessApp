@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -35,11 +36,12 @@ public class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> currentWalletName;
     private MutableLiveData<String> budgetAmount;
+    private MutableLiveData<Integer> budgetProgress;
     private MutableLiveData<String> balanceAmount;
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
     private MutableLiveData<String> monthlyExpensesAmount;
-    //private MutableLiveData<String> monthlyIncomesAmount;
+    private MutableLiveData<String> monthlyIncomesAmount;
 
     public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
@@ -53,8 +55,9 @@ public class HomeViewModel extends AndroidViewModel {
         currentWalletName = new MutableLiveData<>();
         currentWalletName.setValue("Overall");
         budgetAmount = new MutableLiveData<>();
-        //TODO: set budget
-        budgetAmount.setValue("234");
+        budgetAmount.setValue("0.0");
+        budgetProgress = new MutableLiveData<>();
+        budgetProgress.setValue(0);
 
         balanceAmount = new MutableLiveData<>();
         balanceAmount.setValue(String.valueOf(walletRepository.getTotalBalance()));
@@ -62,13 +65,34 @@ public class HomeViewModel extends AndroidViewModel {
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
         monthlyExpensesAmount = new MutableLiveData<>();
-        //monthlyIncomesAmount= new MutableLiveData<>();
-
+        monthlyIncomesAmount= new MutableLiveData<>();
     }
 
     public MutableLiveData<Integer> getCurrentlyDisplayWalletIndex() { return currentlyDisplayWalletIndex; }
     public MutableLiveData<String> getCurrentWalletName(){ return currentWalletName; }
-    public LiveData<String> getBudgetAmount() { return budgetAmount; }
+    public LiveData<String> getBudgetAmount() {
+        budgetAmount.setValue(String.valueOf(walletRepository.getMonthBudget()));
+        return budgetAmount;
+    }
+    public LiveData<Integer> getBudgetProgress(){
+        double currentProgress;
+        try{
+            currentProgress = Double.valueOf(monthlyExpensesAmount.getValue()) - Double.valueOf(monthlyIncomesAmount.getValue());
+        }catch(Exception e){
+            currentProgress = 0.0;
+        }
+        if(currentProgress > 0){
+            int currentProgressInPercentage = (int)Math.round(currentProgress * 100 / Double.valueOf(budgetAmount.getValue()));
+            budgetProgress.setValue(currentProgressInPercentage);
+        }
+        return budgetProgress;
+    }
+    public void setBudget(String amount){
+        String thisMonth = dateFormatter.format(LocalDateTime.now());
+        walletRepository.insertMonthBudget(Double.valueOf(amount), thisMonth);
+    }
+
+
     public LiveData<String> getBalanceAmount() { return balanceAmount; }
 
     public LiveData<String> getTotalExpenseToday() {
@@ -174,6 +198,12 @@ public class HomeViewModel extends AndroidViewModel {
         return String.valueOf(totalIncome);
     }
 
+    public LiveData<String> getLiveIncomesByMonth(){
+        String monthTotalIncome = getTotalIncomeByMonth();
+        monthlyIncomesAmount.setValue(monthTotalIncome);
+        return monthlyIncomesAmount;
+    }
+
     public PieData getMonthlyIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
@@ -240,6 +270,6 @@ public class HomeViewModel extends AndroidViewModel {
         getTotalIncomeToday();
         getTotalExpenseToday();
         getLiveExpensesByMonth();
-        //rerender income pie chart
+        getLiveIncomesByMonth();
     }
 }

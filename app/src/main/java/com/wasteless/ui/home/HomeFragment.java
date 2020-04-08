@@ -1,32 +1,22 @@
 package com.wasteless.ui.home;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wasteless.R;
 
 import com.wasteless.roomdb.entities.Goal;
@@ -35,11 +25,10 @@ import com.wasteless.ui.home.goal.GoalFragment;
 import com.wasteless.ui.home.goal.GoalViewModel;
 import com.wasteless.ui.home.goal.SliderAdapter;
 import com.wasteless.ui.home.goal.SliderModel;
+import com.wasteless.ui.home.incomes.IncomesDetailsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import java.text.DecimalFormat;
 
 public class HomeFragment extends Fragment {
 
@@ -49,8 +38,6 @@ public class HomeFragment extends Fragment {
     SliderAdapter adapter;
     List<SliderModel> models;
     String daySpendings;
-    private PieChart incomePieChart;
-    private boolean usePercentage = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,16 +48,39 @@ public class HomeFragment extends Fragment {
         models = new ArrayList<>();
         final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
+        final ProgressBar budgetProgress = root.findViewById(R.id.budget_progress_bar);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesTodayAmount = root.findViewById(R.id.expenses_today_amount);
         final TextView incomeTodayAmount = root.findViewById(R.id.income_today_amount);
         final TextView expensesMonthlyAmount = root.findViewById(R.id.expenses_monthly_amount);
-        //final TextView incomeMonthlyAmount = root.findViewById(R.id.income_monthly_amount);
-
-        incomePieChart = ((PieChart)root.findViewById(R.id.income_pie_chart));
+        final TextView incomeMonthlyAmount = root.findViewById(R.id.income_monthly_amount);
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
+
+        // BUDGET
+        homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                budgetAmount.setText(s);
+            }
+        });
+        homeViewModel.getBudgetProgress().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer aInt) {
+                budgetProgress.setProgress(aInt);
+            }
+        });
+        root.findViewById(R.id.budget_section).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                BudgetDetailsFragment budgetDetailsFragment = new BudgetDetailsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, budgetDetailsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         expensesMonthlyAmount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +93,21 @@ public class HomeFragment extends Fragment {
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.nav_host_fragment, expensesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
+        incomeMonthlyAmount.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                IncomesDetailsFragment incomesDetailsFragment = new IncomesDetailsFragment();
+                Bundle incomesBundles = new Bundle();
+                incomesBundles.putLong("walletId", homeViewModel.getCurrentWalletId());
+                incomesDetailsFragment.setArguments(incomesBundles);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment, incomesDetailsFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
@@ -131,6 +156,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 expensesMonthlyAmount.setText(s);
+            }
+        });
+        homeViewModel.getLiveIncomesByMonth().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                incomeMonthlyAmount.setText(s);
             }
         });
 
@@ -186,8 +217,6 @@ public class HomeFragment extends Fragment {
             transaction.commit();
         });
 
-        renderMonthlyIncomePieChart();
-
         // keep track of currently displayed wallet
         homeViewModel.getCurrentlyDisplayWalletIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
@@ -195,7 +224,6 @@ public class HomeFragment extends Fragment {
                 Log.i("wallet", String.valueOf(homeViewModel.getCurrentlyDisplayWalletIndex().getValue()));
                 //TODO
                 homeViewModel.updateStats();
-                renderMonthlyIncomePieChart();
             }
         });
 
@@ -220,55 +248,5 @@ public class HomeFragment extends Fragment {
         viewPager.setPadding(100, 0 ,100, 0);
     }
 
-    private void renderMonthlyIncomePieChart(){
-        PieData incomePieChartData = homeViewModel.getMonthlyIncomePieChart();
-        Log.i("chart", incomePieChartData.toString());
-        // value settings
-        incomePieChartData.setValueTextSize(20f);
-        incomePieChartData.setValueTextColor(Color.DKGRAY);
-        incomePieChartData.setValueFormatter(new PercentFormatter(incomePieChart)); //TODO: render value inside the slices
 
-        //// chart settings
-        incomePieChart.setUsePercentValues(true);
-        incomePieChart.setTransparentCircleRadius(35f);
-        incomePieChart.setHoleRadius(30f);
-        incomePieChart.getDescription().setEnabled(false);
-
-        // center text settings
-        //TODO: update this when changing wallet
-        incomePieChart.setCenterText(String.valueOf(homeViewModel.getTotalIncomeByMonth())); //TODO: display currency
-        incomePieChart.setCenterTextSize(27f);
-
-        // entry label settings
-        incomePieChart.setEntryLabelTextSize(17f);
-        incomePieChart.setEntryLabelColor(Color.DKGRAY);
-
-        // legends settings
-        Legend incomePieChartLegend = incomePieChart.getLegend();
-        incomePieChartLegend.setTextSize(15f);
-
-        incomePieChart.notifyDataSetChanged();
-        incomePieChart.invalidate();
-        incomePieChart.setData(incomePieChartData);
-
-        incomePieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            private Entry prevSelectedEntry = null;
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                // only if user select the same value again
-                if(prevSelectedEntry == null){
-                    usePercentage = !usePercentage;
-                    incomePieChart.setUsePercentValues(usePercentage);
-                }
-                prevSelectedEntry = e;
-            }
-
-            @Override
-            public void onNothingSelected() {
-                usePercentage = !usePercentage;
-                incomePieChart.setUsePercentValues(usePercentage);
-                prevSelectedEntry = null;
-            }
-        });
-    }
 }
