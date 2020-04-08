@@ -71,6 +71,16 @@ public class HomeFragment extends Fragment {
                 budgetProgress.setProgress(aInt);
             }
         });
+        root.findViewById(R.id.budget_section).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                BudgetDetailsFragment budgetDetailsFragment = new BudgetDetailsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, budgetDetailsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         expensesMonthlyAmount.setOnClickListener(new View.OnClickListener() {
             @Override
