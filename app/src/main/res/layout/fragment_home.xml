@@ -50,40 +50,50 @@
                         app:layout_constraintTop_toTopOf="parent"
                         />
 
-                    <TextView
-                        android:id="@+id/budget_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Budget"
-                        android:textSize="24sp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/budget_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         app:layout_constraintTop_toBottomOf="@+id/wallet_title"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                         />
+                        app:layout_constraintRight_toRightOf="parent">
+                        <TextView
+                            android:id="@+id/budget_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Budget"
+                            android:textSize="24sp"
+                            app:layout_constraintTop_toBottomOf="@+id/wallet_title"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
 
-                    <TextView
-                        android:id="@+id/budget_amount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4500"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintBottom_toTopOf="@+id/budget_progress_bar"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/budget_title"
-                        app:layout_constraintVertical_bias="0.333" />
+                        <TextView
+                            android:id="@+id/budget_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4500"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/budget_progress_bar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/budget_title"
+                            app:layout_constraintVertical_bias="0.333" />
 
-                    <ImageView
-                        android:id="@+id/budget_progress_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/budget_amount"
-                        app:srcCompat="@drawable/budget_progress_bar" />
+                        <ProgressBar
+                            android:id="@+id/budget_progress_bar"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressBackgroundTint="#2000FF00"
+                            android:progress="25"
+                            app:layout_constraintTop_toBottomOf="@id/budget_amount"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

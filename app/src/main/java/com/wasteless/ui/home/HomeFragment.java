@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ public class HomeFragment extends Fragment {
         models = new ArrayList<>();
         final TextView walletTitle = root.findViewById(R.id.wallet_title);
         final TextView budgetAmount = root.findViewById(R.id.budget_amount);
+        final ProgressBar budgetProgress = root.findViewById(R.id.budget_progress_bar);
         final TextView balanceAmount = root.findViewById(R.id.balance_amount);
         final TextView expensesTodayAmount = root.findViewById(R.id.expenses_today_amount);
         final TextView incomeTodayAmount = root.findViewById(R.id.income_today_amount);
@@ -55,6 +57,30 @@ public class HomeFragment extends Fragment {
 
         final Button prevWalletButton = root.findViewById(R.id.button_back);
         final Button nextWalletButton = root.findViewById(R.id.button_next);
+
+        // BUDGET
+        homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                budgetAmount.setText(s);
+            }
+        });
+        homeViewModel.getBudgetProgress().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer aInt) {
+                budgetProgress.setProgress(aInt);
+            }
+        });
+        root.findViewById(R.id.budget_section).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                BudgetDetailsFragment budgetDetailsFragment = new BudgetDetailsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, budgetDetailsFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         expensesMonthlyAmount.setOnClickListener(new View.OnClickListener() {
             @Override
