@@ -77,12 +77,15 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<Integer> getBudgetProgress(){
         double currentProgress;
         try{
-            currentProgress = Double.valueOf(monthlyExpensesAmount.getValue()) - Double.valueOf(monthlyIncomesAmount.getValue());
+            // currentProgress = Double.valueOf(monthlyExpensesAmount.getValue()) - Double.valueOf(monthlyIncomesAmount.getValue());
+            currentProgress = Double.valueOf(getTotalExpensesByMonth());
+            Log.i("budget", "This month expense: " + String.valueOf(currentProgress));
         }catch(Exception e){
             currentProgress = 0.0;
+            e.printStackTrace();
         }
         if(currentProgress > 0){
-            int currentProgressInPercentage = (int)Math.round(currentProgress * 100 / Double.valueOf(budgetAmount.getValue()));
+            int currentProgressInPercentage = 100 - (int)Math.round(currentProgress * 100 / Double.valueOf(budgetAmount.getValue()));
             budgetProgress.setValue(currentProgressInPercentage);
         }
         return budgetProgress;
