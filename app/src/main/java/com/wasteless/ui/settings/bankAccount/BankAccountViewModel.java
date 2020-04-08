@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -15,6 +16,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.wasteless.repository.TransactionRepository;
+import com.wasteless.repository.WalletRepository;
+import com.wasteless.roomdb.entities.BankAccount;
+import com.wasteless.roomdb.entities.Wallet;
+import com.wasteless.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,12 +31,28 @@ import java.util.Map;
 import java.util.Objects;
 
 public class BankAccountViewModel extends AndroidViewModel {
+
     private BankAccountFragment bankAccountFragment;
+    private WalletRepository walletRepository;
+    private TransactionRepository transactionRepository;
+    private com.wasteless.ui.settings.SettingsViewModel SettingsViewModel;
+    public void insertWallet(String name, double initialBalance, boolean isBank){
+        walletRepository.insertWallet( new Wallet(name, initialBalance, isBank) );
+    }
     public BankAccountViewModel(@NonNull Application application) {
         super(application);
+        walletRepository = WalletRepository.getWalletRepository(application.getApplicationContext());
+        transactionRepository = TransactionRepository.getTransactionRepository(application.getApplicationContext());
     }
-//    private BankAccountFragment bankAccountFragment = new BankAccountFragment();
+
+    public long getWalletId(String name) {
+        Wallet wallet = walletRepository.getWalletByName(name);
+        return wallet.walletId;
+    }
+
     public void requestToOP(TextView result) {
+        insertWallet("OP_bank", 0.0, true);
+        final Double[] balanceGlobal = {0.0};
         RequestQueue queue = Volley.newRequestQueue(getApplication());
         String url = "https://sandbox.apis.op-palvelut.fi/accounts/v3/accounts";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -48,12 +70,14 @@ public class BankAccountViewModel extends AndroidViewModel {
                         fetchTransactions(transactionLink);
                         String name = account.getString("name");
                         Double balance = account.getDouble("balance");
-//                        Log.i("bankInfo", name +" "+ transactionLink);
+                        balanceGlobal[0] += balance;
+                        Log.i("bankInfo", String.valueOf(balanceGlobal[0]));
                         result.append(name + " " +balance+"\n\n");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         }, new Response.ErrorListener() {
 
@@ -90,7 +114,8 @@ public class BankAccountViewModel extends AndroidViewModel {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject transaction = jsonArray.getJSONObject(i);
                                 JSONObject creditor = transaction.getJSONObject("creditor");
-                                String description = transaction.getString("accountName");
+                                String description = creditor.getString("accountName");
+                                Log.i("creditor", description);
 
                                 String amountStringBank = transaction.getString("amount");
                                 String dateBank = transaction.getString("valueDateTime");
@@ -99,7 +124,10 @@ public class BankAccountViewModel extends AndroidViewModel {
                                 String month = dateBank.substring(5, 7);
                                 String year = dateBank.substring(0, 4);
                                 String date = day+"."+month+"."+year;
-                                Log.i("bank", date);
+                                Long walletId = getWalletId("OP_bank");
+                                String type = transaction.getString("creditDebitIndicator");
+
+                                Log.i("bank", String.valueOf(walletId));
 
                             }
                         } catch (JSONException e) {

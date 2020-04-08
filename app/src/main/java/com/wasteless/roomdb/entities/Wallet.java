@@ -18,9 +18,13 @@ public class Wallet {
     @ColumnInfo(name="balance", defaultValue = "0")
     public double balance;
 
-    public Wallet(String name, double balance){
+    @ColumnInfo(name="isBankAccount")
+    public boolean isBankAccount;
+
+    public Wallet(String name, double balance, boolean isBankAccount){
         this.name = name;
         this.balance = balance;
+        this.isBankAccount = isBankAccount;
         Log.i("Database", "Wallet created: " + String.valueOf(this.walletId));
     }
 
