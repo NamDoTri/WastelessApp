@@ -34,6 +34,14 @@ public class WalletRepository {
         walletDao.insertAll(wallet);
     }
 
+    public void UpdateWallet(Wallet wallet){
+        walletDao.updateAll(wallet);
+    }
+
+
+    public Wallet getWalletByName(String name){ return  walletDao.getWalletByName(name);}
+
+
     public Wallet getWalletById(Long walletId){
         return walletDao.getWalletById(walletId);
     }

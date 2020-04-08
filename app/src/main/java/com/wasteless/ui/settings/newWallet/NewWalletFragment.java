@@ -35,7 +35,7 @@ public class NewWalletFragment extends Fragment {
                 String initialValue = initialValueField.getText().toString().trim();
 
                 if(v.getId() == R.id.add_wallet_button) {
-                    settingsViewModel.insertWallet(name, Double.valueOf(initialValue));
+                    settingsViewModel.insertWallet(name, Double.valueOf(initialValue), false);
                     successMessage();
                 }
             }

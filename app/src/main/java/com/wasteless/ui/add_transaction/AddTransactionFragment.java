@@ -171,7 +171,9 @@ public class AddTransactionFragment extends Fragment {
         // wallet selection menu
         List<Wallet> allWallets = addTransactionViewModel.getAllWallets();
         for (int i = 0; i < allWallets.size(); i++) {
-            allWalletsNames.add(i,allWallets.get(i).name);
+            if(allWallets.get(i).isBankAccount == false){
+                allWalletsNames.add(i,allWallets.get(i).name);
+            }
             Log.i("array", allWallets.get(i).name);
         }
         ArrayAdapter<String> walletAdapter = new ArrayAdapter<String>(getContext(), R.layout.custom_spinner, allWalletsNames);

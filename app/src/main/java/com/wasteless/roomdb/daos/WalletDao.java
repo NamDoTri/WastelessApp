@@ -19,6 +19,9 @@ public interface WalletDao {
     @Query("select * from wallets where walletId = :walletId")
     Wallet getWalletById(Long walletId);
 
+    @Query("select * from wallets where name = :name")
+    Wallet getWalletByName(String name);
+
     @Query("select coalesce(sum(balance), 0) from wallets")
     Double getTotalBalance();
 

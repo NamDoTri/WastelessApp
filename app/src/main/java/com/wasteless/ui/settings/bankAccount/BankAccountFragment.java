@@ -19,7 +19,6 @@ public class BankAccountFragment extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         BankAccountViewModel = ViewModelProviders.of(this).get(BankAccountViewModel.class);
         View BankAccountFragment = inflater.inflate(R.layout.bank_account_fragment, container, false);
         TextView resultText = BankAccountFragment.findViewById(R.id.accounts);

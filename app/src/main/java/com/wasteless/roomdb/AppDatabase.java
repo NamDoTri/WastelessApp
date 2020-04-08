@@ -29,7 +29,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if(instance == null){
             instance = Room.databaseBuilder(context, AppDatabase.class, "wastelessDB")
                     .allowMainThreadQueries()
-                    //.addCallback(prepopulateData)
+                    .addCallback(prepopulateData)
                     .build();
         }
         return instance;
@@ -42,8 +42,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void run() {
                     getAppDatabase(context).walletDao().insertAll(
-                            new Wallet("wallet 1", 400),
-                            new Wallet("wallet 2",500)
+                            new Wallet("wallet 1", 400, false),
+                            new Wallet("wallet 2",500, false)
                     );
                     getAppDatabase(context).goalDao().insertAll(
                             new Goal("month","31.3.2020", 123.4)
