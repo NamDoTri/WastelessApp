@@ -19,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.BankAccount;
+import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.settings.SettingsViewModel;
 
@@ -26,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -106,27 +108,38 @@ public class BankAccountViewModel extends AndroidViewModel {
         String url = transactionLink;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray jsonArray = response.getJSONArray("transactions");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject transaction = jsonArray.getJSONObject(i);
-                                JSONObject creditor = transaction.getJSONObject("creditor");
-                                String description = creditor.getString("accountName");
-                                Log.i("creditor", description);
-
                                 String amountStringBank = transaction.getString("amount");
-                                String dateBank = transaction.getString("valueDateTime");
                                 Double amount = Double.parseDouble(amountStringBank);
+                                String dateBank = transaction.getString("valueDateTime");
                                 String day = dateBank.substring(8, 10);
                                 String month = dateBank.substring(5, 7);
                                 String year = dateBank.substring(0, 4);
                                 String date = day+"."+month+"."+year;
                                 Long walletId = getWalletId("OP_bank");
                                 String type = transaction.getString("creditDebitIndicator");
-
+                                ArrayList<String> tags = null;
+                                if (amount < 0){
+                                    JSONObject creditor = transaction.getJSONObject("creditor");
+                                    String description = creditor.getString("accountName");
+                                    try {
+                                        transactionRepository.insertExpense( new Transaction(date, amount, description, walletId, false, type), tags);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    String description = "Card's income";
+                                    try {
+                                        transactionRepository.insertIncome( new Transaction(date, amount, description, walletId, true, "OP_bank"), tags);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                                 Log.i("bank", String.valueOf(walletId));
 
                             }
