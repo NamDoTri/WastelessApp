@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "budgets")
 public class Budget {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public Long id;
 
     @ColumnInfo(name = "amount")
     public double amount;

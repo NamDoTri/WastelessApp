@@ -13,11 +13,11 @@ import java.util.List;
 
 @Dao
 public interface BudgetDao {
-    @Query("select * from budgets where isMonthBudget = 1")
-    List<Budget> getMonthBudget();
+    @Query("select coalesce(amount, 0.0) from budgets where isMonthBudget = 1")
+    Double getMonthBudget();
 
     @Insert(entity = Budget.class, onConflict = OnConflictStrategy.IGNORE)
-    List<Long> insert(Budget budget);
+    void insert(Budget budget);
 
     @Update(entity = Budget.class, onConflict = OnConflictStrategy.IGNORE)
     int update(Budget budget);
