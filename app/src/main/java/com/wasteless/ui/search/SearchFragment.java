@@ -169,22 +169,26 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                     transactionAdapter.setTransactions(transactions);
                 }
             });
-//            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
-//            Log.d("RadioListener", "" + activeFilter);
         }
 
         if (checkedId == R.id.filter_date) {
             Log.d("RadioListener", "date");
-            searchViewModel.setActiveFilter("date");
-//            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
-//            Log.d("RadioListener", "" + activeFilter);
+            searchViewModel.setActiveFilter("date").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+                @Override
+                public void onChanged(List<Transaction> transactions) {
+                    transactionAdapter.setTransactions(transactions);
+                }
+            });
         }
 
         if (checkedId == R.id.filter_description) {
             Log.d("RadioListener", "description");
-            searchViewModel.setActiveFilter("description");
-            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
-            Log.d("RadioListener", "" + activeFilter);
+            searchViewModel.setActiveFilter("description").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+                @Override
+                public void onChanged(List<Transaction> transactions) {
+                    transactionAdapter.setTransactions(transactions);
+                }
+            });
         }
 
         if (checkedId == R.id.filter_tag) {
