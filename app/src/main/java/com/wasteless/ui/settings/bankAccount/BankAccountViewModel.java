@@ -53,6 +53,7 @@ public class BankAccountViewModel extends AndroidViewModel {
     }
 
     public void requestToOP(TextView result) {
+        if(walletRepository.getWalletByName("OP_bank") == null)
         insertWallet("OP_bank", 0.0, true);
         final Double[] balanceGlobal = {0.0};
         RequestQueue queue = Volley.newRequestQueue(getApplication());
@@ -104,6 +105,7 @@ public class BankAccountViewModel extends AndroidViewModel {
     }
 
     private void fetchTransactions(String transactionLink) {
+//        ArrayList <>
         RequestQueue queue = Volley.newRequestQueue(getApplication());
         String url = transactionLink;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -128,12 +130,12 @@ public class BankAccountViewModel extends AndroidViewModel {
                                     JSONObject creditor = transaction.getJSONObject("creditor");
                                     String description = creditor.getString("accountName");
                                     try {
-                                        transactionRepository.insertExpense( new Transaction(date, amount, description, walletId, false, type), tags);
+                                        transactionRepository.insertExpense( new Transaction(date, -amount, description, walletId, false, type), tags);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 } else {
-                                    String description = "Card's income";
+                                    String description = "OP bank's income";
                                     try {
                                         transactionRepository.insertIncome( new Transaction(date, amount, description, walletId, true, "OP_bank"), tags);
                                     } catch (Exception e) {
