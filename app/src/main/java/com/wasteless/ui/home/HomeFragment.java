@@ -132,6 +132,12 @@ public class HomeFragment extends Fragment {
                 expensesMonthlyAmount.setText(s);
             }
         });
+        homeViewModel.getLiveIncomesByMonth().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                incomeMonthlyAmount.setText(s);
+            }
+        });
 
         //
         // Goals and their slider
