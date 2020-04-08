@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -86,6 +87,12 @@ public class HomeViewModel extends AndroidViewModel {
         }
         return budgetProgress;
     }
+    public void setBudget(String amount){
+        String thisMonth = dateFormatter.format(LocalDateTime.now());
+        walletRepository.insertMonthBudget(Double.valueOf(amount), thisMonth);
+    }
+
+
     public LiveData<String> getBalanceAmount() { return balanceAmount; }
 
     public LiveData<String> getTotalExpenseToday() {

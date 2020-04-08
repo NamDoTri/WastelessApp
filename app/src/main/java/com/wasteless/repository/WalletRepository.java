@@ -5,6 +5,7 @@ import android.content.Context;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.BudgetDao;
 import com.wasteless.roomdb.daos.WalletDao;
+import com.wasteless.roomdb.entities.Budget;
 import com.wasteless.roomdb.entities.Wallet;
 
 import java.util.List;
@@ -45,5 +46,9 @@ public class WalletRepository {
         return budgetDao.getMonthBudget() == null ?
                 0.0 :
                 budgetDao.getMonthBudget();
+    }
+    public void insertMonthBudget(double amount, String createdAt){
+        Budget newBudget = new Budget(amount, createdAt, true); //TODO
+        budgetDao.insert(newBudget);
     }
 }
