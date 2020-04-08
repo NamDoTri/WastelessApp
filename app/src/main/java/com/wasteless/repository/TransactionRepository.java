@@ -57,6 +57,10 @@ public class TransactionRepository {
         Log.d("TransactionRepository", "adaptedString: " + adaptedString);
         return transactionDao.getTransactionsByDescription(adaptedString);
     }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByDescription() {
+        return transactionDao.orderTransactionsByDescription();
+    }
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
         String adaptedString = "%" + date + "%";

@@ -44,7 +44,11 @@ public class SearchViewModel extends AndroidViewModel {
 //    Setters
     public void setActiveFilter(String filter) {
         activeFilter.setValue(filter);
-        globalSearchHandler();
+//        globalSearchHandler();
+    }
+
+    private LiveData<List<Transaction>> globalFilterHandler() {
+        String currentActiveFilter = activeFilter.getValue();
     }
 
     public LiveData<List<Transaction>> setSearchValue(String searchV) {
@@ -61,6 +65,9 @@ public class SearchViewModel extends AndroidViewModel {
         String currentSearchValue = searchValue.getValue();
 //        Searches by description if description filter was chosen
         if ( currentActiveFilter == "description" ) {
+            if (currentSearchValue == "") {
+                return transactionRepository
+            }
             return transactionRepository.getTransactionsByDescription(currentSearchValue);
         }
 //        Searches by tag if tags filter was chosen
