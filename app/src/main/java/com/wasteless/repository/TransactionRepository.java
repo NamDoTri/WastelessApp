@@ -117,7 +117,6 @@ public class TransactionRepository {
 
     public boolean insertExpense(Transaction transaction, ArrayList<String> tags) throws Exception{
         if(transaction.isIncome) throw new Exception("Transaction is not an expense");
-
         try{
             try{
                 //TODO: find a better solution to this because the parameter takes in only 1 transaction at a time
