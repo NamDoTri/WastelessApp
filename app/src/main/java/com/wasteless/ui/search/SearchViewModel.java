@@ -42,14 +42,16 @@ public class SearchViewModel extends AndroidViewModel {
 }
 
 //    Setters
-    public void setActiveFilter(String filter) {
+    public LiveData<List<Transaction>> setActiveFilter(String filter) {
         activeFilter.setValue(filter);
-//        globalSearchHandler();
+        LiveData<List<Transaction>> transactions = globalSearchHandler();
+        Log.d("search", "" + transactions);
+        return transactions;
     }
 
-    private LiveData<List<Transaction>> globalFilterHandler() {
-        String currentActiveFilter = activeFilter.getValue();
-    }
+//    private LiveData<List<Transaction>> globalFilterHandler() {
+//        String currentActiveFilter = activeFilter.getValue();
+//    }
 
     public LiveData<List<Transaction>> setSearchValue(String searchV) {
         searchValue.setValue(searchV);
@@ -66,20 +68,34 @@ public class SearchViewModel extends AndroidViewModel {
 //        Searches by description if description filter was chosen
         if ( currentActiveFilter == "description" ) {
             if (currentSearchValue == "") {
-                return transactionRepository
+                Log.d("SearchOutput", "SearchViewModel searchValue is empty " );
+                return transactionRepository.orderTransactionsByDescription();
             }
             return transactionRepository.getTransactionsByDescription(currentSearchValue);
         }
 //        Searches by tag if tags filter was chosen
         if ( currentActiveFilter == "tag" ) {
+            if (currentSearchValue == "") {
+                Log.d("SearchOutput", "SearchViewModel searchValue is empty " );
+                return transactionRepository.orderTransactionsByTags();
+            }
             return transactionRepository.getTransactionsByTags(currentSearchValue);
         }
 //        Searches by date if date filter was chosen
         if ( currentActiveFilter == "date"  ) {
+            Log.d("Search", "" + currentSearchValue);
+//            if (currentSearchValue) {
+//                Log.d("SearchOutput", "SearchViewModel searchValue is empty " );
+//                return transactionRepository.getAllTransactions();
+//            }
             return transactionRepository.getTransactionsByDate(currentSearchValue);
         }
 //        Searches by category/type if category filter was chose
         if ( currentActiveFilter == "category"  ) {
+            if (currentSearchValue == "") {
+                Log.d("SearchOutput", "SearchViewModel searchValue is empty " );
+                return transactionRepository.orderTransactionsByType();
+            }
             return transactionRepository.getTransactionsByType(currentSearchValue);
         } else {
             return null;
