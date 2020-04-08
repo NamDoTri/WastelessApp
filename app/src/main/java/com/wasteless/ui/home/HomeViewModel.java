@@ -39,7 +39,7 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> expensesAmount;
     private MutableLiveData<String> incomesAmount;
     private MutableLiveData<String> monthlyExpensesAmount;
-    //private MutableLiveData<String> monthlyIncomesAmount;
+    private MutableLiveData<String> monthlyIncomesAmount;
 
     public MutableLiveData<Integer> currentlyDisplayWalletIndex;
 
@@ -62,7 +62,7 @@ public class HomeViewModel extends AndroidViewModel {
         expensesAmount = new MutableLiveData<>();
         incomesAmount = new MutableLiveData<>();
         monthlyExpensesAmount = new MutableLiveData<>();
-        //monthlyIncomesAmount= new MutableLiveData<>();
+        monthlyIncomesAmount= new MutableLiveData<>();
 
     }
 
@@ -174,6 +174,12 @@ public class HomeViewModel extends AndroidViewModel {
         return String.valueOf(totalIncome);
     }
 
+    public LiveData<String> getLiveIncomesByMonth(){
+        String monthTotalIncome = getTotalIncomeByMonth();
+        monthlyIncomesAmount.setValue(monthTotalIncome);
+        return monthlyIncomesAmount;
+    }
+
     public PieData getMonthlyIncomePieChart(){
         String thisMonth = dateFormatter.format(LocalDateTime.now()).substring(3); // mm/yyyy
         List<Transaction> incomesThisMonth = transactionRepository.getIncomesByMonth(thisMonth);
@@ -240,5 +246,6 @@ public class HomeViewModel extends AndroidViewModel {
         getTotalIncomeToday();
         getTotalExpenseToday();
         getLiveExpensesByMonth();
+        getLiveIncomesByMonth();
     }
 }
