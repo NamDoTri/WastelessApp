@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:hint="Set budget amount"
         android:textAlignment="center"
+        android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@+id/budget_view_title"/>
 
     <Button

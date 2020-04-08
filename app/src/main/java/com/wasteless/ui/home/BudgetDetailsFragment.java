@@ -1,5 +1,7 @@
 package com.wasteless.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,20 @@ public class BudgetDetailsFragment extends Fragment {
             @Override
             public void onClick(View v){
                 String amount = ((EditText)root.findViewById(R.id.input_budget)).getText().toString();
-                homeViewModel.setBudget(amount); //TODO: "nothing changed" message
+                if(amount.length() != 0){
+                    homeViewModel.setBudget(amount);
+                }else{
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("Wasteless");
+                    alertDialog.setMessage("Nothing has been changed");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
                 HomeFragment homeFragment = new HomeFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.nav_host_fragment, homeFragment);
