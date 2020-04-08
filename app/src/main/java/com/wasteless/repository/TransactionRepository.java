@@ -55,6 +55,11 @@ public class TransactionRepository {
         Log.d("TransactionRepository", "adaptedString: " + adaptedString);
         return transactionDao.getTransactionsByDescription(adaptedString);
     }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByDescription() {
+        Log.d("search", "it is here" );
+        return transactionDao.orderTransactionsByDescription();
+    }
 //    Get transactions by date
     public LiveData<List<Transaction>> getTransactionsByDate(String date) {
         String adaptedString = "%" + date + "%";
@@ -65,10 +70,18 @@ public class TransactionRepository {
         String adaptedString = "%" + category + "%";
         return transactionDao.getTransactionsByType(adaptedString);
     }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByType() {
+        return transactionDao.orderTransactionsByType();
+    }
 //    Get transactions by tags
     public LiveData<List<Transaction>> getTransactionsByTags(String tag) {
         String adaptedString = "%" + tag + "%";
         return transactionDao.getTransactionsByTagName(adaptedString);
+    }
+//    Sort/order transactions by description
+    public LiveData<List<Transaction>> orderTransactionsByTags() {
+        return transactionDao.orderTransactionsByTagName();
     }
 
 //    Get all transactions sorted in order
