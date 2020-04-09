@@ -1,10 +1,13 @@
 package com.wasteless.ui.settings.bankAccount;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -14,14 +17,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
-import com.wasteless.roomdb.entities.BankAccount;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
-import com.wasteless.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +75,6 @@ public class BankAccountViewModel extends AndroidViewModel {
                         Double balance = account.getDouble("balance");
                         balanceGlobal[0] += balance;
                         Log.i("bankInfo", String.valueOf(balanceGlobal[0]));
-                        result.append(name + " " +balance+"\n\n");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -103,6 +102,8 @@ public class BankAccountViewModel extends AndroidViewModel {
         queue.add(jsonObjectRequest);
 
     }
+
+
 
     private void fetchTransactions(String transactionLink) {
         RequestQueue queue = Volley.newRequestQueue(getApplication());
