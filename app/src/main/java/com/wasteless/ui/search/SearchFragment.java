@@ -193,9 +193,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
 
         if (checkedId == R.id.filter_tag) {
             Log.d("RadioListener", "tag");
-            searchViewModel.setActiveFilter("tag");
-            MutableLiveData<String> activeFilter = searchViewModel.getActiveFilter();
-            Log.d("RadioListener", "" + activeFilter);
+            searchViewModel.setActiveFilter("tag").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+                @Override
+                public void onChanged(List<Transaction> transactions) {
+                    transactionAdapter.setTransactions(transactions);
+                }
+            });
         }
     }
 }
