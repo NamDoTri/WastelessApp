@@ -105,7 +105,6 @@ public class BankAccountViewModel extends AndroidViewModel {
     }
 
     private void fetchTransactions(String transactionLink) {
-//        ArrayList <>
         RequestQueue queue = Volley.newRequestQueue(getApplication());
         String url = transactionLink;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -129,18 +128,18 @@ public class BankAccountViewModel extends AndroidViewModel {
                                 if (amount < 0){
                                     JSONObject creditor = transaction.getJSONObject("creditor");
                                     String description = creditor.getString("accountName");
-                                    try {
+                                    if(!transactionRepository.checkForTheSameTransaction(new Transaction(date, -amount, description, walletId, false, type))) try {
                                         transactionRepository.insertExpense( new Transaction(date, -amount, description, walletId, false, type), tags);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 } else {
                                     String description = "OP bank's income";
-                                    try {
+                                    if(!transactionRepository.checkForTheSameTransaction(new Transaction(date, amount, description, walletId, true, "OP_bank"))) {try {
                                         transactionRepository.insertIncome( new Transaction(date, amount, description, walletId, true, "OP_bank"), tags);
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                    }
+                                    }}
                                 }
                                 Log.i("bank", String.valueOf(walletId));
 
