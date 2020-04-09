@@ -3,6 +3,7 @@ package com.wasteless.ui.add_transaction;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +23,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -292,12 +296,25 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
-                //TODO
-                AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+
+                ActivityResultLauncher<String> getReceiptImage = prepareCall(new ActivityResultContracts.GetContent(),
+                        new ActivityResultCallback<Uri>() {
+                            @Override
+                            public void onActivityResult(Uri result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+                                    addTransactionViewModel.setInputReceiptUri(result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+
+                getReceiptImage.launch("image/*");
             }
         });
 

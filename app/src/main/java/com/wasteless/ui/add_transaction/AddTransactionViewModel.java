@@ -51,8 +51,9 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private MutableLiveData<String> walletId = new MutableLiveData<>();
     private MutableLiveData<String> source = new MutableLiveData<>();
 
-    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();;
-    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();;
+    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
+    private MutableLiveData<Uri> inputReceiptUri = new MutableLiveData<>();
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -177,6 +178,13 @@ public class AddTransactionViewModel extends AndroidViewModel {
         }
         if(isIncome.getValue() && source.length() == 0) return false;
         return true;
+    }
+
+    public void setInputReceiptUri(Uri uri){
+        this.inputReceiptUri.setValue(uri);
+    }
+    public MutableLiveData<Uri> getInputReceiptUri(){
+        return this.inputReceiptUri;
     }
 
     public MutableLiveData<String> recognizeText(Uri inputReceiptUri){

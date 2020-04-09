@@ -38,27 +38,19 @@ public class AddTransactionFromReceiptFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+        Uri inputUri = addTransactionViewModel.getInputReceiptUri().getValue();
+
         previewReceiptImage = (ImageView)getView().findViewById(R.id.preview_receipt);
+        previewReceiptImage.setImageURI(inputUri);
+
         tempTextview = getView().findViewById(R.id.temp_text_view);
 
-        ActivityResultLauncher<String> getReceiptImage = prepareCall(new GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri result) {
-                        if(result != null){
-                            Log.i("receipt", "Image uri: " + result.toString());
-                            previewReceiptImage.setImageURI(result);
-                            addTransactionViewModel.recognizeText(result).observe(getViewLifecycleOwner(), new Observer<String>() {
-                                @Override
-                                public void onChanged(String text) {
-                                    tempTextview.setText(text);
-                                }
-                            });
-                        }
-                    }
-                });
-
-        getReceiptImage.launch("image/*");
+        addTransactionViewModel.recognizeText(inputUri).observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String text) {
+                // tempTextview.setText(text);
+            }
+        });
 
         getView().findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
