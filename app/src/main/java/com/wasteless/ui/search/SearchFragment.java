@@ -39,9 +39,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private RecyclerView.LayoutManager layoutManager;
     private TransactionAdapter transactionAdapter;
 
-    private int descriptionButtonId;
-    private int dateButtonId;
-    private int tagButtonId;
     private MutableLiveData<String> category;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
