@@ -21,21 +21,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
-    private NotificationManagerCompat notificationManagerCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        notificationManagerCompat = NotificationManagerCompat.from(this);
-        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.bank)
-                .setContentTitle("Something here")
-                .setContentText("Oh you are great")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_SOCIAL)
-                .build();
-        notificationManagerCompat.notify(1, notification);
 
         db = AppDatabase.getAppDatabase(this);
         Log.i("Database", "Wallet " + String.valueOf(db.walletDao().getAll()));
