@@ -37,9 +37,10 @@ public class AddTransactionFromReceiptFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         previewReceiptImage = (ImageView)getView().findViewById(R.id.preview_receipt);
 
-        Bundle uriBundle = this.getArguments();
-        if(uriBundle != null){
-            Uri inputUri = uriBundle.getParcelable("receiptUri");
+        Bundle bundle = this.getArguments();
+
+        if(bundle != null && bundle.getParcelable("receiptImage") instanceof Uri){
+            Uri inputUri = bundle.getParcelable("receiptImage");
             previewReceiptImage.setImageURI(inputUri);
             addTransactionViewModel.recognizeText(inputUri).observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
@@ -48,21 +49,15 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                 }
             });
         }else{
-            // get bitmap from bundle
-            Bundle bitmapBundle = this.getArguments();
-            Bitmap receiptBitmap;
-            if(bitmapBundle != null){
-                receiptBitmap = bitmapBundle.getParcelable("receiptBitmap");
-                previewReceiptImage.setImageBitmap(receiptBitmap);
-                //recognize text
-                addTransactionViewModel.recognizeText(receiptBitmap).observe(getViewLifecycleOwner(), new Observer<String>() {
-                    @Override
-                    public void onChanged(String text) {
-                        // tempTextview.setText(text);
-                    }
-                });
-            }
-
+            Bitmap receiptBitmap = bundle.getParcelable("receiptImage");
+            previewReceiptImage.setImageBitmap(receiptBitmap);
+            //recognize text
+            addTransactionViewModel.recognizeText(receiptBitmap).observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String text) {
+                    // tempTextview.setText(text);
+                }
+            });
         }
 
         getView().findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {

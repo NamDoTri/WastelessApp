@@ -305,7 +305,7 @@ public class AddTransactionFragment extends Fragment {
                                 if(result != null){
                                     Log.i("receipt", "Image uri: " + result.toString());
                                     Bundle uriBundle = new Bundle();
-                                    uriBundle.putParcelable("receiptUri", result);
+                                    uriBundle.putParcelable("receiptImage", result);
 
                                     AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
                                     addTransactionFromReceiptFragment.setArguments(uriBundle);
@@ -334,7 +334,7 @@ public class AddTransactionFragment extends Fragment {
                                     Log.i("receipt", "Image uri: " + result.toString());
 
                                     Bundle bitMapBundle = new Bundle();
-                                    bitMapBundle.putParcelable("receiptBitmap", result);
+                                    bitMapBundle.putParcelable("receiptImage", result);
 
                                     AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
                                     addTransactionFromReceiptFragment.setArguments(bitMapBundle);

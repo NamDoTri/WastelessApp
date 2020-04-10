@@ -208,6 +208,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(FirebaseVisionText result) {
                         String extractedText = result.getText();
+                        Log.i("receipt", extractedText);
                         extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
                         List<String> tokens = Arrays.asList(extractedText.split(" "));
                         // TODO: NLP generate tag
@@ -216,7 +217,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
                         // extracting data
                         Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
-                        String amountFormat = "\\d+\\.\\d+|\\d+,\\d+";
+                        String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
 
                         for(String token : tokens){
                             try{
