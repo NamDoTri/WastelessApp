@@ -2,8 +2,10 @@ package com.wasteless.ui.add_transaction;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,20 +25,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+import com.wasteless.App;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeFragment;
+import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.ui.home.goal.GoalViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +55,7 @@ public class AddTransactionFragment extends Fragment {
     private ChipGroup chipGroup;
     ArrayList<String> tags = new ArrayList<String>();
     ArrayList<String> allWalletsNames = new ArrayList<String>();
+    private NotificationManagerCompat notificationManagerCompat;
 
     private EditText inputDescription, inputAmount, inputSource;
     private TextView inputDate;
@@ -59,9 +68,16 @@ public class AddTransactionFragment extends Fragment {
     private Button openCameraButton;
 
     private AddTransactionViewModel addTransactionViewModel;
+    private HomeViewModel homeViewModel;
+    private GoalViewModel goalViewModel;
+
 
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
+
+        Log.i("hereImportant", String.valueOf(goalViewModel.getGoalByType("daily")));
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
 
         // assign view components to variables
@@ -284,6 +300,21 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
+                new CountDownTimer(1000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        if (Double.parseDouble(goalViewModel.getDayProgress()) != 0.0) {
+                            startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
+                        } else {
+                            startNotification("You haven't spent anything today yet");
+                        }
+                    }
+
+                }.start();
+
             }
         });
 
@@ -309,6 +340,18 @@ public class AddTransactionFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void startNotification(String text) {
+        notificationManagerCompat = NotificationManagerCompat.from(getContext());
+        Notification notification = new NotificationCompat.Builder(getContext(), App.CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.bank)
+                .setContentTitle("Wasteless")
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(NotificationCompat.CATEGORY_SOCIAL)
+                .build();
+        notificationManagerCompat.notify(1, notification);
     }
 
     private void addNewChip(View root, final String text) {
