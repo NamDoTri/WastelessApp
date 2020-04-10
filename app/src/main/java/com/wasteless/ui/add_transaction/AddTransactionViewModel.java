@@ -3,9 +3,7 @@ package com.wasteless.ui.add_transaction;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,19 +23,14 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
-import java.text.DateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
-    private AddTransactionViewModel instance = null;
-
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
@@ -53,7 +46,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
-    private MutableLiveData<Uri> inputReceiptUri = new MutableLiveData<>();
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -178,13 +170,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
         }
         if(isIncome.getValue() && source.length() == 0) return false;
         return true;
-    }
-
-    public void setInputReceiptUri(Uri uri){
-        this.inputReceiptUri.setValue(uri);
-    }
-    public MutableLiveData<Uri> getInputReceiptUri(){
-        return this.inputReceiptUri;
     }
 
     public MutableLiveData<String> recognizeText(Uri inputReceiptUri){

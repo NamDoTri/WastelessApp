@@ -26,25 +26,20 @@ public class AddTransactionFromReceiptFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
 
     private ImageView previewReceiptImage;
-    private TextView tempTextview;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
         final View AddTransactionFromReceiptFragmentView = inflater.inflate(R.layout.fragment_add_transaction_from_gallery, container, false);
-
-
-
         return AddTransactionFromReceiptFragmentView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-        Uri inputUri = addTransactionViewModel.getInputReceiptUri().getValue();
-
         previewReceiptImage = (ImageView)getView().findViewById(R.id.preview_receipt);
-        tempTextview = getView().findViewById(R.id.temp_text_view);
 
-        if(inputUri != null){
+        Bundle uriBundle = this.getArguments();
+        if(uriBundle != null){
+            Uri inputUri = uriBundle.getParcelable("receiptUri");
             previewReceiptImage.setImageURI(inputUri);
             addTransactionViewModel.recognizeText(inputUri).observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
