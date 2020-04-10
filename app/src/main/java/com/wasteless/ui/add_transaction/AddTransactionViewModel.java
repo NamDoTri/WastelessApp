@@ -202,6 +202,21 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return resultText;
     }
 
+    public MutableLiveData<String> recognizeText(Bitmap inputreceiptBitmap){
+        MutableLiveData<String> resultText = new MutableLiveData<>();
+        resultText.setValue("Text recognition is processing...");
+
+        FirebaseVisionImage inputReceiptFVI;
+        try{
+            inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputreceiptBitmap);
+            extractContent(inputReceiptFVI);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return resultText;
+    }
+
     private void extractContent(FirebaseVisionImage inputReceiptFVI){
         textRecognizer.processImage(inputReceiptFVI)
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {

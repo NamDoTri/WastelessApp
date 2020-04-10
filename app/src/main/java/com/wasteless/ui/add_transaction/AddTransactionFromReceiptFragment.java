@@ -1,5 +1,6 @@
 package com.wasteless.ui.add_transaction;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,16 +42,27 @@ public class AddTransactionFromReceiptFragment extends Fragment {
         Uri inputUri = addTransactionViewModel.getInputReceiptUri().getValue();
 
         previewReceiptImage = (ImageView)getView().findViewById(R.id.preview_receipt);
-        previewReceiptImage.setImageURI(inputUri);
-
         tempTextview = getView().findViewById(R.id.temp_text_view);
 
-        addTransactionViewModel.recognizeText(inputUri).observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String text) {
-                // tempTextview.setText(text);
+        if(inputUri != null){
+            previewReceiptImage.setImageURI(inputUri);
+            addTransactionViewModel.recognizeText(inputUri).observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String text) {
+                    // tempTextview.setText(text);
+                }
+            });
+        }else{
+            // get bitmap from bundle
+            Bundle bitmapBundle = this.getArguments();
+            Bitmap receiptBitmap;
+            if(bitmapBundle != null){
+                receiptBitmap = bitmapBundle.getParcelable("receiptBitmap");
+                previewReceiptImage.setImageBitmap(receiptBitmap);
+                //recognize text
             }
-        });
+
+        }
 
         getView().findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
