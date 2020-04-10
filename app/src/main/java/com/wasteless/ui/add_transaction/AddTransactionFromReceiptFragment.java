@@ -60,6 +60,12 @@ public class AddTransactionFromReceiptFragment extends Fragment {
                 receiptBitmap = bitmapBundle.getParcelable("receiptBitmap");
                 previewReceiptImage.setImageBitmap(receiptBitmap);
                 //recognize text
+                addTransactionViewModel.recognizeText(receiptBitmap).observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String text) {
+                        // tempTextview.setText(text);
+                    }
+                });
             }
 
         }
