@@ -52,6 +52,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView description;
         private TextView type;
         private TextView amount;
+        private TextView date;
         private LinearLayout tags;
 
         public TransactionHolder(View itemView) {
@@ -59,6 +60,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             description = itemView.findViewById(R.id.transaction_description);
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
+//            date = itemView.findViewById(R.id.transaction_date);
 //            tags = itemView.findViewById(R.id.transaction_tags);
 
             itemView.setOnClickListener(new View.OnClickListener() {

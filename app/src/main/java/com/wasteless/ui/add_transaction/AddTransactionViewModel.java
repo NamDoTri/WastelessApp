@@ -2,9 +2,9 @@ package com.wasteless.ui.add_transaction;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -43,9 +43,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private MutableLiveData<String> type = new MutableLiveData<>();
     private MutableLiveData<String> walletId = new MutableLiveData<>();
     private MutableLiveData<String> source = new MutableLiveData<>();
-
-    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();;
+    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();;
 
     public AddTransactionViewModel(Application application){
         super(application);
