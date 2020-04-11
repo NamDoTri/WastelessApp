@@ -43,9 +43,9 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private MutableLiveData<String> type = new MutableLiveData<>();
     private MutableLiveData<String> walletId = new MutableLiveData<>();
     private MutableLiveData<String> source = new MutableLiveData<>();
-
     private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
+
 
     public AddTransactionViewModel(Application application){
         super(application);
