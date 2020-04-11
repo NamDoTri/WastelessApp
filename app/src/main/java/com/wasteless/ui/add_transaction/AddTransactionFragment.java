@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Bitmap;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -303,9 +304,11 @@ public class AddTransactionFragment extends Fragment {
                             public void onActivityResult(Uri result) {
                                 if(result != null){
                                     Log.i("receipt", "Image uri: " + result.toString());
-                                    addTransactionViewModel.setInputReceiptUri(result);
+                                    Bundle uriBundle = new Bundle();
+                                    uriBundle.putParcelable("receiptImage", result);
 
                                     AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(uriBundle);
                                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                     transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
                                     transaction.addToBackStack(null);
@@ -322,7 +325,27 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open camera button clicked");
-                //TODO
+
+                ActivityResultLauncher<Void> getReceiptImage = prepareCall(new ActivityResultContracts.TakePicturePreview(),
+                        new ActivityResultCallback<Bitmap>() {
+                            @Override
+                            public void onActivityResult(Bitmap result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+
+                                    Bundle bitMapBundle = new Bundle();
+                                    bitMapBundle.putParcelable("receiptImage", result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(bitMapBundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+                getReceiptImage.launch(null);
             }
         });
         return root;

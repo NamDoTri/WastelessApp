@@ -3,9 +3,7 @@ package com.wasteless.ui.add_transaction;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,19 +23,14 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
-import java.text.DateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
-    private AddTransactionViewModel instance = null;
-
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
@@ -53,7 +46,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
-    private MutableLiveData<Uri> inputReceiptUri = new MutableLiveData<>();
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -180,13 +172,6 @@ public class AddTransactionViewModel extends AndroidViewModel {
         return true;
     }
 
-    public void setInputReceiptUri(Uri uri){
-        this.inputReceiptUri.setValue(uri);
-    }
-    public MutableLiveData<Uri> getInputReceiptUri(){
-        return this.inputReceiptUri;
-    }
-
     public MutableLiveData<String> recognizeText(Uri inputReceiptUri){
         MutableLiveData<String> resultText = new MutableLiveData<>();
         resultText.setValue("Text recognition is processing...");
@@ -194,57 +179,73 @@ public class AddTransactionViewModel extends AndroidViewModel {
         FirebaseVisionImage inputReceiptFVI;
         try{
             inputReceiptFVI = FirebaseVisionImage.fromFilePath(appContext, inputReceiptUri);
-            textRecognizer.processImage(inputReceiptFVI)
-                    .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                        @Override
-                        public void onSuccess(FirebaseVisionText result) {
-                            String extractedText = result.getText();
-                            extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
-                            List<String> tokens = Arrays.asList(extractedText.split(" "));
-                            // TODO: NLP generate tag
-
-                            // TODO: NLP select category
-
-                            // extracting data
-                            Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
-                            String amountFormat = "\\d+\\.\\d+|\\d+,\\d+";
-
-                            for(String token : tokens){
-                                try{
-                                    Matcher matcher = dateFormat.matcher(token);
-                                    if(matcher.find()){
-                                        date.setValue(matcher.group());
-                                    }else if(Pattern.matches(amountFormat, token)){
-                                        String entry = token.replace(",", ".");
-                                        if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
-                                    }
-                                }catch(Exception e){
-                                    e.printStackTrace();
-                                    continue;
-                                }
-                            }
-                                //TODO: train a model to extract total (if data is available)
-                            resultText.setValue(result.getText());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            FirebaseMLException mlException = (FirebaseMLException)e;
-                            Log.i("receipt", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
-                            if(mlException.getCode() == 14) { // model unavailable
-                                //TODO
-                                textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-                                resultText.setValue("Text recognition model is downloading, please wait...");
-                            }
-
-                            e.printStackTrace();
-                        }
-                    });
+            extractContent(inputReceiptFVI);
         }catch (Exception e){
             e.printStackTrace();
         }
 
         return resultText;
+    }
+
+    public MutableLiveData<String> recognizeText(Bitmap inputreceiptBitmap){
+        MutableLiveData<String> resultText = new MutableLiveData<>();
+        resultText.setValue("Text recognition is processing...");
+
+        FirebaseVisionImage inputReceiptFVI;
+        try{
+            inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputreceiptBitmap);
+            extractContent(inputReceiptFVI);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return resultText;
+    }
+
+    private void extractContent(FirebaseVisionImage inputReceiptFVI){
+        textRecognizer.processImage(inputReceiptFVI)
+                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText result) {
+                        String extractedText = result.getText();
+                        Log.i("receipt", extractedText);
+                        extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
+                        List<String> tokens = Arrays.asList(extractedText.split(" "));
+                        // TODO: NLP generate tag
+
+                        // TODO: NLP select category
+
+                        // extracting data
+                        Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
+                        String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
+
+                        for(String token : tokens){
+                            try{
+                                Matcher matcher = dateFormat.matcher(token);
+                                if(matcher.find()){
+                                    date.setValue(matcher.group());
+                                }else if(Pattern.matches(amountFormat, token)){
+                                    String entry = token.replace(",", ".");
+                                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                                continue;
+                            }
+                        }
+                        //TODO: train a model to extract total (if data is available)
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        FirebaseMLException mlException = (FirebaseMLException)e;
+                        Log.i("receipt", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
+                        if(mlException.getCode() == 14) { // model unavailable
+                            textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+                        }
+                        e.printStackTrace(); //TODO: remove
+                    }
+                });
     }
 }
