@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -23,7 +24,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Bitmap;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -323,12 +328,27 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
-                //TODO
-                AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+
+                ActivityResultLauncher<String> getReceiptImage = prepareCall(new ActivityResultContracts.GetContent(),
+                        new ActivityResultCallback<Uri>() {
+                            @Override
+                            public void onActivityResult(Uri result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+                                    Bundle uriBundle = new Bundle();
+                                    uriBundle.putParcelable("receiptImage", result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(uriBundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+
+                getReceiptImage.launch("image/*");
             }
         });
 
@@ -336,7 +356,27 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open camera button clicked");
-                //TODO
+
+                ActivityResultLauncher<Void> getReceiptImage = prepareCall(new ActivityResultContracts.TakePicturePreview(),
+                        new ActivityResultCallback<Bitmap>() {
+                            @Override
+                            public void onActivityResult(Bitmap result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+
+                                    Bundle bitMapBundle = new Bundle();
+                                    bitMapBundle.putParcelable("receiptImage", result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(bitMapBundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+                getReceiptImage.launch(null);
             }
         });
         return root;
