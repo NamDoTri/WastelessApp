@@ -16,8 +16,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateRemoteModel;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -31,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +46,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private Context appContext;
     private FirebaseVisionTextRecognizer textRecognizer;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private boolean isTranslateModelAvailable = false;
 
     private MutableLiveData<String> description = new MutableLiveData<>();
     private MutableLiveData<String> amount = new MutableLiveData<>();
@@ -47,8 +54,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private MutableLiveData<String> type = new MutableLiveData<>();
     private MutableLiveData<String> walletId = new MutableLiveData<>();
     private MutableLiveData<String> source = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();;
-    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();;
+    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -72,6 +79,42 @@ public class AddTransactionViewModel extends AndroidViewModel {
         FirebaseApp.initializeApp(appContext);
         FirebaseVision instance = FirebaseVision.getInstance();
         textRecognizer = instance.getOnDeviceTextRecognizer();
+
+        // check for available translation model
+        FirebaseModelManager modelManager = FirebaseModelManager.getInstance();
+        modelManager.getDownloadedModels(FirebaseTranslateRemoteModel.class)
+                .addOnSuccessListener(new OnSuccessListener<Set<FirebaseTranslateRemoteModel>>() {
+                    @Override
+                    public void onSuccess(Set<FirebaseTranslateRemoteModel> firebaseTranslateRemoteModels) {
+                        for(FirebaseTranslateRemoteModel model : firebaseTranslateRemoteModels){
+                            if(model.getLanguageCode().equalsIgnoreCase("fi")) isTranslateModelAvailable = true;
+                        }
+                        if(!isTranslateModelAvailable){
+                            //download Finnish translate model
+                            FirebaseTranslateRemoteModel fiModel = new FirebaseTranslateRemoteModel().Builder(FirebaseTranslateLanguage.FI).build();
+                            FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions().Builder().requireWifi().build();
+                            modelManager.download(fiModel, conditions)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            isTranslateModelAvailable = true;
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    })
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     public MutableLiveData<String> getDescription() {
@@ -212,7 +255,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     public void onSuccess(FirebaseVisionText result) {
                         final String extractedText = result.getText();
 
-                        // translate text
+                        // identify language
                         FirebaseNaturalLanguage.getInstance()
                                 .getLanguageIdentification()
                                 .identifyLanguage(extractedText)
@@ -220,18 +263,39 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                     @Override
                                     public void onSuccess(String s) {
                                         if(!s.equalsIgnoreCase("fi")){
-                                            // unsupported language
-                                        }else{
-                                            //translate FI -> EN
+                                            // unsupported language notification
+                                        }
+                                        else if(!isTranslateModelAvailable){
+                                            // unavailable translate model noti
+                                        }
+                                        else{
+                                            // translate FI -> EN
+                                            FirebaseTranslatorOptions options = new FirebaseTranslatorOptions().Builder()
+                                                    .setSourceLanguage(FirebaseTranslateLanguage.FI)
+                                                    .setTargetLanguage(FirebaseTranslateLanguage.EN)
+                                                    .build();
+                                            FirebaseTranslator finEngTranslator = FirebaseNaturalLanguage.getInstance().getTranslator(options);
 
+                                            finEngTranslator.translate(extractedText)
+                                                    .addOnSuccessListener(new OnSuccessListener<String>(){
+                                                        @Override
+                                                        public void onSuccess(@NonNull String translatedText){
+                                                            Log.i("Receipt translate", "Translated text: " + translatedText);
+                                                            String processedText = translatedText.replaceAll("\n+", " "); // replace new line with whitespace
+                                                            // TODO: NLP generate tag
 
-                                            String processedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
-                                            // TODO: NLP generate tag
+                                                            // TODO: NLP select category
 
-                                            // TODO: NLP select category
-
-                                            // extracting data
-                                            extractDateAndAmount(processedText);
+                                                            // extracting data
+                                                            extractDateAndAmount(processedText);
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener(){
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e){
+                                                            e.printStackTrace();
+                                                        }
+                                                    })
                                         }
                                     }
                                 })
