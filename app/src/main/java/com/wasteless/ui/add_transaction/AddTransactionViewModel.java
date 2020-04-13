@@ -20,6 +20,7 @@ import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditio
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateRemoteModel;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
@@ -91,8 +92,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
                         }
                         if(!isTranslateModelAvailable){
                             //download Finnish translate model
-                            FirebaseTranslateRemoteModel fiModel = new FirebaseTranslateRemoteModel().Builder(FirebaseTranslateLanguage.FI).build();
-                            FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions().Builder().requireWifi().build();
+                            FirebaseTranslateRemoteModel fiModel = new FirebaseTranslateRemoteModel.Builder(FirebaseTranslateLanguage.FI).build();
+                            FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder().requireWifi().build();
                             modelManager.download(fiModel, conditions)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -105,7 +106,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                         public void onFailure(@NonNull Exception e) {
                                             e.printStackTrace();
                                         }
-                                    })
+                                    });
                         }
                     }
                 })
@@ -270,7 +271,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                         }
                                         else{
                                             // translate FI -> EN
-                                            FirebaseTranslatorOptions options = new FirebaseTranslatorOptions().Builder()
+                                            FirebaseTranslatorOptions options = new FirebaseTranslatorOptions.Builder()
                                                     .setSourceLanguage(FirebaseTranslateLanguage.FI)
                                                     .setTargetLanguage(FirebaseTranslateLanguage.EN)
                                                     .build();
@@ -295,7 +296,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                                         public void onFailure(@NonNull Exception e){
                                                             e.printStackTrace();
                                                         }
-                                                    })
+                                                    });
                                         }
                                     }
                                 })
