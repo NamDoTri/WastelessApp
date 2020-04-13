@@ -1,5 +1,6 @@
 package com.wasteless;
 
+import android.app.Notification;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -9,6 +10,8 @@ import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.entities.Wallet;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;

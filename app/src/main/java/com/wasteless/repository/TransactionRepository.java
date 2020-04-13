@@ -102,6 +102,16 @@ public class TransactionRepository {
         return transactionDao.getTotalIncomeByMonth("%" + month);
     }
 
+    public boolean checkForTheSameTransaction(Transaction transaction){
+        List transactions = transactionDao.checkForTheSameTransaction(transaction.date, transaction.description,
+                transaction.wallet, transaction.isIncome, transaction.type);
+        Log.i("transactionChecker", String.valueOf(transactions.size()));
+        if (transactions.size() > 0){
+            return true;
+        }
+        return false;
+    }
+
     public double getTotalIncomeByDate(String date, Long walletId){
             return (walletId == -1) ?
                     transactionDao.getTotalIncomeByDate(date) :

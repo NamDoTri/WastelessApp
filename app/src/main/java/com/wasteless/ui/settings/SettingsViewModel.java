@@ -3,8 +3,6 @@ package com.wasteless.ui.settings;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Wallet;

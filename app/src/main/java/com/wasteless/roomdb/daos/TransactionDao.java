@@ -31,6 +31,8 @@ public interface TransactionDao {
 // Query to get transactions with a specific string somewhere in description
     @Query("SELECT * FROM transactions WHERE description LIKE  :searchValue")
     LiveData<List<Transaction>> getTransactionsByDescription(String searchValue);
+
+
 //    Query to order transaction by description
     @Query("SELECT * FROM transactions ORDER BY description DESC")
     LiveData<List<Transaction>> orderTransactionsByDescription();
@@ -66,6 +68,10 @@ public interface TransactionDao {
 
     @Query("select * from transactions where isIncome = 1 and date like :date")
     List<Transaction> getIncomesByDate(String date);
+
+    @Query("select * from transactions where date = :date and description =:description and wallet =:walletId " +
+            "and isIncome =:isIncome and type =:type")
+    List<Transaction> checkForTheSameTransaction(String date, String description, long walletId, boolean isIncome, String type);
 
     @Query("select coalesce(sum(amount), 0) from transactions where isIncome = 1 and date = :date")
     Double getTotalIncomeByDate(String date);

@@ -12,15 +12,29 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:gravity=""
+        android:gravity="center_horizontal"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            app:srcCompat="@drawable/oplogo" />
+
         <TextView
             android:layout_width="match_parent"
+            android:textSize="30dp"
             android:layout_height="wrap_content"
-            android:text="Add bank accounnt"
+            android:text="Add OP bank accounnt"
             android:textAlignment="center"/>
         <EditText
-            android:hint="OP"
+            android:id="@+id/username"
+            android:hint="Username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/password"
+            android:hint="Password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <Button

@@ -68,6 +68,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getBudgetProgress().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer aInt) {
+                Log.i("budget", "Progress: " + String.valueOf(aInt));
                 budgetProgress.setProgress(aInt);
             }
         });
