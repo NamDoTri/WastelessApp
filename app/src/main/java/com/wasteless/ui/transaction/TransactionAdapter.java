@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.util.ArrayList;
@@ -24,10 +25,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     TransactionViewModel transactionViewModel;
 
     private List<Transaction> transactions = new ArrayList<>();
-    private List<Tag> tags = new ArrayList<>();
+    private List<TagAssociation> tags = new ArrayList<>();
     private OnTransactionClickListener listener;
 
-    public void setTransactions(List<Transaction> transactions, List<Tag> tags){
+    public void setTransactions(List<Transaction> transactions, List<TagAssociation> tags){
         this.transactions = transactions;
         this.tags = tags;
         notifyDataSetChanged();
@@ -44,18 +45,30 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
-        Tag tag = tags.get(position);
-        Log.d("transactionAdapter", "tag: " + tag.tagName);
+        TagAssociation tag = tags.get(position);
+        Log.d("transactionAdapter", "tag: " + tag.tag);
+        Log.d("transactionAdapter", "tag: " + tag.transactionId);
+        Log.d("transactionAdapter", "tag: " + tag.index);
 
             ((TransactionHolder) holder).description.setText(transaction.description);
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
-            ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-            ((TransactionHolder) holder).tagOne.setText("asdasd");
-            ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-            ((TransactionHolder) holder).tagTwo.setText("asdasd");
-            ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-            ((TransactionHolder) holder).tagThree.setText("asdasd");
+            for (int i=0; i < tags.size(); i++) {
+                if (tag.transactionId == transaction.transactionId) {
+                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagOne.setText(tag.tag);
+                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagTwo.setText(tag.tag);
+                    ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagThree.setText(tag.tag);
+                }
+            }
+//            ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//            ((TransactionHolder) holder).tagOne.setText("asdasd");
+//            ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//            ((TransactionHolder) holder).tagTwo.setText("asdasd");
+//            ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//            ((TransactionHolder) holder).tagThree.setText("asdasd");
         Log.d("transactionAdapter", "transaction: " + transaction);
 
     }

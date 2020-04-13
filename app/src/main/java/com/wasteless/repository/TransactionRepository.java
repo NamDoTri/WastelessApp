@@ -216,7 +216,7 @@ public class TransactionRepository {
         return tagDao.getAllTagsOf(transactionId);
     }
 
-    public List<Tag> getAllTags(){
+    public List<TagAssociation> getAllTags(){
         return tagDao.getAll();
     }
 }

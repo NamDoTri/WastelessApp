@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
 import com.wasteless.ui.search.SearchViewModel;
@@ -35,7 +36,7 @@ public class HistoryFragment extends Fragment{
 
     private SearchViewModel searchViewModel;
     private TransactionAdapter transactionAdapter;
-    private List<Tag> tags;
+    private List<TagAssociation> tags;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class SearchViewModel extends AndroidViewModel {
     return activeFilter;
 }
 
-    public List<Tag> getTags() {
+    public List<TagAssociation> getTags() {
         return transactionRepository.getAllTags();
     }
 

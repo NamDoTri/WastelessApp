@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.wasteless.R;
-import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
@@ -36,7 +36,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
     private TransactionAdapter transactionAdapter;
-    private List<Tag> tags;
+    private List<TagAssociation> tags;
 
     private MutableLiveData<String> category;
 
