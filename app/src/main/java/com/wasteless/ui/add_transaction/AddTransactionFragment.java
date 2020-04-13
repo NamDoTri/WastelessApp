@@ -45,11 +45,13 @@ import com.wasteless.App;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.entities.Achievement;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeFragment;
 import com.wasteless.ui.home.HomeViewModel;
 import com.wasteless.ui.home.goal.GoalViewModel;
+import com.wasteless.ui.settings.achievements.AchievementViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,12 +77,18 @@ public class AddTransactionFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
     private HomeViewModel homeViewModel;
     private GoalViewModel goalViewModel;
+    private AchievementViewModel achievementViewModel;
 
 
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
+        achievementViewModel = ViewModelProviders.of(this).get(AchievementViewModel.class);
+        List<Achievement> allAchievements = achievementViewModel.getAllAchievements();
+        for (int i = 0; i < allAchievements.size(); i++) {
+            Log.i("achievements", allAchievements.get(i).description);
+        }
 
         Log.i("hereImportant", String.valueOf(goalViewModel.getGoalByType("daily")));
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);

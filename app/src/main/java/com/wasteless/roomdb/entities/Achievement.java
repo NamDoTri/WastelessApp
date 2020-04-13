@@ -24,6 +24,6 @@ public class Achievement {
         this.name = name;
         this.description = description;
         this.isDone = isDone;
-        Log.i("database", "Achievement created"+ name);
+        Log.i("database", "Achievement created "+ name);
     }
 }

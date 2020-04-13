@@ -6,6 +6,8 @@ import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.AchievementDao;
 import com.wasteless.roomdb.entities.Achievement;
 
+import java.util.List;
+
 public class AchievementRepository {
     private static volatile AchievementRepository instance = null;
     private final AchievementDao achievementDao;
@@ -21,6 +23,7 @@ public class AchievementRepository {
         }
         return instance;
     }
+    public  List<Achievement> getAllAchievements() { return achievementDao.getAllAchievements();};
 
     public void insertGoal(Achievement achievement){
         achievementDao.insert(achievement);
