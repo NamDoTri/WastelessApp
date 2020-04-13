@@ -11,12 +11,12 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wasteless.R;
 import com.wasteless.ui.settings.SettingsViewModel;
 
-public class NotificationsFragment extends Fragment {
+public class AchievementFragment extends Fragment {
     private SettingsViewModel SettingsViewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         SettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
-        View NotificationsFragment = inflater.inflate(R.layout.notifications_fragment, container, false);
+        View NotificationsFragment = inflater.inflate(R.layout.achievements_fragment, container, false);
 
         return NotificationsFragment;
     }

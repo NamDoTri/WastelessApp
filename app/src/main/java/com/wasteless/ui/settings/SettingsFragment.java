@@ -20,7 +20,7 @@ import com.wasteless.ui.settings.block.BlockFragment;
 import com.wasteless.ui.settings.help.HelpFragment;
 import com.wasteless.ui.settings.newWallet.GeneralFragment;
 import com.wasteless.ui.settings.newWallet.NewWalletFragment;
-import com.wasteless.ui.settings.newWallet.NotificationsFragment;
+import com.wasteless.ui.settings.newWallet.AchievementFragment;
 import com.wasteless.ui.settings.privacy.PrivacyFragment;
 
 public class SettingsFragment extends Fragment{
@@ -87,13 +87,13 @@ public class SettingsFragment extends Fragment{
                 transaction.commit();
             }
         });
-        root.findViewById(R.id.notification_button).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.acievement_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                AchievementFragment achievementFragment = new AchievementFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.nav_host_fragment, notificationsFragment);
+                transaction.replace(R.id.nav_host_fragment, achievementFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
