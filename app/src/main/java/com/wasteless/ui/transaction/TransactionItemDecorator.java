@@ -47,7 +47,6 @@ public class TransactionItemDecorator extends RecyclerView.ItemDecoration {
             outRect.top = divider.getIntrinsicHeight() + 2;
             outRect.left = divider.getIntrinsicWidth();
             outRect.right = divider.getIntrinsicWidth();
-            Log.d("ItemDecorator", "" + outRect.top);
     }
 
     @Override
