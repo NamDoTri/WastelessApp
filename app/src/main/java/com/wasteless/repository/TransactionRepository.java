@@ -23,7 +23,7 @@ public class TransactionRepository {
     private final WalletDao walletDao;
     private final TagDao tagDao;
 
-    private final String[] CATEGORIES = {"Groceries", "Entertainment", "Rent", "Commute"};
+    private final String[] CATEGORIES = {"Groceries", "Entertainment", "Rent", "Commute", "Clothes", "Furniture", "Miscellaneous"};
     private final String[] INCOMETYPES = {"Salary", "Gift", "Stolen"};
 
     private TransactionRepository(Context context){
