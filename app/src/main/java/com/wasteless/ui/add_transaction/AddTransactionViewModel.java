@@ -88,6 +88,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Set<FirebaseTranslateRemoteModel> firebaseTranslateRemoteModels) {
                         for(FirebaseTranslateRemoteModel model : firebaseTranslateRemoteModels){
+                            Log.i("Receipt translate", "Translate model is ready");
                             if(model.getLanguageCode().equalsIgnoreCase("fi")) isTranslateModelAvailable = true;
                         }
                         if(!isTranslateModelAvailable){
@@ -99,11 +100,13 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             isTranslateModelAvailable = true;
+                                            Log.i("Receipt translate", "Translate model downloaded");
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            Log.i("Receipt translate", "Translate model download failed");
                                             e.printStackTrace();
                                         }
                                     });
@@ -113,6 +116,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.i("Receipt translate", "Translate model unavailable");
                         e.printStackTrace();
                     }
                 });
@@ -265,9 +269,11 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                     public void onSuccess(String s) {
                                         if(!s.equalsIgnoreCase("fi")){
                                             // unsupported language notification
+                                            Log.i("receipt translate", "Unsupported language");
                                         }
                                         else if(!isTranslateModelAvailable){
                                             // unavailable translate model noti
+                                            Log.i("Receipt translate", "Model is not availble");
                                         }
                                         else{
                                             // translate FI -> EN
