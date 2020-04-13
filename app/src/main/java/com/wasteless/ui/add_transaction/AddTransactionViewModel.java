@@ -10,10 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
+import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -206,33 +210,32 @@ public class AddTransactionViewModel extends AndroidViewModel {
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                     @Override
                     public void onSuccess(FirebaseVisionText result) {
-                        String extractedText = result.getText();
-                        Log.i("receipt", extractedText);
-                        extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
-                        List<String> tokens = Arrays.asList(extractedText.split(" "));
-                        // TODO: NLP generate tag
+                        final String extractedText = result.getText();
 
-                        // TODO: NLP select category
+                        // translate text
+                        FirebaseNaturalLanguage.getInstance()
+                                .getLanguageIdentification()
+                                .identifyLanguage(extractedText)
+                                .addOnSuccessListener(new OnSuccessListener<String>() {
+                                    @Override
+                                    public void onSuccess(String s) {
+                                        if(!s.equalsIgnoreCase("fi")){
+                                            // unsupported language
+                                        }else{
+                                            //translate FI -> EN
 
-                        // extracting data
-                        Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
-                        String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
 
-                        for(String token : tokens){
-                            try{
-                                Matcher matcher = dateFormat.matcher(token);
-                                if(matcher.find()){
-                                    date.setValue(matcher.group());
-                                }else if(Pattern.matches(amountFormat, token)){
-                                    String entry = token.replace(",", ".");
-                                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
-                                }
-                            }catch(Exception e){
-                                e.printStackTrace();
-                                continue;
-                            }
-                        }
-                        //TODO: train a model to extract total (if data is available)
+                                            String processedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
+                                            // TODO: NLP generate tag
+
+                                            // TODO: NLP select category
+
+                                            // extracting data
+                                            extractDateAndAmount(processedText);
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.i("receipt translate", "Model downloading..."));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -246,5 +249,27 @@ public class AddTransactionViewModel extends AndroidViewModel {
                         e.printStackTrace(); //TODO: remove
                     }
                 });
+    }
+
+    private void extractDateAndAmount(String extractedText){
+        Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
+        String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
+        List<String> tokens = Arrays.asList(extractedText.split(" "));
+
+        for(String token : tokens){
+            try{
+                Matcher matcher = dateFormat.matcher(token);
+                if(matcher.find()){
+                    date.setValue(matcher.group());
+                }else if(Pattern.matches(amountFormat, token)){
+                    String entry = token.replace(",", ".");
+                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                continue;
+            }
+        }
+        //TODO: train a model to extract total (if data is available)
     }
 }
