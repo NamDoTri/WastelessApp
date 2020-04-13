@@ -1,8 +1,10 @@
 package com.wasteless.ui.transaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,6 +42,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((TransactionHolder) holder).description.setText(transaction.description);
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
+            ((TransactionHolder) holder).tagOne.setImageResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagTwo.setImageResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagThree.setImageResource(R.drawable.transaction_recycler_view_tag);
+        Log.d("transactionAdapter", "transaction: " + transaction);
 
     }
 
@@ -54,6 +60,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView amount;
         private TextView date;
         private LinearLayout tags;
+        private ImageView tagOne;
+        private ImageView tagTwo;
+        private ImageView tagThree;
 
         public TransactionHolder(View itemView) {
             super(itemView);
@@ -61,7 +70,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
 //            date = itemView.findViewById(R.id.transaction_date);
-//            tags = itemView.findViewById(R.id.transaction_tags);
+            tags = itemView.findViewById(R.id.tags_container);
+            tagOne = itemView.findViewById(R.id.tag_one);
+            tagTwo = itemView.findViewById(R.id.tag_two);
+            tagThree = itemView.findViewById(R.id.tag_three);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
