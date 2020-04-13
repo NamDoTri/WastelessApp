@@ -305,17 +305,26 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
-                new CountDownTimer(1000, 1000) {
+                new CountDownTimer(1000, 500) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) != 0.0) {
+                        if (Double.parseDouble(goalViewModel.getDayProgress()) < 50.0) {
                             startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
-                        } else {
-                            startNotification("You haven't spent anything today yet");
                         }
+                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 50.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 80.00 ) {
+                            startNotification("You have already spent more than 50% of your goal");
+                        }
+                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 80.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 100.00 ) {
+                            String left = String.valueOf(100.00 - Double.parseDouble(goalViewModel.getDayProgress()));
+                            startNotification("Warning! Your daily goal is about to be spent!\n"+ left+ "% left");
+                        }
+                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 100.0) {
+                            startNotification("Warning! You have spent your daily goal");
+                        }
+
                     }
 
                 }.start();
