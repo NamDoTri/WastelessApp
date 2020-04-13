@@ -2,18 +2,15 @@ package com.wasteless.ui.search;
 
 import android.app.Application;
 import android.util.Log;
-import android.widget.SearchView;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.wasteless.repository.TransactionRepository;
+import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchViewModel extends AndroidViewModel {
@@ -26,8 +23,6 @@ public class SearchViewModel extends AndroidViewModel {
     private MutableLiveData<String> activeFilter = new MutableLiveData<String>();
     private MutableLiveData<List<Transaction>> searchLiveData;
     private LiveData<List<Transaction>> onOpenData;
-    private LiveData<List<Transaction>> onSearchData;
-    private List<Transaction> testTransactionsList = new ArrayList<>();
 
     public SearchViewModel(Application application){
         super(application);
@@ -41,6 +36,10 @@ public class SearchViewModel extends AndroidViewModel {
     return activeFilter;
 }
 
+    public List<Tag> getTags() {
+        return transactionRepository.getAllTags();
+    }
+
 //    Setters
     public LiveData<List<Transaction>> setActiveFilter(String filter) {
         activeFilter.setValue(filter);
@@ -48,10 +47,6 @@ public class SearchViewModel extends AndroidViewModel {
         Log.d("search", "" + transactions);
         return transactions;
     }
-
-//    private LiveData<List<Transaction>> globalFilterHandler() {
-//        String currentActiveFilter = activeFilter.getValue();
-//    }
 
     public LiveData<List<Transaction>> setSearchValue(String searchV) {
         searchValue.setValue(searchV);
@@ -84,10 +79,6 @@ public class SearchViewModel extends AndroidViewModel {
 //        Searches by date if date filter was chosen
         if ( currentActiveFilter == "date"  ) {
             Log.d("Search", "" + currentSearchValue);
-//            if (currentSearchValue) {
-//                Log.d("SearchOutput", "SearchViewModel searchValue is empty " );
-//                return transactionRepository.getAllTransactions();
-//            }
             return transactionRepository.getTransactionsByDate(currentSearchValue);
         }
 //        Searches by category/type if category filter was chose
@@ -112,7 +103,7 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
 //    Get transaction by date
-    public LiveData<List<Transaction>> getDataByDate(String date) {
-        return transactionRepository.getTransactionsByDate(date);
-    }
+//    public LiveData<List<Transaction>> getDataByDate(String date) {
+//        return transactionRepository.getTransactionsByDate(date);
+//    }
 }

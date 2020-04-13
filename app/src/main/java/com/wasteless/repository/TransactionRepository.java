@@ -215,4 +215,8 @@ public class TransactionRepository {
     public List<String> getTags(Long transactionId){
         return tagDao.getAllTagsOf(transactionId);
     }
+
+    public List<Tag> getAllTags(){
+        return tagDao.getAll();
+    }
 }

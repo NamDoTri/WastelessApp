@@ -4,14 +4,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
+import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.Transaction;
 
 import java.util.ArrayList;
@@ -19,11 +21,15 @@ import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    TransactionViewModel transactionViewModel;
+
     private List<Transaction> transactions = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
     private OnTransactionClickListener listener;
 
-    public void setTransactions(List<Transaction> transactions){
+    public void setTransactions(List<Transaction> transactions, List<Tag> tags){
         this.transactions = transactions;
+        this.tags = tags;
         notifyDataSetChanged();
     }
 
@@ -38,13 +44,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
+        Tag tag = tags.get(position);
+        Log.d("transactionAdapter", "tag: " + tag.tagName);
 
             ((TransactionHolder) holder).description.setText(transaction.description);
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
-            ((TransactionHolder) holder).tagOne.setImageResource(R.drawable.transaction_recycler_view_tag);
-            ((TransactionHolder) holder).tagTwo.setImageResource(R.drawable.transaction_recycler_view_tag);
-            ((TransactionHolder) holder).tagThree.setImageResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagOne.setText("asdasd");
+            ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagTwo.setText("asdasd");
+            ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+            ((TransactionHolder) holder).tagThree.setText("asdasd");
         Log.d("transactionAdapter", "transaction: " + transaction);
 
     }
@@ -55,14 +66,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class TransactionHolder extends RecyclerView.ViewHolder {
+        private Long id;
         private TextView description;
         private TextView type;
         private TextView amount;
         private TextView date;
         private LinearLayout tags;
-        private ImageView tagOne;
-        private ImageView tagTwo;
-        private ImageView tagThree;
+        private Button tagOne;
+        private Button tagTwo;
+        private Button tagThree;
 
         public TransactionHolder(View itemView) {
             super(itemView);
