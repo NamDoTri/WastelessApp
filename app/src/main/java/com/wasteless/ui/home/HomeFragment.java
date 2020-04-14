@@ -3,6 +3,7 @@ package com.wasteless.ui.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -113,6 +114,8 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+
+
         prevWalletButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -125,6 +128,32 @@ public class HomeFragment extends Fragment {
                 homeViewModel.changeWallet("next");
             }
         });
+
+
+        root.findViewById(R.id.home_header_swipeable).setOnTouchListener(new View.OnTouchListener(){
+            private float originalX = 0f;
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                //Log.i("Swipe", "Event: " + event.toString());
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    originalX = event.getX();
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    float upX = event.getX();
+                    if(upX-originalX < 0){
+                        Log.i("Swipe", "Left");
+                    }else{
+                        Log.i("Swipe", "Right");
+                    }
+                    originalX = 0f;
+                }
+
+
+                return true;
+            }
+        });
+
+
+
         homeViewModel.getCurrentWalletName().observe(getViewLifecycleOwner(), new Observer<String>(){
             @Override
             public void onChanged(@Nullable String s) { walletTitle.setText(s); }
