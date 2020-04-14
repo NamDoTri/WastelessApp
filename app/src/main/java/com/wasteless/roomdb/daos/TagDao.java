@@ -13,8 +13,8 @@ import java.util.List;
 
 @Dao
 public interface TagDao {
-    @Query("select * from tags")
-    List<Tag> getAll();
+    @Query("select * from tag_assoc")
+    List<TagAssociation> getAll();
 
     @Query("select * from tags where tag like :name")
     List<Tag> getTagsByName(String name);

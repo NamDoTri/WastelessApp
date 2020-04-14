@@ -11,20 +11,18 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import com.wasteless.R;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
@@ -38,6 +36,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private RecyclerView searchResultView;
     private RecyclerView.LayoutManager layoutManager;
     private TransactionAdapter transactionAdapter;
+    private List<TagAssociation> tags;
 
     private MutableLiveData<String> category;
 
@@ -45,11 +44,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
                              ViewGroup container, Bundle savedInstanceState) {
 
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+        tags = searchViewModel.getTags();
         transactionAdapter = new TransactionAdapter();
         searchViewModel.getOnOpenData().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
-                transactionAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions, tags);
             }
         });
         searchViewModel.setActiveFilter("date");
@@ -115,19 +115,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
         //Save the fragment's state here
     }
 
-    @Override
-    public void onPause() {
-        Log.d("onPause", "It has stopped at this point");
-        super.onPause();
-    };
-
-    @Override
-    public void onStop() {
-        Log.d("onStop",  "it has stopped at this point");
-//        onSaveInstanceState();
-        super.onStop();
-    };
-
 //    Search field listeners
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -136,7 +123,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
                 Log.d("onQueryTextSubmit", "" + transactions);
-                transactionAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions, tags);
             }
         });
         return false;
@@ -149,7 +136,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
                 Log.d("onQueryTextSubmit", "" + transactions);
-                transactionAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions, tags);
             }
         });
         return false;
@@ -163,7 +150,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             searchViewModel.setActiveFilter("category").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
                 @Override
                 public void onChanged(List<Transaction> transactions) {
-                    transactionAdapter.setTransactions(transactions);
+                    transactionAdapter.setTransactions(transactions, tags);
                 }
             });
         }
@@ -173,7 +160,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             searchViewModel.setActiveFilter("date").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
                 @Override
                 public void onChanged(List<Transaction> transactions) {
-                    transactionAdapter.setTransactions(transactions);
+                    transactionAdapter.setTransactions(transactions, tags);
                 }
             });
         }
@@ -183,7 +170,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             searchViewModel.setActiveFilter("description").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
                 @Override
                 public void onChanged(List<Transaction> transactions) {
-                    transactionAdapter.setTransactions(transactions);
+                    Log.d("transactionAdapter", "" + transactions);
+                    transactionAdapter.setTransactions(transactions, tags);
                 }
             });
         }
@@ -193,9 +181,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
             searchViewModel.setActiveFilter("tag").observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
                 @Override
                 public void onChanged(List<Transaction> transactions) {
-                    transactionAdapter.setTransactions(transactions);
+                    transactionAdapter.setTransactions(transactions, tags);
                 }
             });
         }
     }
+
+
+
 }

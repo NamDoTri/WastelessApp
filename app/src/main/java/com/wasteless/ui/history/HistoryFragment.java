@@ -22,8 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
+import com.wasteless.roomdb.entities.Tag;
+import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.ui.home.HomeViewModel;
+import com.wasteless.ui.search.SearchViewModel;
 import com.wasteless.ui.transaction.TransactionAdapter;
 import com.wasteless.ui.transaction.TransactionFragment;
 
@@ -31,7 +34,9 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment{
 
+    private SearchViewModel searchViewModel;
     private TransactionAdapter transactionAdapter;
+    private List<TagAssociation> tags;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
@@ -39,7 +44,7 @@ public class HistoryFragment extends Fragment{
 
         RecyclerView recyclerView = root.findViewById(R.id.history_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        tags = searchViewModel.getTags();
         transactionAdapter = new TransactionAdapter();
         recyclerView.setAdapter(transactionAdapter);
 
@@ -47,7 +52,7 @@ public class HistoryFragment extends Fragment{
         historyViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
-                transactionAdapter.setTransactions(transactions);
+                transactionAdapter.setTransactions(transactions, tags);
             }
         });
 
