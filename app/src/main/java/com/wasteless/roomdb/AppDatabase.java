@@ -13,7 +13,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.Executors;
 
-@Database(entities = {BankAccount.class, Wallet.class, Tag.class, TagAssociation.class, Transaction.class, Goal.class, Budget.class},
+@Database(entities = {BankAccount.class, Wallet.class, Tag.class, TagAssociation.class,
+        Transaction.class, Goal.class, Budget.class, Achievement.class},
           version=1)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance = null; //write to main memory, not to cache
@@ -24,6 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TransactionDao transactionDao();
     public abstract GoalDao goalDao();
     public abstract BudgetDao budgetDao();
+    public  abstract AchievementDao achievementDao();
 
     public static synchronized AppDatabase getAppDatabase(Context context){
         context = context;
@@ -42,6 +44,12 @@ public abstract class AppDatabase extends RoomDatabase {
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
+                    getAppDatabase(context).achievementDao().insertAll(
+                            new Achievement("Rich boy","Your income is more than 5 euros per day", false),
+                            new Achievement("Wasteless is with you","Start the app", true),
+                            new Achievement("Poor guy","Your income is less than 5 euros per day", false),
+                            new Achievement("I don't know","Some more stupid text", false)
+                            );
                     getAppDatabase(context).walletDao().insertAll(
                             new Wallet("wallet 1", 400, false),
                             new Wallet("wallet 2",500, false)
@@ -49,6 +57,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     getAppDatabase(context).goalDao().insertAll(
                             new Goal("month","31.3.2020", 123.4)
                     );
+
                     getAppDatabase(context).transactionDao().insertAll(
                             new Transaction("02/04/2020", 3445.0, "wage", Long.valueOf(1), true, "salary", "street"),
                             new Transaction("07/04/2020", 45.0, "stolen", Long.valueOf(1), true, "salary", "friend"),
