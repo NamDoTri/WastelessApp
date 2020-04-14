@@ -56,9 +56,6 @@ public class HomeFragment extends Fragment {
         final TextView expensesMonthlyAmount = root.findViewById(R.id.expenses_monthly_amount);
         final TextView incomeMonthlyAmount = root.findViewById(R.id.income_monthly_amount);
 
-        final Button prevWalletButton = root.findViewById(R.id.button_back);
-        final Button nextWalletButton = root.findViewById(R.id.button_next);
-
         // BUDGET
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -116,20 +113,6 @@ public class HomeFragment extends Fragment {
         });
 
 
-        prevWalletButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                homeViewModel.changeWallet("prev");
-            }
-        });
-        nextWalletButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homeViewModel.changeWallet("next");
-            }
-        });
-
-
         root.findViewById(R.id.home_header_swipeable).setOnTouchListener(new View.OnTouchListener(){
             private float originalX = 0f;
             @Override
@@ -139,10 +122,12 @@ public class HomeFragment extends Fragment {
                     originalX = event.getX();
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
                     float upX = event.getX();
-                    if(upX-originalX < 0){
-                        Log.i("Swipe", "Left");
-                    }else{
+                    if(upX-originalX > 0){
                         Log.i("Swipe", "Right");
+                        homeViewModel.changeWallet("prev");
+                    }else{
+                        Log.i("Swipe", "Left");
+                        homeViewModel.changeWallet("next");
                     }
                     originalX = 0f;
                 }
