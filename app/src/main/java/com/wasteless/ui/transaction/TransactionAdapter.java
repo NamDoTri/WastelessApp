@@ -45,7 +45,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
-        TagAssociation tag = tags.get(position);
+//        TagAssociation tag = tags.get(position);
         ArrayList<String> transactionTags = new ArrayList<String>();
 //        int counter = 0;
 //        Log.d("transactionAdapter", "tag: " + tag.tag);
@@ -84,21 +84,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
             switch (transactionTags.size()) {
+                case 3:
+                    ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagThree.setText(transactionTags.get(2));
+                case 2:
+                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
                 case 1:
                     ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
                     ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
-                case 2:
-                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
-                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
-                case 3:
-                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
-                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
-                    ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagThree.setText(transactionTags.get(2));
             }
 
 //        ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
