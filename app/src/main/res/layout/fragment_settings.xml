@@ -73,7 +73,7 @@
                 android:text="Bank account" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/notification_button"
+            android:id="@+id/acievement_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -83,10 +83,10 @@
             android:background="@drawable/myrect"
             >
             <ImageView
-                android:id="@+id/notification"
+                android:id="@+id/achievement"
                 android:layout_marginLeft="20dp"
                 android:layout_width="40dp"
-                android:src="@drawable/notification_24dp"
+                android:src="@drawable/achievements"
                 android:layout_height="75dp" />
             <TextView
                 android:layout_gravity="center"
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
-                android:text="Notifications" />
+                android:text="Achievements" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/general_button"
