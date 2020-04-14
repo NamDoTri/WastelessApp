@@ -3,7 +3,10 @@ package com.wasteless.repository;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.roomdb.AppDatabase;
 import com.wasteless.roomdb.daos.TagDao;
@@ -13,6 +16,8 @@ import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
+import com.wasteless.ui.add_transaction.AddTransactionViewModel;
+import com.wasteless.ui.settings.achievements.AchievementViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,7 @@ public class TransactionRepository {
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
     private final TagDao tagDao;
-
+    private AchievementViewModel achievementViewModel;
     private final String[] CATEGORIES = {"Groceries", "Entertainment", "Rent", "Commute", "Clothes", "Furniture", "Miscellaneous"};
     private final String[] INCOMETYPES = {"Salary", "Gift", "Stolen"};
 
@@ -157,7 +162,7 @@ public class TransactionRepository {
             Wallet currentWallet = walletDao.getWalletById(transaction.wallet);
             currentWallet.balance -= transaction.amount;
             walletDao.updateAll(currentWallet);
-
+//            achievementViewModel.getAllAchievements();
             return true;
         }catch(Exception e){
             e.printStackTrace();
