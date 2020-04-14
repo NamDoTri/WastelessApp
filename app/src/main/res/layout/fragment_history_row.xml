@@ -71,17 +71,20 @@
 
 
             <Button
-                android:id="@+id/tag_one"
+                android:id="@+id/tag_three"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>
 
             <Button
                 android:id="@+id/tag_two"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>
 
             <Button
-                android:id="@+id/tag_three"
+                android:id="@+id/tag_one"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>
 
