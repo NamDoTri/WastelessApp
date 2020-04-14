@@ -25,6 +25,10 @@ public class AchievementRepository {
     }
     public  List<Achievement> getAllAchievements() { return achievementDao.getAllAchievements();};
 
+    public void setAchievementToBeDone(String name) { achievementDao.setAchievementToBeDone(name);}
+
+    public Achievement getAchievementByName(String name) { return achievementDao.getAchievementByName(name);};
+
     public void insertGoal(Achievement achievement){
         achievementDao.insert(achievement);
     }

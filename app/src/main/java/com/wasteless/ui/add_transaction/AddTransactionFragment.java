@@ -313,12 +313,13 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
-                new CountDownTimer(1000, 500) {
+                new CountDownTimer(1000, 300) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
+                        achievementViewModel.checkAllTheAchievements();
                         if (Double.parseDouble(goalViewModel.getDayProgress()) < 50.0) {
                             startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
                         }
