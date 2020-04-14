@@ -46,30 +46,78 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Transaction transaction = transactions.get(position);
         TagAssociation tag = tags.get(position);
-        Log.d("transactionAdapter", "tag: " + tag.tag);
-        Log.d("transactionAdapter", "tag: " + tag.transactionId);
-        Log.d("transactionAdapter", "tag: " + tag.index);
+        ArrayList<String> transactionTags = new ArrayList<String>();
+//        int counter = 0;
+//        Log.d("transactionAdapter", "tag: " + tag.tag);
+//        Log.d("transactionAdapter", "tag: " + tag.transactionId);
+//        Log.d("transactionAdapter", "tag: " + tag.index);
 
+            tags.forEach((tagElement ) -> {
+
+                if (tagElement.transactionId == transaction.transactionId && tagElement.tag.isEmpty() == false) {
+                    Log.d("transactionAdapter", "tag: " + tagElement.tag);
+                    transactionTags.add(tagElement.tag);
+                    Log.d("transactionAdapter", "tag inside if: " + transactionTags);
+                    Log.d("transactionAdapter", "transactionTags: " + transactionTags);
+//                    if (counter == 0) {
+//
+//                    }
+//                    if (counter == 1) {
+//
+//                    }
+
+
+//                    ((TransactionHolder) holder).tagThree.setText(tagElement.tag);
+//                    counter = 0;
+                }
+//                if (tagElement.transactionId == transaction.transactionId && counter == 1) {
+//                    ((TransactionHolder) holder).tagTwo.setText(tagElement.tag);
+//                    counter++;
+//                }
+//                if (tagElement.transactionId == transaction.transactionId && counter == 0) {
+//                    ((TransactionHolder) holder).tagOne.setText(tagElement.tag);
+//                    counter++;
+//                }
+
+            });
             ((TransactionHolder) holder).description.setText(transaction.description);
             ((TransactionHolder) holder).type.setText(transaction.type);
             ((TransactionHolder) holder).amount.setText(String.valueOf(transaction.amount));
-            for (int i=0; i < tags.size(); i++) {
-                if (tag.transactionId == transaction.transactionId) {
+            switch (transactionTags.size()) {
+                case 1:
                     ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagOne.setText(tag.tag);
+                    ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
+                case 2:
+                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
                     ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagTwo.setText(tag.tag);
+                    ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
+                case 3:
+                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
+                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+                    ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
                     ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-                    ((TransactionHolder) holder).tagThree.setText(tag.tag);
-                }
+                    ((TransactionHolder) holder).tagThree.setText(transactionTags.get(2));
             }
-//            ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-//            ((TransactionHolder) holder).tagOne.setText("asdasd");
-//            ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-//            ((TransactionHolder) holder).tagTwo.setText("asdasd");
-//            ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
-//            ((TransactionHolder) holder).tagThree.setText("asdasd");
-        Log.d("transactionAdapter", "transaction: " + transaction);
+
+//        ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//        ((TransactionHolder) holder).tagOne.setText(transactionTags.get(0));
+//        ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//        ((TransactionHolder) holder).tagTwo.setText(transactionTags.get(1));
+//        ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//        ((TransactionHolder) holder).tagThree.setText(transactionTags.get(2));
+//            for (int i=0; i < tags.size(); i++) {
+//                if (tag.transactionId == transaction.transactionId) {
+//                    ((TransactionHolder) holder).tagOne.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//                    ((TransactionHolder) holder).tagOne.setText(tag.tag);
+//                    ((TransactionHolder) holder).tagTwo.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//                    ((TransactionHolder) holder).tagTwo.setText(tag.tag);
+//                    ((TransactionHolder) holder).tagThree.setBackgroundResource(R.drawable.transaction_recycler_view_tag);
+//                    ((TransactionHolder) holder).tagThree.setText(tag.tag);
+//                }
+//            }
+        Log.d("transactionAdapter", "a new transaction" );
 
     }
 
