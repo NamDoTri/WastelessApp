@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -83,7 +82,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView type;
         private TextView amount;
         private TextView date;
-        private LinearLayout tags;
         private Button tagOne;
         private Button tagTwo;
         private Button tagThree;
@@ -94,7 +92,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
 //            date = itemView.findViewById(R.id.transaction_date);
-            tags = itemView.findViewById(R.id.tags_container);
+//            tags = itemView.findViewById(R.id.tags_container);
             tagOne = itemView.findViewById(R.id.tag_one);
             tagTwo = itemView.findViewById(R.id.tag_two);
             tagThree = itemView.findViewById(R.id.tag_three);
