@@ -15,6 +15,7 @@ import com.wasteless.repository.AchievementRepository;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Achievement;
+import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.add_transaction.AddTransactionViewModel;
 import com.wasteless.ui.home.goal.GoalViewModel;
@@ -40,7 +41,6 @@ public class AchievementViewModel extends AndroidViewModel {
         currentlyDisplayWalletIndex = new MutableLiveData<>();
         currentlyDisplayWalletIndex.setValue(-1);
     }
-
     public double getTotalExpenseToday() {
         String today = dateFormatter.format(LocalDateTime.now());
         Double todayTotalExpense = 0.0;
@@ -67,17 +67,34 @@ public class AchievementViewModel extends AndroidViewModel {
     public List<Achievement> getAllAchievements(){
         return achievementRepository.getAllAchievements();
     }
-    public void checkAllTheAchievements(){
+
+    public String checkAllTheAchievements(){
+        String achievement = "";
+        String today = dateFormatter.format(LocalDateTime.now());
         double todaysIncome = getTotalIncomeToday();
         double todaysExpense = getTotalExpenseToday();
-        List<Achievement> allAchievements;
-        allAchievements = getAllAchievements();
+
+        List<Transaction> incomesToday = transactionRepository.getIncomesByDateAchievements(today);
+        Log.i("todaysSize", String.valueOf(incomesToday.size()));
         if (!achievementRepository.getAchievementByName("Rich boy").isDone && todaysExpense > 5.0){
             achievementRepository.setAchievementToBeDone("Rich boy");
+            achievement = "Rich boy";
         }
-        if (!achievementRepository.getAchievementByName("Poor guy").isDone && todaysIncome < 5.0){
+        if (!achievementRepository.getAchievementByName("Poor guy").isDone
+                && incomesToday.size() != 0
+                && todaysIncome < 5.0){
             achievementRepository.setAchievementToBeDone("Poor guy");
+            achievement = "Poor guy";
         }
-
+        if (!achievementRepository.getAchievementByName("One more thing").isDone
+                && transactionRepository.getTransactionsByDateAchievement(today).size() > 10){
+            achievementRepository.setAchievementToBeDone("One more thing");
+            achievement = "One more thing";
+        }
+        if (!achievementRepository.getAchievementByName("Spender").isDone && todaysExpense > 200.0){
+            achievementRepository.setAchievementToBeDone("Spender");
+            achievement = "Spender";
+        }
+        return achievement;
     }
 }

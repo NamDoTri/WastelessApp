@@ -70,6 +70,14 @@ public class TransactionRepository {
         String adaptedString = "%" + date + "%";
         return transactionDao.getTransactionsByDate(adaptedString);
     }
+    public List<Transaction> getIncomesByDateAchievements(String date) {
+        String adaptedString = "%" + date + "%";
+        return transactionDao.getIncomesByDateAchievements(adaptedString);
+    }
+    public List<Transaction> getTransactionsByDateAchievement(String date) {
+        String adaptedString = "%" + date + "%";
+        return transactionDao.getTransactionsByDateAchievements(adaptedString);
+    }
 //    Get transactions by category
     public LiveData<List<Transaction>> getTransactionsByType(String category) {
         String adaptedString = "%" + category + "%";
