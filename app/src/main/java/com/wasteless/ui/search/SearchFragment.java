@@ -38,8 +38,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnQueryTextL
     private TransactionAdapter transactionAdapter;
     private List<TagAssociation> tags;
 
-    private MutableLiveData<String> category;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
