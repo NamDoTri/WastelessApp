@@ -1,5 +1,6 @@
 package com.wasteless.ui.settings;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +8,13 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -233,6 +236,7 @@ public class SettingsFragment extends Fragment{
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //TODO: implement this check to make sure that the function runs only when user chooses a file
         /*if(data == null)
             return;
         switch (requestCode) {
@@ -240,7 +244,7 @@ public class SettingsFragment extends Fragment{
                 String filepath = data.getData().getPath();
         }*/
 
-        String filePath = null;
+        //Getting the data from the uri through a stream
         Uri uri = data.getData();
         InputStream inputStream = null;
         try {
@@ -249,6 +253,7 @@ public class SettingsFragment extends Fragment{
             e.printStackTrace();
         }
 
+        //Constructing a reader to go through the stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String header = null;
         try {
@@ -256,13 +261,22 @@ public class SettingsFragment extends Fragment{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert header != null;
         String[] splitHeader = header.split(",");
-        //String line = "";
-        String tableName ="transactions";
-        //String columns = "transactionId, date, amount, description, wallet, isIncome, type, source";
-        String str1 = "INSERT INTO " + tableName + " (" + header + ") values (";
+
+        //Getting the filename (same as table name + .csv)
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        cursor.moveToFirst();
+        String fileNameWithExt = cursor.getString(nameIndex);
+        int fileExtIndex = fileNameWithExt.lastIndexOf(".");
+        String fileName = fileNameWithExt.substring(0, fileExtIndex);
+
+        //Constructing query
+        String str1 = "INSERT INTO " + fileName + " (" + header + ") values (";
         String str2 = ");";
 
+        //Getting the database
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
         SupportSQLiteDatabase sql_db = db.getOpenHelper().getReadableDatabase();
 
@@ -279,37 +293,25 @@ public class SettingsFragment extends Fragment{
                     //in "source" if the transaction is an expense
                     if( str.length < splitHeader.length && i != splitHeader.length - 1){
                         sb.append(str[i] + ",");
-                        Log.d("1", "eka");
                     }
                     if( str.length < splitHeader.length && i == splitHeader.length - 1){
                         sb.append("'" + "" + "'");
-                        Log.d("2", "toka");
                     }
                     if( str.length == splitHeader.length && i != str.length - 1){
                         sb.append(str[i] + ",");
-                        Log.d("3", "kolmas");
                     }
                     if(str.length == splitHeader.length && i == str.length - 1){
                         sb.append(str[i]);
-                        Log.d("5", "vika");
                     }
                 }
                 sb.append(str2);
                 sql_db.execSQL(sb.toString());
             }
-                /*sb.append(str[0] + ",");
-                sb.append(str[1] + ",");
-                sb.append(str[2] + ",");
-                sb.append(str[3] + ",");
-                sb.append(str[4] + ",");
-                sb.append(str[5] + ",");
-                sb.append(str[6] + ",");
-                sb.append("'" + "asd" + "'");*/
         } catch (IOException e) {
             e.printStackTrace();
         }
         sql_db.setTransactionSuccessful();
         sql_db.endTransaction();
-        Toast.makeText(getContext(), splitHeader.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), fileName, Toast.LENGTH_SHORT).show();
     }
 }
