@@ -41,7 +41,12 @@ public interface TransactionDao {
     //    Query to get transaction with specific date
     @Query("SELECT * FROM transactions WHERE date LIKE :searchValue AND  isIncome = 1")
     List<Transaction> getIncomesByDateAchievements(String searchValue);
+    //    Query to get transaction with specific date
+
+    @Query("SELECT * FROM transactions WHERE date LIKE :searchValue")
+    List<Transaction> getTransactionsByDateAchievements(String searchValue);
 //    Query to order transaction by date
+
     @Query("SELECT * FROM transactions ORDER BY date DESC")
     LiveData<List<Transaction>> orderTransactionsByDate();
 

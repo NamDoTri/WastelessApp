@@ -88,6 +88,15 @@ public class AchievementViewModel extends AndroidViewModel {
             achievementRepository.setAchievementToBeDone("Poor guy");
             achievement = "Poor guy";
         }
+        if (!achievementRepository.getAchievementByName("One more thing").isDone
+                && transactionRepository.getTransactionsByDateAchievement(today).size() > 10){
+            achievementRepository.setAchievementToBeDone("One more thing");
+            achievement = "One more thing";
+        }
+        if (!achievementRepository.getAchievementByName("Spender").isDone && todaysExpense > 200.0){
+            achievementRepository.setAchievementToBeDone("Spender");
+            achievement = "Spender";
+        }
 //        if (true){
 //            achievement = "Test one";
 //        }
