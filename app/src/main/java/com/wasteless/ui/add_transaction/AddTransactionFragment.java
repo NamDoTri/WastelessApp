@@ -345,7 +345,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
-
+                addTransactionViewModel.resetInputs();
                 ActivityResultLauncher<String> getReceiptImage = prepareCall(new ActivityResultContracts.GetContent(),
                         new ActivityResultCallback<Uri>() {
                             @Override
@@ -373,7 +373,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open camera button clicked");
-
+                addTransactionViewModel.resetInputs();
                 ActivityResultLauncher<Void> getReceiptImage = prepareCall(new ActivityResultContracts.TakePicturePreview(),
                         new ActivityResultCallback<Bitmap>() {
                             @Override

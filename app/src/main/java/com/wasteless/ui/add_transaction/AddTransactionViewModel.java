@@ -65,15 +65,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         appContext = application.getApplicationContext();
 
         if(description.getValue() == null){
-            Log.i("receipt", "values are reset");
-            description.setValue("");
-            amount.setValue("0.0");
-            date.setValue("");
-            type.setValue("");
-            walletId.setValue("");
-            source.setValue("");
-            isIncome.setValue(false);
-            tags.setValue(new ArrayList<>());
+            resetInputs();
         }
 
         // set up recognizer
@@ -185,6 +177,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
             }else{
                 insertExpense(insertDate, Double.valueOf(insertAmount), insertDescription, id, isIncome.getValue(), insertType, insertTags);
             }
+            resetInputs();
         }else{
             insertSuccess = false;
         }
@@ -340,5 +333,17 @@ public class AddTransactionViewModel extends AndroidViewModel {
             }
         }
         //TODO: train a model to extract total (if data is available)
+    }
+
+    public void resetInputs(){
+        Log.i("receipt", "values are reset");
+        description.setValue("");
+        amount.setValue("0.0");
+        date.setValue("");
+        type.setValue("");
+        walletId.setValue("");
+        source.setValue("");
+        isIncome.setValue(false);
+        tags.setValue(new ArrayList<>());
     }
 }
