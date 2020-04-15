@@ -9,11 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
-import com.wasteless.roomdb.entities.Tag;
 import com.wasteless.roomdb.entities.TagAssociation;
 import com.wasteless.roomdb.entities.Transaction;
 
@@ -21,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    TransactionViewModel transactionViewModel;
 
     private List<Transaction> transactions = new ArrayList<>();
     private List<TagAssociation> tags = new ArrayList<>();
