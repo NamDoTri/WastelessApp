@@ -3,6 +3,7 @@ package com.wasteless.ui.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -54,9 +55,6 @@ public class HomeFragment extends Fragment {
         final TextView incomeTodayAmount = root.findViewById(R.id.income_today_amount);
         final TextView expensesMonthlyAmount = root.findViewById(R.id.expenses_monthly_amount);
         final TextView incomeMonthlyAmount = root.findViewById(R.id.income_monthly_amount);
-
-        final Button prevWalletButton = root.findViewById(R.id.button_back);
-        final Button nextWalletButton = root.findViewById(R.id.button_next);
 
         // BUDGET
         homeViewModel.getBudgetAmount().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -113,18 +111,34 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-        prevWalletButton.setOnClickListener(new View.OnClickListener(){
+
+
+        root.findViewById(R.id.home_header_swipeable).setOnTouchListener(new View.OnTouchListener(){
+            private float originalX = 0f;
             @Override
-            public void onClick(View view){
-                homeViewModel.changeWallet("prev");
+            public boolean onTouch(View v, MotionEvent event){
+                //Log.i("Swipe", "Event: " + event.toString());
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    originalX = event.getX();
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    float upX = event.getX();
+                    if(upX-originalX > 0){
+                        Log.i("Swipe", "Right");
+                        homeViewModel.changeWallet("prev");
+                    }else{
+                        Log.i("Swipe", "Left");
+                        homeViewModel.changeWallet("next");
+                    }
+                    originalX = 0f;
+                }
+
+
+                return true;
             }
         });
-        nextWalletButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homeViewModel.changeWallet("next");
-            }
-        });
+
+
+
         homeViewModel.getCurrentWalletName().observe(getViewLifecycleOwner(), new Observer<String>(){
             @Override
             public void onChanged(@Nullable String s) { walletTitle.setText(s); }
