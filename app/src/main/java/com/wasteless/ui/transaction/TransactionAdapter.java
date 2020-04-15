@@ -92,7 +92,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             type = itemView.findViewById(R.id.transaction_category);
             amount = itemView.findViewById(R.id.transaction_amount);
 //            date = itemView.findViewById(R.id.transaction_date);
-//            tags = itemView.findViewById(R.id.tags_container);
             tagOne = itemView.findViewById(R.id.tag_one);
             tagTwo = itemView.findViewById(R.id.tag_two);
             tagThree = itemView.findViewById(R.id.tag_three);
