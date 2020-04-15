@@ -41,7 +41,6 @@ public class AchievementViewModel extends AndroidViewModel {
         currentlyDisplayWalletIndex = new MutableLiveData<>();
         currentlyDisplayWalletIndex.setValue(-1);
     }
-
     public double getTotalExpenseToday() {
         String today = dateFormatter.format(LocalDateTime.now());
         Double todayTotalExpense = 0.0;
@@ -68,14 +67,13 @@ public class AchievementViewModel extends AndroidViewModel {
     public List<Achievement> getAllAchievements(){
         return achievementRepository.getAllAchievements();
     }
+
     public String checkAllTheAchievements(){
         String achievement = "";
         String today = dateFormatter.format(LocalDateTime.now());
         double todaysIncome = getTotalIncomeToday();
-        Log.i("todaysIncome", String.valueOf(todaysIncome));
         double todaysExpense = getTotalExpenseToday();
-        List<Achievement> allAchievements;
-        allAchievements = getAllAchievements();
+
         List<Transaction> incomesToday = transactionRepository.getIncomesByDateAchievements(today);
         Log.i("todaysSize", String.valueOf(incomesToday.size()));
         if (!achievementRepository.getAchievementByName("Rich boy").isDone && todaysExpense > 5.0){
@@ -97,9 +95,6 @@ public class AchievementViewModel extends AndroidViewModel {
             achievementRepository.setAchievementToBeDone("Spender");
             achievement = "Spender";
         }
-//        if (true){
-//            achievement = "Test one";
-//        }
         return achievement;
     }
 }
