@@ -33,14 +33,21 @@ import com.wasteless.ui.settings.newWallet.NewWalletFragment;
 import com.wasteless.ui.settings.newWallet.NotificationsFragment;
 import com.wasteless.ui.settings.privacy.PrivacyFragment;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class SettingsFragment extends Fragment{
 
@@ -185,6 +192,38 @@ public class SettingsFragment extends Fragment{
         }
     }
 
+    /*private void selectZip(){
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("");
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        startActivityForResult(chooseFile, CHOOSE_FILE_REQUESTCODE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Uri uri = data.getData();
+        InputStream inputStream = null;
+        try {
+            inputStream = getContext().getContentResolver().openInputStream(uri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+
+        ZipEntry zipEntry;
+        List<String> names = new ArrayList<>();
+        try{
+            while ((zipEntry = zipInputStream.getNextEntry()) != null){
+                names.add(zipEntry.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(getContext(), names.get(1), Toast.LENGTH_SHORT).show();
+    }*/
+
     private void selectFile(){
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
@@ -199,44 +238,6 @@ public class SettingsFragment extends Fragment{
         switch (requestCode) {
             case CHOOSE_FILE_REQUESTCODE:
                 String filepath = data.getData().getPath();
-                AppDatabase db = AppDatabase.getAppDatabase(getContext());
-                SupportSQLiteDatabase sql_db = db.getOpenHelper().getReadableDatabase();
-                String tablename = "transactions";
-                String columns = "transactionId, date, amount, description, wallet, isIncome, type, source";
-                String str1 = "INSERT INTO " + tablename + " (" + columns + ") values(";
-                String str2 = ");";
-                FileReader file = null;
-                try {
-                    file = new FileReader(filepath);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                BufferedReader buffer = new BufferedReader(file);
-                    ContentValues contentValues = new ContentValues();
-                    String line = "";
-                    sql_db.beginTransaction();
-
-                    while (true) {
-                        try {
-                            if (!((line = buffer.readLine()) != null)) break;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        StringBuilder sb = new StringBuilder(str1);
-                        String[] str = line.split(",");
-                        sb.append("'" + str[0] + "',");
-                        sb.append(str[1] + "',");
-                        sb.append(str[2] + "',");
-                        sb.append(str[3] + "'");
-                        sb.append(str[4] + "'");
-                        sb.append(str2);
-                        sql_db.execSQL(sb.toString());
-                    }
-                    sql_db.setTransactionSuccessful();
-                    sql_db.endTransaction();
-
         }*/
 
         String filePath = null;
@@ -249,62 +250,66 @@ public class SettingsFragment extends Fragment{
         }
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
+        String header = null;
+        try {
+            header = bufferedReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] splitHeader = header.split(",");
+        //String line = "";
         String tableName ="transactions";
-        String columns = "transactionId, date, amount, description, wallet, isIncome, type, source";
-        String str1 = "INSERT INTO " + tableName + " (" + columns + ") values (";
+        //String columns = "transactionId, date, amount, description, wallet, isIncome, type, source";
+        String str1 = "INSERT INTO " + tableName + " (" + header + ") values (";
         String str2 = ");";
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
         SupportSQLiteDatabase sql_db = db.getOpenHelper().getReadableDatabase();
 
-
         sql_db.beginTransaction();
         try{
-            while ((line = bufferedReader.readLine())  != null) {
+            while ((header = bufferedReader.readLine())  != null) {
                 StringBuilder sb = new StringBuilder(str1);
-                String[] str = line.split(",");
-                sb.append(str[0] + ",");
+                String[] str = header.split(",");
+                for (int i = 0; i < splitHeader.length; i++){
+                    Log.d("str length", String.valueOf(str.length));
+                    Log.d("header length", String.valueOf(splitHeader.length));
+                    //Checking if the header is longer than the string of data entries,
+                    //this should only be used in transactions since there are empty fields
+                    //in "source" if the transaction is an expense
+                    if( str.length < splitHeader.length && i != splitHeader.length - 1){
+                        sb.append(str[i] + ",");
+                        Log.d("1", "eka");
+                    }
+                    if( str.length < splitHeader.length && i == splitHeader.length - 1){
+                        sb.append("'" + "" + "'");
+                        Log.d("2", "toka");
+                    }
+                    if( str.length == splitHeader.length && i != str.length - 1){
+                        sb.append(str[i] + ",");
+                        Log.d("3", "kolmas");
+                    }
+                    if(str.length == splitHeader.length && i == str.length - 1){
+                        sb.append(str[i]);
+                        Log.d("5", "vika");
+                    }
+                }
+                sb.append(str2);
+                sql_db.execSQL(sb.toString());
+            }
+                /*sb.append(str[0] + ",");
                 sb.append(str[1] + ",");
                 sb.append(str[2] + ",");
                 sb.append(str[3] + ",");
                 sb.append(str[4] + ",");
                 sb.append(str[5] + ",");
                 sb.append(str[6] + ",");
-                sb.append("'" + "asd" + "'");
-                sb.append(str2);
-                sql_db.execSQL(sb.toString());
-            }
+                sb.append("'" + "asd" + "'");*/
         } catch (IOException e) {
             e.printStackTrace();
         }
         sql_db.setTransactionSuccessful();
         sql_db.endTransaction();
-        /*String line = "";
-        AppDatabase db = AppDatabase.getAppDatabase(getContext());
-        SupportSQLiteDatabase sql_db = db.getOpenHelper().getReadableDatabase();
-
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] columns = line.split(",");
-                if (columns.length != 8) {
-                    Log.d("CSVParser", "Skipping Bad CSV Row");
-                    continue;
-                }
-                ContentValues cv = new ContentValues(8);
-                cv.put("transactionId", columns[0].trim());
-                cv.put("date", columns[1].trim());
-                cv.put("amount", columns[2].trim());
-                cv.put("description", columns[3].trim());
-                cv.put("wallet", columns[4].trim());
-                cv.put("isIncome", columns[5].trim());
-                cv.put("type", columns[6].trim());
-                cv.put("source", columns[7].trim());
-                sql_db.insert("transactions", 0, cv);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        Toast.makeText(getContext(), splitHeader.toString(), Toast.LENGTH_SHORT).show();
     }
 }
-
