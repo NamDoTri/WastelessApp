@@ -47,6 +47,7 @@ public class GoalViewModel extends AndroidViewModel {
         return todayTotalExpense;
     }
 
+
     public void insertGoalByType(String date, double goal, String type){
         Goal newGoal = new Goal(type, date, goal);
         try{

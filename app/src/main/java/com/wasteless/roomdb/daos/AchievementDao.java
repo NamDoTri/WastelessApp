@@ -17,6 +17,9 @@ public interface AchievementDao {
     @Query("select * from achievements")
     List<Achievement> getAllAchievements();
 
+    @Query("select * from achievements where name = :name")
+    Achievement getAchievementByName(String name) ;
+
     @Query("update achievements set isDone = 1 where name =:name")
     void setAchievementToBeDone(String name);
 
