@@ -166,7 +166,7 @@ public class SettingsFragment extends Fragment{
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        selectFile();
+                        selectZip();
                         /*HelpFragment helpFragment = new HelpFragment();
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         transaction.replace(R.id.nav_host_fragment, helpFragment);
@@ -195,9 +195,9 @@ public class SettingsFragment extends Fragment{
         }
     }
 
-    /*private void selectZip(){
+    private void selectZip(){
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.setType("");
+        chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, CHOOSE_FILE_REQUESTCODE);
     }
@@ -219,17 +219,121 @@ public class SettingsFragment extends Fragment{
         List<String> names = new ArrayList<>();
         try{
             while ((zipEntry = zipInputStream.getNextEntry()) != null){
-                names.add(zipEntry.getName());
+                String fileNameWithExt = zipEntry.getName();
+                int fileExtIndex = fileNameWithExt.lastIndexOf(".");
+                String fileName = fileNameWithExt.substring(0, fileExtIndex);
+
+                names.add(fileName);
+                //Constructing a reader to go through the stream
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+
+                /*testtttt
+                String line;
+                while ((line = bufferedReader.readLine())  != null) {
+                    Log.d("lines should be here", line);
+                }*/
+
+                String header = null;
+                try {
+                    header = bufferedReader.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                assert header != null;
+                String[] splitHeader = header.split(",");
+
+                //Getting the filename (same as table name + .csv)
+                /*Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                cursor.moveToFirst();
+                String fileNameWithExt = cursor.getString(nameIndex);
+                int fileExtIndex = fileNameWithExt.lastIndexOf(".");
+                String fileName = fileNameWithExt.substring(0, fileExtIndex);*/
+
+                //Constructing query
+                String str1 = "INSERT INTO " + fileName + " (" + header + ") values (";
+                String str2 = ");";
+
+                //Getting the database
+                AppDatabase db = AppDatabase.getAppDatabase(getContext());
+                SupportSQLiteDatabase sql_db = db.getOpenHelper().getReadableDatabase();
+
+                //Clearing the table to make sure that there aren't any problems with id's
+                //TODO: replace this with some logic to check that the data can be applied
+                sql_db.execSQL("delete from " + fileName);
+                Log.d("CLEARED", fileName);
+
+                if(fileName.equals("tag_assoc")){
+                    sql_db.beginTransaction();
+                    try{
+                        while ((header = bufferedReader.readLine())  != null) {
+                            StringBuilder sb = new StringBuilder(str1);
+                            String[] str = header.split(",");
+                            /*for (int i = 0; i < splitHeader.length; i++){
+                                if( str.length == splitHeader.length && i != str.length - 1){
+                                    sb.append(str[i] + ",");
+                                }
+                                if(str.length == splitHeader.length && i == str.length - 1){
+                                    sb.append("NULL");
+                                }
+                            }*/
+                            sb.append(str[0] + ",");
+                            sb.append("NULL"  + ",");
+                            sb.append(str[2]);
+                            sb.append(str2);
+                            Log.d("EXECUTE", sb.toString());
+                            sql_db.execSQL(sb.toString());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    sql_db.setTransactionSuccessful();
+                    sql_db.endTransaction();
+                    Log.d("EXECUTED TO", fileName);
+                }
+                else{
+                    sql_db.beginTransaction();
+                    try{
+                        while ((header = bufferedReader.readLine())  != null) {
+                            StringBuilder sb = new StringBuilder(str1);
+                            String[] str = header.split(",");
+                            for (int i = 0; i < splitHeader.length; i++){
+                                //Checking if the header is longer than the string of data entries,
+                                //this should only be used in transactions since there are empty fields
+                                //in "source" if the transaction is an expense
+                                if( str.length < splitHeader.length && i != splitHeader.length - 1){
+                                    sb.append(str[i] + ",");
+                                }
+                                if( str.length < splitHeader.length && i == splitHeader.length - 1){
+                                    sb.append("'" + "" + "'");
+                                }
+                                if( str.length == splitHeader.length && i != str.length - 1){
+                                    sb.append(str[i] + ",");
+                                }
+                                if(str.length == splitHeader.length && i == str.length - 1){
+                                    sb.append(str[i]);
+                                }
+                            }
+                            sb.append(str2);
+                            sql_db.execSQL(sb.toString());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    sql_db.setTransactionSuccessful();
+                    sql_db.endTransaction();
+                    Log.d("EXECUTED TO", fileName);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         Toast.makeText(getContext(), names.get(1), Toast.LENGTH_SHORT).show();
-    }*/
+    }
 
-    private void selectFile(){
+    /*private void selectFile(){
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.setType("*/*");
+        chooseFile.setType("");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
         startActivityForResult(chooseFile, CHOOSE_FILE_REQUESTCODE);
     }
@@ -237,12 +341,12 @@ public class SettingsFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //TODO: implement this check to make sure that the function runs only when user chooses a file
-        /*if(data == null)
+        if(data == null)
             return;
         switch (requestCode) {
             case CHOOSE_FILE_REQUESTCODE:
                 String filepath = data.getData().getPath();
-        }*/
+        }
 
         //Getting the data from the uri through a stream
         Uri uri = data.getData();
@@ -313,5 +417,5 @@ public class SettingsFragment extends Fragment{
         sql_db.setTransactionSuccessful();
         sql_db.endTransaction();
         Toast.makeText(getContext(), fileName, Toast.LENGTH_SHORT).show();
-    }
+    }*/
 }
