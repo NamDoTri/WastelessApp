@@ -22,11 +22,19 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
-    private static String currentPassword = "012";
+    private static final String PASSWORD_FILENAME = "wastelessPassword";
+    private String password = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +47,35 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        // check if any password file saved in internal storage
+        try{
+            FileInputStream fis = getApplicationContext().openFileInput(PASSWORD_FILENAME);
+            InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            StringBuilder stringBuilder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    stringBuilder.append(line).append('\n');
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                password = stringBuilder.toString();
+                Log.i("Pattern", "Stored password: " + password);
+            }
+        }catch (Exception e){
+            Log.i("pattern", "No password file found.");
+            e.printStackTrace();
+        }
+
         PatternLockView patternView = findViewById(R.id.password_view);
         ConstraintLayout defaultMain = findViewById(R.id.default_main);
+
+        if (password != null) {
+            patternView.setVisibility(View.VISIBLE);
+            defaultMain.setVisibility(View.GONE);
+        }
         patternView.addPatternLockListener(new PatternLockViewListener() {
             @Override
             public void onStarted() {}
@@ -49,14 +84,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
                 String currentPattern = PatternLockUtils.patternToString(patternView, pattern);
-                if(MainActivity.validatePassword(currentPattern)){
+                if(validatePassword(currentPattern) == true){
                     patternView.setVisibility(View.GONE);
                     defaultMain.setVisibility(View.VISIBLE);
+                }else{
+                    patternView.clearPattern();
                 }
             }
             @Override
-            public void onCleared() {}
+            public void onCleared() {
+                // TODO: limit number of attempts
+            }
         });
+
+
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -71,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
     }
 
-    public static String getCurrentPassword(){
-        return currentPassword;
+    public static String getPasswordFilename(){
+        return PASSWORD_FILENAME;
     }
-    public static boolean validatePassword(String newPassword){
-        return newPassword.equalsIgnoreCase(currentPassword);
+    private boolean validatePassword(String newPassword){
+        return newPassword.trim().equalsIgnoreCase(password.trim());
     }
 }

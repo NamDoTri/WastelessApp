@@ -43,8 +43,10 @@ public class SetPasswordFragment extends Fragment {
                 }else{
                     boolean isValid = privacyViewModel.validatePassword(currentPattern);
                     if(isValid){
+                        privacyViewModel.savePassword();
                         privacyViewModel.setIsConfirming(false);
                         privacyViewModel.setCurrentPassword("");
+
                         PrivacyFragment privacyFragment = new PrivacyFragment();
                         FragmentTransaction transaction =getFragmentManager().beginTransaction();
                         transaction.replace(R.id.nav_host_fragment, privacyFragment);

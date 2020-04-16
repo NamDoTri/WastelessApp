@@ -1,10 +1,13 @@
 package com.wasteless.ui.settings.password;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.lifecycle.AndroidViewModel;
 
 import com.wasteless.MainActivity;
+
+import java.io.FileOutputStream;
 
 public class PrivacyViewModel extends AndroidViewModel {
     private boolean isConfirming = false;
@@ -30,4 +33,12 @@ public class PrivacyViewModel extends AndroidViewModel {
         this.currentPassword = newPassword;
     }
 
+    void savePassword(){
+        String filename = MainActivity.getPasswordFilename();
+        try (FileOutputStream fos = getApplication().getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE)) {
+            fos.write(currentPassword.getBytes());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }
