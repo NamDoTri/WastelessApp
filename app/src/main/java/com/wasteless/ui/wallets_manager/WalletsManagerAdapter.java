@@ -1,5 +1,6 @@
 package com.wasteless.ui.wallets_manager;
 
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.wasteless.R;
 import com.wasteless.roomdb.entities.Wallet;
@@ -27,6 +29,7 @@ public class WalletsManagerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_wallet_element, parent,false);
         return new WalletsHolder(itemView);
     }
@@ -39,6 +42,7 @@ public class WalletsManagerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Log.d("wallets", "walletId: " + wallet.name);
         ((WalletsHolder) holder).walletAmount.setText(Double.toString(wallet.balance));
         Log.d("wallets", "wallet balance: " + wallet.balance);
+
     }
 
     @Override
@@ -60,6 +64,7 @@ public class WalletsManagerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
     }
+
 
 
 
