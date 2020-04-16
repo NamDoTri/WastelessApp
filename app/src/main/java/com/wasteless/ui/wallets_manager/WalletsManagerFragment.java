@@ -36,6 +36,7 @@ public class WalletsManagerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_wallets_manager, container, false);
+
 //        Creates walletsManagerViewModel and makes it work
         walletsManagerViewModel = ViewModelProviders.of(this).get(WalletsManagerViewModel.class);
         allWallets = walletsManagerViewModel.getAllWallets();
