@@ -25,8 +25,8 @@ import com.wasteless.ui.settings.block.BlockFragment;
 import com.wasteless.ui.settings.help.HelpFragment;
 import com.wasteless.ui.settings.newWallet.GeneralFragment;
 import com.wasteless.ui.settings.newWallet.NewWalletFragment;
-import com.wasteless.ui.settings.newWallet.NotificationsFragment;
-import com.wasteless.ui.settings.privacy.PrivacyFragment;
+import com.wasteless.ui.settings.achievements.AchievementFragment;
+import com.wasteless.ui.settings.password.PrivacyFragment;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -104,13 +104,13 @@ public class SettingsFragment extends Fragment{
                 transaction.commit();
             }
         });
-        root.findViewById(R.id.notification_button).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.acievement_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                AchievementFragment achievementFragment = new AchievementFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.nav_host_fragment, notificationsFragment);
+                transaction.replace(R.id.nav_host_fragment, achievementFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -126,6 +126,13 @@ public class SettingsFragment extends Fragment{
                 transaction.commit();
             }
         });
+        root.findViewById(R.id.privacy_button).setOnClickListener(v -> {
+            PrivacyFragment privacyFragment = new PrivacyFragment();
+            FragmentTransaction transaction =getFragmentManager().beginTransaction();
+            transaction.replace(R.id.nav_host_fragment, privacyFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
         root.findViewById(R.id.block_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -135,17 +142,6 @@ public class SettingsFragment extends Fragment{
                             transaction.replace(R.id.nav_host_fragment, blockFragment);
                             transaction.addToBackStack(null);
                             transaction.commit();
-                    }
-                }
-        );
-        root.findViewById(R.id.privacy_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PrivacyFragment privacyFragment = new PrivacyFragment();
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.nav_host_fragment, privacyFragment);
-                        transaction.commit();
                     }
                 }
         );

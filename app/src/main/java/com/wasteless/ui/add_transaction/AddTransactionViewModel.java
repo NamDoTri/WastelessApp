@@ -2,20 +2,28 @@ package com.wasteless.ui.add_transaction;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
+import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateRemoteModel;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -25,24 +33,21 @@ import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.repository.WalletRepository;
 
-import java.text.DateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddTransactionViewModel extends AndroidViewModel {
-    private AddTransactionViewModel instance = null;
-
     private WalletRepository walletRepository;
     private TransactionRepository transactionRepository;
     private Context appContext;
     private FirebaseVisionTextRecognizer textRecognizer;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private boolean isTranslateModelAvailable = false;
 
     private MutableLiveData<String> description = new MutableLiveData<>();
     private MutableLiveData<String> amount = new MutableLiveData<>();
@@ -50,8 +55,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
     private MutableLiveData<String> type = new MutableLiveData<>();
     private MutableLiveData<String> walletId = new MutableLiveData<>();
     private MutableLiveData<String> source = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();;
-    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();;
+    private MutableLiveData<Boolean> isIncome = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> tags = new MutableLiveData<>();
 
     public AddTransactionViewModel(Application application){
         super(application);
@@ -60,21 +65,53 @@ public class AddTransactionViewModel extends AndroidViewModel {
         appContext = application.getApplicationContext();
 
         if(description.getValue() == null){
-            Log.i("receipt", "values are reset");
-            description.setValue("");
-            amount.setValue("0.0");
-            date.setValue("");
-            type.setValue("");
-            walletId.setValue("");
-            source.setValue("");
-            isIncome.setValue(false);
-            tags.setValue(new ArrayList<>());
+            resetInputs();
         }
 
         // set up recognizer
         FirebaseApp.initializeApp(appContext);
         FirebaseVision instance = FirebaseVision.getInstance();
         textRecognizer = instance.getOnDeviceTextRecognizer();
+
+        // check for available translation model
+        FirebaseModelManager modelManager = FirebaseModelManager.getInstance();
+        modelManager.getDownloadedModels(FirebaseTranslateRemoteModel.class)
+                .addOnSuccessListener(new OnSuccessListener<Set<FirebaseTranslateRemoteModel>>() {
+                    @Override
+                    public void onSuccess(Set<FirebaseTranslateRemoteModel> firebaseTranslateRemoteModels) {
+                        for(FirebaseTranslateRemoteModel model : firebaseTranslateRemoteModels){
+                            Log.i("Receipt translate", "Translate model is ready");
+                            if(model.getLanguageCode().equalsIgnoreCase("fi")) isTranslateModelAvailable = true;
+                        }
+                        if(!isTranslateModelAvailable){
+                            //download Finnish translate model
+                            FirebaseTranslateRemoteModel fiModel = new FirebaseTranslateRemoteModel.Builder(FirebaseTranslateLanguage.FI).build();
+                            FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder().requireWifi().build();
+                            modelManager.download(fiModel, conditions)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            isTranslateModelAvailable = true;
+                                            Log.i("Receipt translate", "Translate model downloaded");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.i("Receipt translate", "Translate model download failed");
+                                            e.printStackTrace();
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("Receipt translate", "Translate model unavailable");
+                        e.printStackTrace();
+                    }
+                });
     }
 
     public MutableLiveData<String> getDescription() {
@@ -140,6 +177,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
             }else{
                 insertExpense(insertDate, Double.valueOf(insertAmount), insertDescription, id, isIncome.getValue(), insertType, insertTags);
             }
+            resetInputs();
         }else{
             insertSuccess = false;
         }
@@ -185,57 +223,127 @@ public class AddTransactionViewModel extends AndroidViewModel {
         FirebaseVisionImage inputReceiptFVI;
         try{
             inputReceiptFVI = FirebaseVisionImage.fromFilePath(appContext, inputReceiptUri);
-            textRecognizer.processImage(inputReceiptFVI)
-                    .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                        @Override
-                        public void onSuccess(FirebaseVisionText result) {
-                            String extractedText = result.getText();
-                            extractedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
-                            List<String> tokens = Arrays.asList(extractedText.split(" "));
-                            // TODO: NLP generate tag
-
-                            // TODO: NLP select category
-
-                            // extracting data
-                            Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
-                            String amountFormat = "\\d+\\.\\d+|\\d+,\\d+";
-
-                            for(String token : tokens){
-                                try{
-                                    Matcher matcher = dateFormat.matcher(token);
-                                    if(matcher.find()){
-                                        date.setValue(matcher.group());
-                                    }else if(Pattern.matches(amountFormat, token)){
-                                        String entry = token.replace(",", ".");
-                                        if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
-                                    }
-                                }catch(Exception e){
-                                    e.printStackTrace();
-                                    continue;
-                                }
-                            }
-                                //TODO: train a model to extract total (if data is available)
-                            resultText.setValue(result.getText());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            FirebaseMLException mlException = (FirebaseMLException)e;
-                            Log.i("receipt", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
-                            if(mlException.getCode() == 14) { // model unavailable
-                                //TODO
-                                textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-                                resultText.setValue("Text recognition model is downloading, please wait...");
-                            }
-
-                            e.printStackTrace();
-                        }
-                    });
+            extractContent(inputReceiptFVI);
         }catch (Exception e){
             e.printStackTrace();
         }
 
         return resultText;
+    }
+
+    public MutableLiveData<String> recognizeText(Bitmap inputreceiptBitmap){
+        MutableLiveData<String> resultText = new MutableLiveData<>();
+        resultText.setValue("Text recognition is processing...");
+
+        FirebaseVisionImage inputReceiptFVI;
+        try{
+            inputReceiptFVI = FirebaseVisionImage.fromBitmap(inputreceiptBitmap);
+            extractContent(inputReceiptFVI);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return resultText;
+    }
+
+    private void extractContent(FirebaseVisionImage inputReceiptFVI){
+        textRecognizer.processImage(inputReceiptFVI)
+                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText result) {
+                        final String extractedText = result.getText();
+                        // extracting data
+                        extractDateAndAmount(extractedText);
+                        // identify language
+                        FirebaseNaturalLanguage.getInstance()
+                                .getLanguageIdentification()
+                                .identifyLanguage(extractedText)
+                                .addOnSuccessListener(new OnSuccessListener<String>() {
+                                    @Override
+                                    public void onSuccess(String s) {
+                                        if(!s.equalsIgnoreCase("fi")){
+                                            // unsupported language notification
+                                            Log.i("receipt translate", "Unsupported language");
+                                        }
+                                        else if(!isTranslateModelAvailable){
+                                            // unavailable translate model noti
+                                            Log.i("Receipt translate", "Model is not availble");
+                                        }
+                                        else{
+                                            // translate FI -> EN
+                                            FirebaseTranslatorOptions options = new FirebaseTranslatorOptions.Builder()
+                                                    .setSourceLanguage(FirebaseTranslateLanguage.FI)
+                                                    .setTargetLanguage(FirebaseTranslateLanguage.EN)
+                                                    .build();
+                                            FirebaseTranslator finEngTranslator = FirebaseNaturalLanguage.getInstance().getTranslator(options);
+
+                                            finEngTranslator.translate(extractedText)
+                                                    .addOnSuccessListener(new OnSuccessListener<String>(){
+                                                        @Override
+                                                        public void onSuccess(@NonNull String translatedText){
+                                                            Log.i("Receipt translate", "Translated text: " + translatedText);
+                                                            // TODO: NLP generate tag
+
+                                                            // TODO: NLP select category
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener(){
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e){
+                                                            e.printStackTrace();
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.i("receipt translate", "Model downloading..."));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        FirebaseMLException mlException = (FirebaseMLException)e;
+                        Log.i("receipt", "This comes from failure listener. Code: " + String.valueOf(mlException.getCode()));
+                        if(mlException.getCode() == 14) { // model unavailable
+                            textRecognizer = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+                        }
+                        e.printStackTrace(); //TODO: remove
+                    }
+                });
+    }
+
+    private void extractDateAndAmount(String extractedText){
+        String processedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
+        Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
+        String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
+        List<String> tokens = Arrays.asList(processedText.split(" "));
+
+        for(String token : tokens){
+            try{
+                Matcher matcher = dateFormat.matcher(token);
+                if(matcher.find()){
+                    date.setValue(matcher.group());
+                }else if(Pattern.matches(amountFormat, token)){
+                    String entry = token.replace(",", ".");
+                    if(Double.valueOf(entry) > Double.valueOf(amount.getValue())) amount.setValue(entry);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                continue;
+            }
+        }
+        //TODO: train a model to extract total (if data is available)
+    }
+
+    public void resetInputs(){
+        Log.i("receipt", "values are reset");
+        description.setValue("");
+        amount.setValue("0.0");
+        date.setValue("");
+        type.setValue("");
+        walletId.setValue("");
+        source.setValue("");
+        isIncome.setValue(false);
+        tags.setValue(new ArrayList<>());
     }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -23,7 +24,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Bitmap;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -40,11 +45,13 @@ import com.wasteless.App;
 import com.wasteless.R;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.roomdb.AppDatabase;
+import com.wasteless.roomdb.entities.Achievement;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
 import com.wasteless.ui.home.HomeFragment;
 import com.wasteless.ui.home.HomeViewModel;
 import com.wasteless.ui.home.goal.GoalViewModel;
+import com.wasteless.ui.settings.achievements.AchievementViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,12 +77,18 @@ public class AddTransactionFragment extends Fragment {
     private AddTransactionViewModel addTransactionViewModel;
     private HomeViewModel homeViewModel;
     private GoalViewModel goalViewModel;
+    private AchievementViewModel achievementViewModel;
 
 
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         addTransactionViewModel = new ViewModelProvider(requireActivity()).get(AddTransactionViewModel.class);
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         goalViewModel = ViewModelProviders.of(this).get(GoalViewModel.class);
+        achievementViewModel = ViewModelProviders.of(this).get(AchievementViewModel.class);
+        List<Achievement> allAchievements = achievementViewModel.getAllAchievements();
+        for (int i = 0; i < allAchievements.size(); i++) {
+            Log.i("achievements", allAchievements.get(i).description);
+        }
 
         Log.i("hereImportant", String.valueOf(goalViewModel.getGoalByType("daily")));
         final View root = inflater.inflate(R.layout.fragment_add_new_transaction, container, false);
@@ -300,16 +313,29 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
-                new CountDownTimer(1000, 1000) {
+                new CountDownTimer(1000, 300) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) != 0.0) {
-                            startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
+                        String achievements = achievementViewModel.checkAllTheAchievements();
+                        if(achievements.trim().length() != 0) {
+                            startNotificationAchievement("You achieved '"+ achievements+"'");
                         } else {
-                            startNotification("You haven't spent anything today yet");
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) < 50.0) {
+                                startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 50.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 80.00 ) {
+                                startNotification("You have already spent more than 50% of your goal");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 80.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 100.00 ) {
+                                String left = String.valueOf(100.00 - Double.parseDouble(goalViewModel.getDayProgress()));
+                                startNotification("Warning! Your daily goal is about to be spent!\n"+ left+ "% left");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 100.0) {
+                                startNotification("Warning! You have spent your daily goal");
+                            }
                         }
                     }
 
@@ -323,12 +349,27 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
-                //TODO
-                AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                addTransactionViewModel.resetInputs();
+                ActivityResultLauncher<String> getReceiptImage = prepareCall(new ActivityResultContracts.GetContent(),
+                        new ActivityResultCallback<Uri>() {
+                            @Override
+                            public void onActivityResult(Uri result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+                                    Bundle uriBundle = new Bundle();
+                                    uriBundle.putParcelable("receiptImage", result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(uriBundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+
+                getReceiptImage.launch("image/*");
             }
         });
 
@@ -336,7 +377,27 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open camera button clicked");
-                //TODO
+                addTransactionViewModel.resetInputs();
+                ActivityResultLauncher<Void> getReceiptImage = prepareCall(new ActivityResultContracts.TakePicturePreview(),
+                        new ActivityResultCallback<Bitmap>() {
+                            @Override
+                            public void onActivityResult(Bitmap result) {
+                                if(result != null){
+                                    Log.i("receipt", "Image uri: " + result.toString());
+
+                                    Bundle bitMapBundle = new Bundle();
+                                    bitMapBundle.putParcelable("receiptImage", result);
+
+                                    AddTransactionFromReceiptFragment addTransactionFromReceiptFragment = new AddTransactionFromReceiptFragment();
+                                    addTransactionFromReceiptFragment.setArguments(bitMapBundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.nav_host_fragment, addTransactionFromReceiptFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                }
+                            }
+                        });
+                getReceiptImage.launch(null);
             }
         });
         return root;
@@ -352,6 +413,17 @@ public class AddTransactionFragment extends Fragment {
                 .setCategory(NotificationCompat.CATEGORY_SOCIAL)
                 .build();
         notificationManagerCompat.notify(1, notification);
+    }
+    private void startNotificationAchievement(String text) {
+        notificationManagerCompat = NotificationManagerCompat.from(getContext());
+        Notification notification = new NotificationCompat.Builder(getContext(), App.CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.achievements)
+                .setContentTitle("Achievement unlocked")
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(NotificationCompat.CATEGORY_SOCIAL)
+                .build();
+        notificationManagerCompat.notify(2, notification);
     }
 
     private void addNewChip(View root, final String text) {

@@ -16,9 +16,9 @@
         android:title="Add new expense" />
 
     <item
-        android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_history_black_24dp"
-        android:title="@string/title_history" />
+        android:id="@+id/navigation_wallets_manager"
+        android:icon="@drawable/ic_walllets_black"
+        android:title="@string/title_wallets_manager" />
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings_black_24dp"
