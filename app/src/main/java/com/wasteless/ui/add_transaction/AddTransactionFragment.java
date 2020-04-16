@@ -313,26 +313,30 @@ public class AddTransactionFragment extends Fragment {
                             }
                         });
                 alertDialog.show();
-                new CountDownTimer(1000, 500) {
+                new CountDownTimer(1000, 300) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) < 50.0) {
-                            startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
+                        String achievements = achievementViewModel.checkAllTheAchievements();
+                        if(achievements.trim().length() != 0) {
+                            startNotificationAchievement("You achieved '"+ achievements+"'");
+                        } else {
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) < 50.0) {
+                                startNotification("You have spent "+ goalViewModel.getDayProgress()+"% of your goal");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 50.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 80.00 ) {
+                                startNotification("You have already spent more than 50% of your goal");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 80.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 100.00 ) {
+                                String left = String.valueOf(100.00 - Double.parseDouble(goalViewModel.getDayProgress()));
+                                startNotification("Warning! Your daily goal is about to be spent!\n"+ left+ "% left");
+                            }
+                            if (Double.parseDouble(goalViewModel.getDayProgress()) > 100.0) {
+                                startNotification("Warning! You have spent your daily goal");
+                            }
                         }
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 50.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 80.00 ) {
-                            startNotification("You have already spent more than 50% of your goal");
-                        }
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 80.0 && Double.parseDouble(goalViewModel.getDayProgress()) < 100.00 ) {
-                            String left = String.valueOf(100.00 - Double.parseDouble(goalViewModel.getDayProgress()));
-                            startNotification("Warning! Your daily goal is about to be spent!\n"+ left+ "% left");
-                        }
-                        if (Double.parseDouble(goalViewModel.getDayProgress()) > 100.0) {
-                            startNotification("Warning! You have spent your daily goal");
-                        }
-
                     }
 
                 }.start();
@@ -345,7 +349,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open gallery button clicked");
-
+                addTransactionViewModel.resetInputs();
                 ActivityResultLauncher<String> getReceiptImage = prepareCall(new ActivityResultContracts.GetContent(),
                         new ActivityResultCallback<Uri>() {
                             @Override
@@ -373,7 +377,7 @@ public class AddTransactionFragment extends Fragment {
             @Override
             public void onClick(View view){
                 Log.i("receipt", "open camera button clicked");
-
+                addTransactionViewModel.resetInputs();
                 ActivityResultLauncher<Void> getReceiptImage = prepareCall(new ActivityResultContracts.TakePicturePreview(),
                         new ActivityResultCallback<Bitmap>() {
                             @Override
@@ -409,6 +413,17 @@ public class AddTransactionFragment extends Fragment {
                 .setCategory(NotificationCompat.CATEGORY_SOCIAL)
                 .build();
         notificationManagerCompat.notify(1, notification);
+    }
+    private void startNotificationAchievement(String text) {
+        notificationManagerCompat = NotificationManagerCompat.from(getContext());
+        Notification notification = new NotificationCompat.Builder(getContext(), App.CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.achievements)
+                .setContentTitle("Achievement unlocked")
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(NotificationCompat.CATEGORY_SOCIAL)
+                .build();
+        notificationManagerCompat.notify(2, notification);
     }
 
     private void addNewChip(View root, final String text) {

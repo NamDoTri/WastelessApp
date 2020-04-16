@@ -65,15 +65,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
         appContext = application.getApplicationContext();
 
         if(description.getValue() == null){
-            Log.i("receipt", "values are reset");
-            description.setValue("");
-            amount.setValue("0.0");
-            date.setValue("");
-            type.setValue("");
-            walletId.setValue("");
-            source.setValue("");
-            isIncome.setValue(false);
-            tags.setValue(new ArrayList<>());
+            resetInputs();
         }
 
         // set up recognizer
@@ -185,6 +177,7 @@ public class AddTransactionViewModel extends AndroidViewModel {
             }else{
                 insertExpense(insertDate, Double.valueOf(insertAmount), insertDescription, id, isIncome.getValue(), insertType, insertTags);
             }
+            resetInputs();
         }else{
             insertSuccess = false;
         }
@@ -259,7 +252,8 @@ public class AddTransactionViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(FirebaseVisionText result) {
                         final String extractedText = result.getText();
-
+                        // extracting data
+                        extractDateAndAmount(extractedText);
                         // identify language
                         FirebaseNaturalLanguage.getInstance()
                                 .getLanguageIdentification()
@@ -288,13 +282,9 @@ public class AddTransactionViewModel extends AndroidViewModel {
                                                         @Override
                                                         public void onSuccess(@NonNull String translatedText){
                                                             Log.i("Receipt translate", "Translated text: " + translatedText);
-                                                            String processedText = translatedText.replaceAll("\n+", " "); // replace new line with whitespace
                                                             // TODO: NLP generate tag
 
                                                             // TODO: NLP select category
-
-                                                            // extracting data
-                                                            extractDateAndAmount(processedText);
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener(){
@@ -323,9 +313,10 @@ public class AddTransactionViewModel extends AndroidViewModel {
     }
 
     private void extractDateAndAmount(String extractedText){
+        String processedText = extractedText.replaceAll("\n+", " "); // replace new line with whitespace
         Pattern dateFormat = Pattern.compile("(.*?)\\d\\d/\\d\\d/\\d\\d\\d\\d(.*?)|(.*?)\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d(.*?)|(.*?)\\d\\d-\\d\\d-\\d\\d\\d\\d(.*?)");
         String amountFormat = "(.*?)\\d+\\.\\d+|\\d+,\\d+(.*?)"; // doesnt match currency
-        List<String> tokens = Arrays.asList(extractedText.split(" "));
+        List<String> tokens = Arrays.asList(processedText.split(" "));
 
         for(String token : tokens){
             try{
@@ -342,5 +333,17 @@ public class AddTransactionViewModel extends AndroidViewModel {
             }
         }
         //TODO: train a model to extract total (if data is available)
+    }
+
+    public void resetInputs(){
+        Log.i("receipt", "values are reset");
+        description.setValue("");
+        amount.setValue("0.0");
+        date.setValue("");
+        type.setValue("");
+        walletId.setValue("");
+        source.setValue("");
+        isIncome.setValue(false);
+        tags.setValue(new ArrayList<>());
     }
 }
