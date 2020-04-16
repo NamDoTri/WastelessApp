@@ -4,4 +4,6 @@ import androidx.lifecycle.ViewModel;
 
 public class WalletsManagerViewModel extends ViewModel {
 
+
+
 }
