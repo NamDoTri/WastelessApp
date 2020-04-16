@@ -22,6 +22,7 @@ import com.wasteless.ui.settings.newWallet.GeneralFragment;
 import com.wasteless.ui.settings.newWallet.NewWalletFragment;
 import com.wasteless.ui.settings.achievements.AchievementFragment;
 import com.wasteless.ui.settings.password.PasswordFragment;
+import com.wasteless.ui.settings.password.PrivacyFragment;
 
 public class SettingsFragment extends Fragment{
 
@@ -110,9 +111,9 @@ public class SettingsFragment extends Fragment{
             }
         });
         root.findViewById(R.id.privacy_button).setOnClickListener(v -> {
-            PasswordFragment passwordFragment = new PasswordFragment();
+            PrivacyFragment privacyFragment = new PrivacyFragment();
             FragmentTransaction transaction =getFragmentManager().beginTransaction();
-            transaction.replace(R.id.nav_host_fragment, passwordFragment);
+            transaction.replace(R.id.nav_host_fragment, privacyFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         });
