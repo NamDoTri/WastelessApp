@@ -21,7 +21,6 @@ import com.wasteless.ui.settings.help.HelpFragment;
 import com.wasteless.ui.settings.newWallet.GeneralFragment;
 import com.wasteless.ui.settings.newWallet.NewWalletFragment;
 import com.wasteless.ui.settings.achievements.AchievementFragment;
-import com.wasteless.ui.settings.password.PasswordFragment;
 import com.wasteless.ui.settings.password.PrivacyFragment;
 
 public class SettingsFragment extends Fragment{

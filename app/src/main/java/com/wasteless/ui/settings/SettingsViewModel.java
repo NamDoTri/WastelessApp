@@ -20,14 +20,4 @@ public class SettingsViewModel extends AndroidViewModel{
     public void insertWallet(String name, double initialBalance, boolean isBank){
         walletRepository.insertWallet( new Wallet(name, initialBalance, isBank) );
     }
-
-    public String getCurrentPassword(){
-        return MainActivity.getCurrentPassword();
-    }
-
-    public boolean validatePassword(String newPassword){
-        return newPassword.equalsIgnoreCase(this.getCurrentPassword());
-    }
-
-
 }

@@ -27,6 +27,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"/>
                 <ToggleButton
+                    android:id="@+id/enable_password_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintRight_toRightOf="parent"
