@@ -34,7 +34,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
     private static final String PASSWORD_FILENAME = "wastelessPassword";
-    private String password = null;
+    private static String password = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,5 +117,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private boolean validatePassword(String newPassword){
         return newPassword.trim().equalsIgnoreCase(password.trim());
+    }
+    public static String getStoredPassword(){
+        return password;
     }
 }

@@ -25,6 +25,7 @@ public class PrivacyFragment extends Fragment {
         privacyViewModel = new ViewModelProvider(requireActivity()).get(PrivacyViewModel.class);
 
         ToggleButton enablePassword = ((ToggleButton)root.findViewById(R.id.enable_password_check));
+        enablePassword.setChecked(privacyViewModel.getIsPasswordEnabled());
 
         enablePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -39,6 +40,7 @@ public class PrivacyFragment extends Fragment {
                     enablePassword.setChecked(false);
                 }else{
                     Log.i("pattern", "password disabled");
+                    privacyViewModel.removePassword();
                 }
             }
         });

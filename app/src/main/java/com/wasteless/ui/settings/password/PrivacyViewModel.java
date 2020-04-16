@@ -7,14 +7,20 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.wasteless.MainActivity;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 public class PrivacyViewModel extends AndroidViewModel {
+    private boolean isPasswordEnabled;
     private boolean isConfirming = false;
     private String currentPassword = "";
 
     public PrivacyViewModel(Application application){
         super(application);
+        isPasswordEnabled = MainActivity.getStoredPassword() == null ? false : true;
+    }
+    public boolean getIsPasswordEnabled(){
+        return isPasswordEnabled;
     }
 
     public boolean getIsConfirming(){
@@ -40,5 +46,16 @@ public class PrivacyViewModel extends AndroidViewModel {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    boolean removePassword(){
+        File passwordFile = new File(getApplication().getApplicationContext().getFilesDir(), MainActivity.getPasswordFilename());
+        try{
+            passwordFile.delete();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
