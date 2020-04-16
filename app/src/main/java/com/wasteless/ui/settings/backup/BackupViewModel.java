@@ -106,7 +106,7 @@ public class BackupViewModel extends AndroidViewModel {
         }
     }
 
-    public Intent getBackups(){
+    public Intent exportBackups(){
         exportDataBaseIntoCSV();
         exportBackupsToZip();
 
