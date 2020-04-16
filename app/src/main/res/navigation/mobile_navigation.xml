@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/navigation_history"
-        android:name="com.wasteless.ui.history.HistoryFragment"
-        android:label="@string/title_history"
-        tools:layout="@layout/fragment_history" />
+        android:id="@+id/navigation_wallets_manager"
+        android:name="com.wasteless.ui.wallets_manager.WalletsManagerFragment"
+        android:label="@string/title_wallets_manager"
+        tools:layout="@layout/fragment_wallets_manager" />
     <fragment
         android:id="@+id/navigation_add_new_transaction"
         android:name="com.wasteless.ui.add_transaction.AddTransactionFragment"

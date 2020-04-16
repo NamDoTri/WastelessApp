@@ -8,7 +8,7 @@
     <string name="filter_category" > Category </string>
     <string name="filter_tag" > Tag </string>
     <!--  History strings  -->
-    <string name="title_history">History</string>
+    <string name="title_wallets_manager">Wallets</string>
     <string name="button_back">&lt;</string>
     <string name="button_next">&gt;</string>
     <string name="settings">Settings</string>
