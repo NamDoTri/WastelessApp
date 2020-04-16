@@ -1,5 +1,8 @@
 package com.wasteless.ui.settings;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,7 +46,8 @@ public class SettingsFragment extends Fragment{
 
     private SettingsViewModel SettingsViewModel;
     private BackupViewModel backupViewModel;
-    private static final int CHOOSE_FILE_REQUESTCODE = 1234;
+    private static final int CHOOSE_FILE_REQUESTCODE = 1112;
+    private static final int BACKUP_REQUESTCODE = 2223;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -176,36 +180,73 @@ public class SettingsFragment extends Fragment{
     }
 
     private void sendZip(){
-        Intent i = backupViewModel.exportBackups();
-        try {
-            startActivity(Intent.createChooser(i, "Backup"));
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getContext(), "There aren't any clients installed to handle your request.", Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog.Builder backupAlert = new AlertDialog.Builder(getActivity());
+        backupAlert.setTitle("Backup");
+        backupAlert.setMessage("Do you want your data to be saved as a .zip file and " +
+                "to store it in a location of your choosing?");
+        backupAlert.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        backupAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = backupViewModel.exportBackups();
+                try {
+                    startActivityForResult(Intent.createChooser(i, "Backup"), BACKUP_REQUESTCODE);
+                }
+                catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getContext(), "There aren't any clients installed to handle your request.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        backupAlert.show();
     }
 
     private void selectZip(){
-        Intent i = backupViewModel.importBackups();
-        try {
-            startActivityForResult(Intent.createChooser(i, "Choose a file"), CHOOSE_FILE_REQUESTCODE);
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getContext(), "There aren't any clients installed to handle your request.", Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog.Builder importAlert = new AlertDialog.Builder(getActivity());
+        importAlert.setTitle("Import data");
+        importAlert.setMessage("Do you want to import your data from the previously saved .zip file?" +
+                " This action will also remove all the data that isn't in the backup file.");
+        importAlert.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        importAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = backupViewModel.importBackups();
+                try {
+                    startActivityForResult(Intent.createChooser(i, "Choose a file"), CHOOSE_FILE_REQUESTCODE);
+                }
+                catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getContext(), "There aren't any clients installed to handle your request.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        importAlert.show();
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(data == null)
+        if(data == null){
+            Toast.makeText(getContext(), "Canceled", Toast.LENGTH_SHORT).show();
             return;
-        if (requestCode == CHOOSE_FILE_REQUESTCODE) {
+        }
+        if(requestCode == CHOOSE_FILE_REQUESTCODE) {
             //Getting the provided uri and sending it to the view model
             Uri uri = data.getData();
             backupViewModel.insertData(uri);
 
             Toast.makeText(getContext(), "Data imported", Toast.LENGTH_SHORT).show();
+        }
+        if(requestCode == BACKUP_REQUESTCODE){
+            Toast.makeText(getContext(), "Backup successful", Toast.LENGTH_SHORT).show();
         }
     }
 }

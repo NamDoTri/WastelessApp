@@ -146,8 +146,9 @@ public class BackupViewModel extends AndroidViewModel {
         ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
         ZipEntry zipEntry;
 
-        //Creating a list for the tag_assoc inserts for later use
+        //Creating lists for later use
         List<String> tag_assocs = new ArrayList<>();
+        List<String> transactions = new ArrayList<>();
 
         //Getting the database in readable form
         AppDatabase db = AppDatabase.getAppDatabase(getApplication());
@@ -182,7 +183,7 @@ public class BackupViewModel extends AndroidViewModel {
                 sql_db.execSQL("delete from " + fileName);
                 Log.d("CLEARED", fileName);
 
-                //Storing the tag_assoc inserts temporarily in an arraylist because of the foreign key (transactionId)
+                //Storing the tag_assoc & transaction inserts temporarily in arraylists because of the foreign keys
                 if (fileName.equals("tag_assoc")) {
                     try {
                         while ((header = bufferedReader.readLine()) != null) {
@@ -196,7 +197,7 @@ public class BackupViewModel extends AndroidViewModel {
                                 }
                             }
                             sb.append(queryString2);
-                            Log.d("EXECUTE", sb.toString());
+                            Log.d("LISTED", sb.toString());
                             tag_assocs.add(sb.toString());
                             //sql_db.execSQL(sb.toString());
                         }
@@ -204,9 +205,7 @@ public class BackupViewModel extends AndroidViewModel {
                         e.printStackTrace();
                     }
                 }
-                //Inserting the rest of the tables
-                else {
-                    sql_db.beginTransaction();
+                if (fileName.equals("transactions")) {
                     try {
                         while ((header = bufferedReader.readLine()) != null) {
                             StringBuilder sb = new StringBuilder(queryString1);
@@ -228,22 +227,61 @@ public class BackupViewModel extends AndroidViewModel {
                                 }
                             }
                             sb.append(queryString2);
+                            Log.d("LISTED", sb.toString());
+                            transactions.add(sb.toString());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //Inserting the rest of the tables
+                else {
+                    sql_db.beginTransaction();
+                    try {
+                        while ((header = bufferedReader.readLine()) != null) {
+                            StringBuilder sb = new StringBuilder(queryString1);
+                            String[] str = header.split(",");
+                            for (int i = 0; i < splitHeader.length; i++) {
+                                //Checking if the header is longer than the string of data entries
+                                if (str.length < splitHeader.length && i != splitHeader.length - 1) {
+                                    sb.append(str[i] + ",");
+                                }
+                                if (str.length < splitHeader.length && i == splitHeader.length - 1) {
+                                    sb.append("'" + "" + "'");
+                                }
+                                if (str.length == splitHeader.length && i != str.length - 1) {
+                                    sb.append(str[i] + ",");
+                                }
+                                if (str.length == splitHeader.length && i == str.length - 1) {
+                                    sb.append(str[i]);
+                                }
+                            }
+                            sb.append(queryString2);
                             sql_db.execSQL(sb.toString());
+                            Log.d("EXECUTED", sb.toString());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     sql_db.setTransactionSuccessful();
                     sql_db.endTransaction();
-                    Log.d("EXECUTED TO", fileName);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //Executing the tag_assoc inserts now since the transactions have to be in the
-        //table before these, otherwise the foreign key doesn't connect
+        //Executing the tag_assoc and transaction inserts now since the wallets have to be in their
+        //table before transactions and transactions have to be in their table before tag_assocs,
+        //otherwise the foreign keys wont connect
+        sql_db.beginTransaction();
+        for (int i = 0; i < transactions.size(); i++) {
+            sql_db.execSQL(transactions.get(i));
+            Log.d("EXECUTED", transactions.get(i));
+        }
+        sql_db.setTransactionSuccessful();
+        sql_db.endTransaction();
+
         sql_db.beginTransaction();
         for (int i = 0; i < tag_assocs.size(); i++) {
             sql_db.execSQL(tag_assocs.get(i));
