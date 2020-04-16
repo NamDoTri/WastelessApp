@@ -5,18 +5,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wasteless.R;
 import com.wasteless.roomdb.entities.Wallet;
+import com.wasteless.ui.settings.newWallet.NewWalletFragment;
 
 import java.util.List;
 
@@ -63,5 +66,16 @@ public class WalletsManagerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     };
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Log.d("menu", "selected option: " + item);
+        NewWalletFragment newWalletFragment = new NewWalletFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.nav_host_fragment, newWalletFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return super.onOptionsItemSelected(item);
+    }
 
 }
