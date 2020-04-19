@@ -299,7 +299,7 @@ public class AddTransactionFragment extends Fragment {
             private void successMessage() {
                 // Pop-up message
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setTitle("Done");
+                alertDialog.setTitle("New transaction");
                 alertDialog.setMessage("Succesfully added");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
