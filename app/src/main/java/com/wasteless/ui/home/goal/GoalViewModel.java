@@ -5,14 +5,12 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.wasteless.repository.GoalRepository;
 import com.wasteless.repository.TransactionRepository;
 import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Goal;
 import com.wasteless.roomdb.entities.Wallet;
-import com.wasteless.ui.home.HomeViewModel;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
