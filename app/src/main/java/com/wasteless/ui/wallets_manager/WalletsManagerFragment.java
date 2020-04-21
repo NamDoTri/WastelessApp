@@ -8,12 +8,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,10 +53,26 @@ public class WalletsManagerFragment extends Fragment {
 //     Assigns the wallets layout to the walletManagerView
         walletsManagerView = root.findViewById(R.id.wallets_list);
 //        Assigns the layout manager and the adapter to walletsManagerView
+        walletsManagerView.addItemDecoration(new WalletItemDecorator(getActivity(), R.drawable.transaction_divider));
         walletsManagerView.setLayoutManager(layoutManager);
         walletsManagerView.setAdapter(walletsManagerAdapter);
 
         setHasOptionsMenu(true);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT ) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                walletsManagerViewModel.deleteWallet(walletsManagerAdapter.getWalletAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Wallet deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(walletsManagerView);
+
 
 
 

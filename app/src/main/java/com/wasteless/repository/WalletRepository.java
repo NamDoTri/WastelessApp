@@ -59,4 +59,8 @@ public class WalletRepository {
         Budget newBudget = new Budget(amount, createdAt, true); //TODO
         budgetDao.insert(newBudget);
     }
+
+    public void delete(Wallet wallet) {
+        walletDao.delete(wallet);
+    }
 }

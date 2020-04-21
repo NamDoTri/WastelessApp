@@ -65,7 +65,8 @@ public class WalletsManagerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-
-
+    public Wallet getWalletAt(int position) {
+        return  wallets.get(position);
+    }
 
 }

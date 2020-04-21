@@ -28,4 +28,8 @@ public class WalletsManagerViewModel extends AndroidViewModel {
         return  wallets;
     }
 
+    public void deleteWallet(Wallet wallet) {
+        walletRepository.delete(wallet);
+    }
+
 }
