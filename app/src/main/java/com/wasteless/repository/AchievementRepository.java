@@ -33,5 +33,4 @@ public class AchievementRepository {
         achievementDao.insert(achievement);
     }
 
-    public void deleteAchievement(Achievement achievement){achievementDao.delete(achievement);}
 }

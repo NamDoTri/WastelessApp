@@ -5,11 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.wasteless.repository.AchievementRepository;
 import com.wasteless.repository.TransactionRepository;
@@ -17,13 +13,9 @@ import com.wasteless.repository.WalletRepository;
 import com.wasteless.roomdb.entities.Achievement;
 import com.wasteless.roomdb.entities.Transaction;
 import com.wasteless.roomdb.entities.Wallet;
-import com.wasteless.ui.add_transaction.AddTransactionViewModel;
-import com.wasteless.ui.home.goal.GoalViewModel;
-import com.wasteless.ui.settings.SettingsViewModel;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AchievementViewModel extends AndroidViewModel {
