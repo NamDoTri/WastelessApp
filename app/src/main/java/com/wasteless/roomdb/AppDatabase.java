@@ -49,9 +49,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             new Achievement("Wasteless is with you","Start the app", true),
                             new Achievement("Poor guy","Your income is less than 5 euros per day", false),
                             new Achievement("One more thing","Add more than 10 transactions", false),
-                            new Achievement("Spender","Spend more than 200€ in one day", false),
-                            new Achievement("Test","Test one", true)
-
+                            new Achievement("Spender","Spend more than 200€ in one day", false)
                             );
                     getAppDatabase(context).walletDao().insertAll(
                             new Wallet("wallet 1", 400, false),
